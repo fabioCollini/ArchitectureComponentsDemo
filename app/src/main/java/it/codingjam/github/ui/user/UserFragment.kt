@@ -28,7 +28,7 @@ import it.codingjam.github.ui.common.StringFragmentCreator
 import it.codingjam.github.util.ViewModels
 
 class UserFragment : LifecycleFragment() {
-    private val viewModel by ViewModels.delegate(component::userViewModel) {
+    private val viewModel by ViewModels.delegate({ component.userViewModel() }) {
         it.load(getParam(this))
     }
 

@@ -32,7 +32,7 @@ class RepoFragment : LifecycleFragment() {
 
     lateinit var binding: RepoFragmentBinding
 
-    private val viewModel by ViewModels.delegate(component::repoViewModel) {
+    private val viewModel by ViewModels.delegate({ component.repoViewModel() }) {
         it.init(getParam(this))
     }
 
