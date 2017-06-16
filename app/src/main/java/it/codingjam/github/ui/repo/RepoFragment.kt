@@ -32,9 +32,9 @@ class RepoFragment : LifecycleFragment() {
 
     lateinit var binding: RepoFragmentBinding
 
-    private val viewModel by ViewModels.delegate({
+    private val viewModel by ViewModels.delegate {
         component.repoViewModel().also { it.init(getParam(this)) }
-    })
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

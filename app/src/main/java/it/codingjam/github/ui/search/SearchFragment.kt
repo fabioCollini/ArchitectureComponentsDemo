@@ -31,7 +31,7 @@ import it.codingjam.github.vo.orElse
 
 class SearchFragment : LifecycleFragment() {
 
-    private val viewModel by ViewModels.delegate({ component.searchViewModel() })
+    private val viewModel by ViewModels.delegate { component.searchViewModel() }
 
     lateinit var binding: SearchFragmentBinding
 
