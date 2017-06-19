@@ -25,10 +25,10 @@ import it.codingjam.github.component
 import it.codingjam.github.databinding.UserFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.StringFragmentCreator
-import it.codingjam.github.util.ViewModels
+import it.codingjam.github.util.fragmentViewModel
 
 class UserFragment : LifecycleFragment() {
-    private val viewModel by ViewModels.delegate {
+    private val viewModel by fragmentViewModel {
         component.userViewModel().also { it.load(getParam(this)) }
     }
 

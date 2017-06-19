@@ -25,14 +25,14 @@ import it.codingjam.github.component
 import it.codingjam.github.databinding.RepoFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
-import it.codingjam.github.util.ViewModels
+import it.codingjam.github.util.fragmentViewModel
 import it.codingjam.github.vo.RepoId
 
 class RepoFragment : LifecycleFragment() {
 
     lateinit var binding: RepoFragmentBinding
 
-    private val viewModel by ViewModels.delegate {
+    private val viewModel by fragmentViewModel {
         component.repoViewModel().also { it.init(getParam(this)) }
     }
 

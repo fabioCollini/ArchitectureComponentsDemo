@@ -20,9 +20,7 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
 
     protected val uiActions = UiActionsLiveData()
 
-    override fun onCleared() {
-        clearedSubject.onNext(true)
-    }
+    override fun onCleared() = clearedSubject.onNext(true)
 
     fun <F> observe(owner: F, observer: (VS) -> Unit) where F : Fragment, F : LifecycleOwner {
         state.observe(owner, Observer { observer(it!!) })
