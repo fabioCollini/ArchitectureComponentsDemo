@@ -18,20 +18,21 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
-import io.reactivex.Single
+import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.util.ResourceTester
 import it.codingjam.github.util.TestData
 import it.codingjam.github.util.TestLiveDataObserver
 import it.codingjam.github.util.TrampolineSchedulerRule
+import it.codingjam.github.util.shouldContain
 import it.codingjam.github.vo.RepoId
+import it.codingjam.github.willReturnSingle
+import it.codingjam.github.willThrowSingle
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import java.io.IOException
 
@@ -43,11 +44,11 @@ class RepoViewModelTest {
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock lateinit var repository: RepoRepository
+    val repository = mock<RepoRepository>()
 
-    @Mock lateinit var navigationController: NavigationController
+    val navigationController = mock<NavigationController>()
 
-    @Mock lateinit var activity: FragmentActivity
+    val activity = mock<FragmentActivity>()
 
     @InjectMocks lateinit var repoViewModel: RepoViewModel
 
@@ -58,36 +59,37 @@ class RepoViewModelTest {
     }
 
     @Test fun fetchData() {
-        given(repository.loadRepo("a", "b"))
-                .willReturn(Single.just(TestData.REPO_DETAIL))
+        given(repository.loadRepo("a", "b")) willReturnSingle { TestData.REPO_DETAIL }
 
         repoViewModel.init(RepoId("a", "b"))
 
-        ResourceTester(observer.getValues().map { it.repoDetail })
-                .empty().loading().success()
+        observer.getValues().map { it.repoDetail } shouldContain {
+            empty().loading().success()
+        }
     }
 
     @Test fun errorFetchingData() {
-        given(repository.loadRepo("a", "b"))
-                .willReturn(Single.error(IOException()))
+        given(repository.loadRepo("a", "b")) willThrowSingle { Throwable() }
 
         repoViewModel.init(RepoId("a", "b"))
 
-        ResourceTester(observer.getValues().map { it.repoDetail })
-                .empty().loading().error()
+        observer.getValues().map { it.repoDetail } shouldContain {
+            empty().loading().error()
+        }
     }
 
     @Test
     fun retry() {
         given(repository.loadRepo("a", "b"))
-                .willReturn(Single.error(IOException()))
-                .willReturn(Single.just(TestData.REPO_DETAIL))
+                .willThrowSingle { IOException() }
+                .willReturnSingle { TestData.REPO_DETAIL }
 
         repoViewModel.init(RepoId("a", "b"))
 
         repoViewModel.retry()
 
-        ResourceTester(observer.getValues().map { it.repoDetail })
-                .empty().loading().error().loading().success()
+        observer.getValues().map { it.repoDetail } shouldContain {
+            empty().loading().error().loading().success()
+        }
     }
 }

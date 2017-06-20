@@ -18,6 +18,9 @@ package it.codingjam.github
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import it.codingjam.github.ui.contacts.ContactsActivity
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(){
@@ -33,5 +36,18 @@ class MainActivity : AppCompatActivity(){
         if (savedInstanceState == null) {
             navigationController.navigateToSearch(this)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.contacts) {
+            ContactsActivity.start(this)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

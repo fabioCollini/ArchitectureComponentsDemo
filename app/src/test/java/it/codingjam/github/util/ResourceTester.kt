@@ -14,3 +14,5 @@ class ResourceTester(private val list: List<Resource<*>>) {
         return ResourceTester(list.subList(1, list.size))
     }
 }
+
+infix fun List<Resource<*>>.shouldContain(f: ResourceTester.() -> Unit) = ResourceTester(this).f()

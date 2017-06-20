@@ -1,14 +1,14 @@
 package it.codingjam.github.repository
 
-import io.reactivex.Single
+import com.nhaarman.mockito_kotlin.given
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.Companion.REPO_1
 import it.codingjam.github.util.TestData.Companion.REPO_2
+import it.codingjam.github.willReturnSingle
 import okhttp3.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
@@ -28,8 +28,9 @@ class RepoRepositoryTest {
                 " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         val headers = mapOf("link" to header)
 
-        given(githubService.searchRepos(QUERY)).willReturn(
-                Single.just(Response.success(Arrays.asList(REPO_1, REPO_2), Headers.of(headers))))
+        given { githubService.searchRepos(QUERY) } willReturnSingle {
+            Response.success(Arrays.asList(REPO_1, REPO_2), Headers.of(headers))
+        }
 
         val (items, nextPage) = repository.search(QUERY).blockingGet()
 
