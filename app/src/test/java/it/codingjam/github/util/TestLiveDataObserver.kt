@@ -1,16 +1,10 @@
 package it.codingjam.github.util
 
-import java.util.*
+class TestLiveDataObserver<T>: (T) -> Unit {
 
-class TestLiveDataObserver<T> {
+    val values = mutableListOf<T>()
 
-    private val values = ArrayList<T>()
-
-    fun onChanged(value: T) {
+    override fun invoke(value: T) {
         values.add(value)
-    }
-
-    fun getValues(): List<T> {
-        return values
     }
 }

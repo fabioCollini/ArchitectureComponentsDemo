@@ -18,6 +18,7 @@ package it.codingjam.github.ui.user
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
+import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
@@ -35,7 +36,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import java.io.IOException
@@ -47,16 +47,16 @@ class UserViewModelTest {
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock lateinit var userRepository: UserRepository
-    @Mock lateinit var repoRepository: RepoRepository
-    @Mock lateinit var navigationController: NavigationController
-    @Mock lateinit var activity: FragmentActivity
+    val userRepository: UserRepository = mock()
+    val repoRepository: RepoRepository = mock()
+    val navigationController: NavigationController = mock()
+    val activity: FragmentActivity = mock()
     @InjectMocks lateinit var userViewModel: UserViewModel
 
     private val observer = TestLiveDataObserver<UserViewState>()
 
     @Before fun setUp() {
-        userViewModel.observeForever(activity, { observer.onChanged(it) })
+        userViewModel.observeForever({ it(activity) }, observer)
     }
 
     @Test fun load() {
@@ -67,7 +67,7 @@ class UserViewModelTest {
 
         userViewModel.load(LOGIN)
 
-        assertThat(observer.getValues())
+        assertThat(observer.values)
                 .extracting { it.userDetail }
                 .containsExactly(
                         Resource.Empty,
@@ -86,7 +86,7 @@ class UserViewModelTest {
         userViewModel.load(LOGIN)
         userViewModel.retry()
 
-        assertThat(observer.getValues())
+        assertThat(observer.values)
                 .extracting { it.userDetail }
                 .containsExactly(
                         Resource.Empty,

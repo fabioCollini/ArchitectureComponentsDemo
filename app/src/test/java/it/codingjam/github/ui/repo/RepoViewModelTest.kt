@@ -44,18 +44,18 @@ class RepoViewModelTest {
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    val repository = mock<RepoRepository>()
+    val repository: RepoRepository = mock()
 
-    val navigationController = mock<NavigationController>()
+    val navigationController: NavigationController = mock()
 
-    val activity = mock<FragmentActivity>()
+    val activity: FragmentActivity = mock()
 
     @InjectMocks lateinit var repoViewModel: RepoViewModel
 
     private val observer = TestLiveDataObserver<RepoViewState>()
 
     @Before fun setUp() {
-        repoViewModel.observeForever(activity, { observer.onChanged(it) })
+        repoViewModel.observeForever({ it(activity) }, observer)
     }
 
     @Test fun fetchData() {
@@ -63,7 +63,7 @@ class RepoViewModelTest {
 
         repoViewModel.init(RepoId("a", "b"))
 
-        observer.getValues().map { it.repoDetail } shouldContain {
+        observer.values.map { it.repoDetail } shouldContain {
             empty().loading().success()
         }
     }
@@ -73,7 +73,7 @@ class RepoViewModelTest {
 
         repoViewModel.init(RepoId("a", "b"))
 
-        observer.getValues().map { it.repoDetail } shouldContain {
+        observer.values.map { it.repoDetail } shouldContain {
             empty().loading().error()
         }
     }
@@ -88,7 +88,7 @@ class RepoViewModelTest {
 
         repoViewModel.retry()
 
-        observer.getValues().map { it.repoDetail } shouldContain {
+        observer.values.map { it.repoDetail } shouldContain {
             empty().loading().error().loading().success()
         }
     }

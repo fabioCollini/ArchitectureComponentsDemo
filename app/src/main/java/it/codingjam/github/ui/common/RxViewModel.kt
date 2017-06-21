@@ -24,16 +24,16 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
 
     fun <F> observe(owner: F, observer: (VS) -> Unit) where F : Fragment, F : LifecycleOwner {
         state.observe(owner, Observer { observer(it!!) })
-        uiActions.observe(owner)
+        uiActions.observe(owner, { it(owner.activity) })
     }
 
     fun <A> observe(owner: A, observer: (VS) -> Unit) where A : FragmentActivity, A : LifecycleOwner {
         state.observe(owner, Observer { observer(it!!) })
-        uiActions.observe(owner)
+        uiActions.observe(owner, { it(owner) })
     }
 
-    fun observeForever(activity: FragmentActivity, observer: (VS) -> Unit) {
+    fun observeForever(executor: ((FragmentActivity) -> Unit) -> Unit, observer: (VS) -> Unit) {
         state.observeForever { observer(it!!) }
-        uiActions.observeForever(activity)
+        uiActions.observeForever(executor)
     }
 }

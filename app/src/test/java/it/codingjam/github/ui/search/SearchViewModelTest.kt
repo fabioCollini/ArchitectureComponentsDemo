@@ -19,6 +19,7 @@ package it.codingjam.github.ui.search
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
+import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import it.codingjam.github.NavigationController
 import it.codingjam.github.api.RepoSearchResponse
@@ -38,7 +39,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import java.io.IOException
@@ -50,15 +50,15 @@ class SearchViewModelTest {
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock lateinit var repository: RepoRepository
-    @Mock lateinit var navigationController: NavigationController
-    @Mock lateinit var activity: FragmentActivity
+    val repository: RepoRepository = mock()
+    val navigationController: NavigationController = mock()
+    val activity: FragmentActivity = mock()
     @InjectMocks lateinit var viewModel: SearchViewModel
 
     private val observer = TestLiveDataObserver<SearchViewState>()
 
     @Before fun setUp() {
-        viewModel.observeForever(activity, { observer.onChanged(it) })
+        viewModel.observeForever({ it(activity) }, observer)
     }
 
     @Test fun load() {
@@ -67,10 +67,10 @@ class SearchViewModelTest {
 
         viewModel.setQuery(QUERY)
 
-        ResourceTester(observer.getValues().map { it.repos })
+        ResourceTester(observer.values.map { it.repos })
                 .empty().loading().success()
 
-        assertThat((observer.getValues()[2].repos as Resource.Success).data)
+        assertThat((observer.values[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
     }
 
@@ -88,14 +88,14 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
 
-        ResourceTester(observer.getValues().map { it.repos })
+        ResourceTester(observer.values.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(observer.getValues()).
+        assertThat(observer.values).
                 extracting { it.loadingMore }
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((observer.getValues()[4].repos as Resource.Success).data)
+        assertThat((observer.values[4].repos as Resource.Success).data)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -109,14 +109,14 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
 
-        ResourceTester(observer.getValues().map { it.repos })
+        ResourceTester(observer.values.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(observer.getValues())
+        assertThat(observer.values)
                 .extracting { it.loadingMore }
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((observer.getValues()[2].repos as Resource.Success).data)
+        assertThat((observer.values[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)

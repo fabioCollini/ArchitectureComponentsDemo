@@ -4,7 +4,6 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import java.util.*
 
@@ -18,23 +17,16 @@ class UiActionsLiveData {
         delegate.value = list
     }
 
-    fun <F> observe(owner: F) where F : Fragment, F : LifecycleOwner {
+    fun observe(owner: LifecycleOwner, executor: ((FragmentActivity) -> Unit) -> Unit) {
         delegate.observe(owner, Observer {
-            list.forEach { it.invoke(owner.activity) }
+            list.forEach { executor(it) }
             list = ArrayList()
         })
     }
 
-    fun <A> observe(owner: A) where A : FragmentActivity, A : LifecycleOwner {
-        delegate.observe(owner, Observer {
-            list.forEach { it.invoke(owner) }
-            list = ArrayList()
-        })
-    }
-
-    @MainThread fun observeForever(activity: FragmentActivity) {
+    @MainThread fun observeForever(executor: ((FragmentActivity) -> Unit) -> Unit) {
         delegate.observeForever {
-            list.forEach { it.invoke(activity) }
+            list.forEach { executor(it) }
             list = ArrayList()
         }
     }
