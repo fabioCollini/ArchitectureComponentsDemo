@@ -23,7 +23,6 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.TestData
-import it.codingjam.github.util.TestLiveDataObserver
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.util.shouldContain
 import it.codingjam.github.vo.RepoId
@@ -52,10 +51,10 @@ class RepoViewModelTest {
 
     @InjectMocks lateinit var repoViewModel: RepoViewModel
 
-    private val observer = TestLiveDataObserver<RepoViewState>()
+    val states = mutableListOf<RepoViewState>()
 
     @Before fun setUp() {
-        repoViewModel.observeForever({ it(activity) }, observer)
+        repoViewModel.observeForever({ it(activity) }, { states.add(it) })
     }
 
     @Test fun fetchData() {
@@ -63,7 +62,7 @@ class RepoViewModelTest {
 
         repoViewModel.init(RepoId("a", "b"))
 
-        observer.values.map { it.repoDetail } shouldContain {
+        states.map { it.repoDetail } shouldContain {
             empty().loading().success()
         }
     }
@@ -73,7 +72,7 @@ class RepoViewModelTest {
 
         repoViewModel.init(RepoId("a", "b"))
 
-        observer.values.map { it.repoDetail } shouldContain {
+        states.map { it.repoDetail } shouldContain {
             empty().loading().error()
         }
     }
@@ -88,7 +87,7 @@ class RepoViewModelTest {
 
         repoViewModel.retry()
 
-        observer.values.map { it.repoDetail } shouldContain {
+        states.map { it.repoDetail } shouldContain {
             empty().loading().error().loading().success()
         }
     }

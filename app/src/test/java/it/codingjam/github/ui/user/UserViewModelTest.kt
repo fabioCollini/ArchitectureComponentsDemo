@@ -26,7 +26,6 @@ import it.codingjam.github.repository.UserRepository
 import it.codingjam.github.util.TestData.Companion.REPO_1
 import it.codingjam.github.util.TestData.Companion.REPO_2
 import it.codingjam.github.util.TestData.Companion.USER
-import it.codingjam.github.util.TestLiveDataObserver
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
@@ -53,10 +52,10 @@ class UserViewModelTest {
     val activity: FragmentActivity = mock()
     @InjectMocks lateinit var userViewModel: UserViewModel
 
-    private val observer = TestLiveDataObserver<UserViewState>()
+    val states = mutableListOf<UserViewState>()
 
     @Before fun setUp() {
-        userViewModel.observeForever({ it(activity) }, observer)
+        userViewModel.observeForever({ it(activity) }, { states.add(it) })
     }
 
     @Test fun load() {
@@ -67,7 +66,7 @@ class UserViewModelTest {
 
         userViewModel.load(LOGIN)
 
-        assertThat(observer.values)
+        assertThat(states)
                 .extracting { it.userDetail }
                 .containsExactly(
                         Resource.Empty,
@@ -86,7 +85,7 @@ class UserViewModelTest {
         userViewModel.load(LOGIN)
         userViewModel.retry()
 
-        assertThat(observer.values)
+        assertThat(states)
                 .extracting { it.userDetail }
                 .containsExactly(
                         Resource.Empty,

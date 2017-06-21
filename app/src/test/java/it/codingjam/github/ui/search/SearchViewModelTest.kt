@@ -29,7 +29,6 @@ import it.codingjam.github.util.TestData.Companion.REPO_1
 import it.codingjam.github.util.TestData.Companion.REPO_2
 import it.codingjam.github.util.TestData.Companion.REPO_3
 import it.codingjam.github.util.TestData.Companion.REPO_4
-import it.codingjam.github.util.TestLiveDataObserver
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
@@ -55,10 +54,10 @@ class SearchViewModelTest {
     val activity: FragmentActivity = mock()
     @InjectMocks lateinit var viewModel: SearchViewModel
 
-    private val observer = TestLiveDataObserver<SearchViewState>()
+    val states = mutableListOf<SearchViewState>()
 
     @Before fun setUp() {
-        viewModel.observeForever({ it(activity) }, observer)
+        viewModel.observeForever({ it(activity) }, { states.add(it) })
     }
 
     @Test fun load() {
@@ -67,10 +66,10 @@ class SearchViewModelTest {
 
         viewModel.setQuery(QUERY)
 
-        ResourceTester(observer.values.map { it.repos })
+        ResourceTester(states.map { it.repos })
                 .empty().loading().success()
 
-        assertThat((observer.values[2].repos as Resource.Success).data)
+        assertThat((states[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
     }
 
@@ -88,14 +87,14 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
 
-        ResourceTester(observer.values.map { it.repos })
+        ResourceTester(states.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(observer.values).
+        assertThat(states).
                 extracting { it.loadingMore }
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((observer.values[4].repos as Resource.Success).data)
+        assertThat((states[4].repos as Resource.Success).data)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -109,14 +108,14 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
 
-        ResourceTester(observer.values.map { it.repos })
+        ResourceTester(states.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(observer.values)
+        assertThat(states)
                 .extracting { it.loadingMore }
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((observer.values[2].repos as Resource.Success).data)
+        assertThat((states[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)
