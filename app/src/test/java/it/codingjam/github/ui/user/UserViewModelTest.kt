@@ -23,9 +23,9 @@ import io.reactivex.Single
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
-import it.codingjam.github.util.TestData.Companion.REPO_1
-import it.codingjam.github.util.TestData.Companion.REPO_2
-import it.codingjam.github.util.TestData.Companion.USER
+import it.codingjam.github.util.TestData.REPO_1
+import it.codingjam.github.util.TestData.REPO_2
+import it.codingjam.github.util.TestData.USER
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource

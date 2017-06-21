@@ -25,10 +25,10 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.api.RepoSearchResponse
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.ResourceTester
-import it.codingjam.github.util.TestData.Companion.REPO_1
-import it.codingjam.github.util.TestData.Companion.REPO_2
-import it.codingjam.github.util.TestData.Companion.REPO_3
-import it.codingjam.github.util.TestData.Companion.REPO_4
+import it.codingjam.github.util.TestData.REPO_1
+import it.codingjam.github.util.TestData.REPO_2
+import it.codingjam.github.util.TestData.REPO_3
+import it.codingjam.github.util.TestData.REPO_4
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource

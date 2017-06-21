@@ -28,11 +28,10 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.R
 import it.codingjam.github.util.FragmentTestRule
 import it.codingjam.github.util.GitHubDaggerMockRule
-import it.codingjam.github.util.TestData.Companion.CONTRIBUTOR1
-import it.codingjam.github.util.TestData.Companion.CONTRIBUTOR2
-import it.codingjam.github.util.TestData.Companion.OWNER
-import it.codingjam.github.util.TestData.Companion.REPO_1
-import it.codingjam.github.vo.Contributor
+import it.codingjam.github.util.TestData.CONTRIBUTOR1
+import it.codingjam.github.util.TestData.CONTRIBUTOR2
+import it.codingjam.github.util.TestData.OWNER
+import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.vo.RepoDetail
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
@@ -41,7 +40,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.willAnswer
 import org.mockito.Mock
-import java.util.*
 
 class RepoFragmentTest {
 
@@ -72,7 +70,7 @@ class RepoFragmentTest {
         setState(fragment as RepoFragment,
                 RepoViewState(Resource.Empty),
                 RepoViewState(Resource.Loading),
-                RepoViewState(Resource.Success(RepoDetail(REPO_1, Arrays.asList<Contributor>(CONTRIBUTOR1, CONTRIBUTOR2))))
+                RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
         )
 
         fragmentRule.launchFragment(fragment)
