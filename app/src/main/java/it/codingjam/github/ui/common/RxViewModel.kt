@@ -3,7 +3,6 @@ package it.codingjam.github.ui.common
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.PublishSubject
@@ -22,18 +21,19 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
 
     override fun onCleared() = clearedSubject.onNext(true)
 
-    fun <F> observe(owner: F, observer: (VS) -> Unit) where F : Fragment, F : LifecycleOwner {
-        state.observe(owner, Observer { observer(it!!) })
-        uiActions.observe(owner, { it(owner.activity) })
+    fun observeUiActions(owner: LifecycleOwner, executor: ((FragmentActivity) -> Unit) -> Unit) {
+        uiActions.observe(owner, executor)
     }
 
-    fun <A> observe(owner: A, observer: (VS) -> Unit) where A : FragmentActivity, A : LifecycleOwner {
+    fun observeState(owner: LifecycleOwner, observer: (VS) -> Unit) {
         state.observe(owner, Observer { observer(it!!) })
-        uiActions.observe(owner, { it(owner) })
     }
 
-    fun observeForever(executor: ((FragmentActivity) -> Unit) -> Unit, observer: (VS) -> Unit) {
-        state.observeForever { observer(it!!) }
+    fun observeUiActionsForever(executor: ((FragmentActivity) -> Unit) -> Unit) {
         uiActions.observeForever(executor)
+    }
+
+    fun observeStateForever(observer: (VS) -> Unit) {
+        state.observeForever { observer(it!!) }
     }
 }

@@ -62,7 +62,7 @@ class RepoFragmentTest {
         fragmentRule.launchFragment(fragment)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
-        onView(withId(R.id.retry)).check(matches(not<View>(isDisplayed())))
+        onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
     }
 
     @Test fun testValueWhileLoading() {
@@ -81,14 +81,15 @@ class RepoFragmentTest {
         onView(withId(R.id.description)).check(matches(withText(REPO_1.description)))
     }
 
-    private fun setState(fragment: RepoFragment, vararg states: RepoViewState) =
-            willAnswer { invocation ->
-                val observer = invocation.getArgument<(RepoViewState) -> Unit>(1)
-                for (viewState in states) {
-                    observer(viewState)
-                }
-                null
-            }.given(viewModel).observe(eq(fragment), any())
+    private fun setState(fragment: RepoFragment, vararg states: RepoViewState) {
+        willAnswer { invocation ->
+            val observer = invocation.getArgument<(RepoViewState) -> Unit>(1)
+            for (viewState in states) {
+                observer(viewState)
+            }
+            null
+        }.given(viewModel).observeState(eq(fragment), any())
+    }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
         return InstrumentationRegistry.getTargetContext().getString(id, *args)

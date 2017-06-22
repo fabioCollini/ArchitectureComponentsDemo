@@ -54,7 +54,8 @@ class RepoViewModelTest {
     val states = mutableListOf<RepoViewState>()
 
     @Before fun setUp() {
-        repoViewModel.observeForever({ it(activity) }, { states.add(it) })
+        repoViewModel.observeStateForever({ states.add(it) })
+        repoViewModel.observeUiActionsForever({ it(activity) })
     }
 
     @Test fun fetchData() {
