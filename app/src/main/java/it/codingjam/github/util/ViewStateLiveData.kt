@@ -1,7 +1,9 @@
 package it.codingjam.github.util
 
 
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.databinding.ObservableField
 import android.support.annotation.MainThread
 import io.reactivex.subjects.BehaviorSubject
@@ -10,37 +12,33 @@ import timber.log.Timber
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class ViewStateLiveData<T>(initialState: T) : MutableLiveData<T>() {
+class ViewStateLiveData<T>(initialState: T) {
+
+    private val liveData = MutableLiveData<T>()
 
     private val subject = BehaviorSubject.create<T>()
 
     init {
-        value = initialState
+        liveData.value = initialState
     }
 
-    override fun getValue(): T {
-        return super.getValue()!!
-    }
-
-    override fun setValue(value: T) {
-        super.setValue(value)
-        subject.onNext(value)
-    }
-
-    override fun postValue(value: T) {
-        super.postValue(value)
-    }
+    var value: T
+        get() = liveData.value!!
+        set(value) {
+            liveData.value = value
+            subject.onNext(value)
+        }
 
     @MainThread inline fun update(updater: T.() -> T) {
         val currentState = value
-        val newState = updater.invoke(currentState)
+        val newState = updater(currentState)
         value = newState
         Timber.d("%s", newState)
     }
 
     @MainThread inline fun <V> updateOnEvent(crossinline updater: T.(V) -> T): (V) -> Unit = {
         val currentState = value
-        val newState = updater.invoke(currentState, it)
+        val newState = currentState.updater(it)
         value = newState
         Timber.d("%s", newState)
     }
@@ -61,7 +59,7 @@ class ViewStateLiveData<T>(initialState: T) : MutableLiveData<T>() {
         subject.map(getter).distinctUntilChanged().subscribe { observableField.set(it) }
     }
 
-    fun <F> bind(getter: (T) -> F, setter: T.(F) -> T) : ReadOnlyProperty<RxViewModel<*>, ObservableField<F>> =
+    fun <F> bind(getter: (T) -> F, setter: T.(F) -> T): ReadOnlyProperty<RxViewModel<*>, ObservableField<F>> =
             object : ReadOnlyProperty<RxViewModel<*>, ObservableField<F>> {
                 private var observableField: ObservableField<F>? = null
 
@@ -73,4 +71,11 @@ class ViewStateLiveData<T>(initialState: T) : MutableLiveData<T>() {
                     return observableField!!
                 }
             }
+
+    fun observe(owner: LifecycleOwner, observer: (T) -> Unit) =
+            liveData.observe(owner, Observer { observer(it!!) })
+
+    fun observeForever(observer: (T) -> Unit) {
+        liveData.observeForever { observer(it!!) }
+    }
 }

@@ -1,7 +1,6 @@
 package it.codingjam.github.ui.common
 
 import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.support.v4.app.FragmentActivity
 import io.reactivex.BackpressureStrategy
@@ -26,7 +25,7 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
     }
 
     fun observeState(owner: LifecycleOwner, observer: (VS) -> Unit) {
-        state.observe(owner, Observer { observer(it!!) })
+        state.observe(owner, observer)
     }
 
     fun observeUiActionsForever(executor: ((FragmentActivity) -> Unit) -> Unit) {
@@ -34,6 +33,6 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
     }
 
     fun observeStateForever(observer: (VS) -> Unit) {
-        state.observeForever { observer(it!!) }
+        state.observeForever(observer)
     }
 }
