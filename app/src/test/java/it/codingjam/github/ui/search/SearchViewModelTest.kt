@@ -57,7 +57,7 @@ class SearchViewModelTest {
     val states = mutableListOf<SearchViewState>()
 
     @Before fun setUp() {
-        viewModel.observeStateForever({ states.add(it) })
+        viewModel.liveData.observeForever({ states.add(it) })
         viewModel.observeUiActionsForever({ it(activity) })
     }
 

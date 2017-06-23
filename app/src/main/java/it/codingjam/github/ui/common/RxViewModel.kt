@@ -14,7 +14,9 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
     private val clearedSubject: PublishSubject<Boolean> = PublishSubject.create<Boolean>()
     protected val cleared: Publisher<Boolean> = clearedSubject.toFlowable(BackpressureStrategy.BUFFER)
 
-    protected val state = ViewStateLiveData(initialState)
+    val liveData = ViewStateLiveData(initialState)
+
+    protected var state: VS by liveData
 
     protected val uiActions = UiActionsLiveData()
 
@@ -24,15 +26,7 @@ open class RxViewModel<VS>(initialState: VS) : ViewModel() {
         uiActions.observe(owner, executor)
     }
 
-    fun observeState(owner: LifecycleOwner, observer: (VS) -> Unit) {
-        state.observe(owner, observer)
-    }
-
     fun observeUiActionsForever(executor: ((FragmentActivity) -> Unit) -> Unit) {
         uiActions.observeForever(executor)
-    }
-
-    fun observeStateForever(observer: (VS) -> Unit) {
-        state.observeForever(observer)
     }
 }

@@ -29,42 +29,42 @@ import javax.inject.Inject
 
 class SearchViewModel
 @Inject constructor(
-    private val repoRepository: RepoRepository,
-    private val navigationController: NavigationController
+        private val repoRepository: RepoRepository,
+        private val navigationController: NavigationController
 ) : RxViewModel<SearchViewState>(SearchViewState()) {
 
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (input != state.value.query) {
+        if (input != state.query) {
             reloadData(input)
         }
     }
 
     private fun reloadData(input: String) {
-        state.update { copy(input, Resource.Loading, false, null) }
+        state = state.copy(input, Resource.Loading, false, null)
         repoRepository.search(input)
                 .takeUntil(cleared)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                        state.updateOnEvent { copy(repos = Resource.Success(it.items), nextPage = it.nextPage) },
-                        state.updateOnEvent { copy(repos = Resource.Error(it)) }
+                        { state = state.copy(repos = Resource.Success(it.items), nextPage = it.nextPage) },
+                        { state = state.copy(repos = Resource.Error(it)) }
                 )
     }
 
     fun loadNextPage() {
-        val query = state.value.query
-        val nextPage = state.value.nextPage
-        if (!query.isEmpty() && nextPage != null && !state.value.loadingMore) {
-            state.update { copy(loadingMore = true) }
+        val query = state.query
+        val nextPage = state.nextPage
+        if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
+            state = state.copy(loadingMore = true)
             repoRepository.searchNextPage(query, nextPage)
                     .takeUntil(cleared)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
-                            state.updateOnEvent { copy(repos = repos.map { v -> v + it.items }, nextPage = it.nextPage, loadingMore = false) },
+                            { state = state.copy(repos = state.repos.map { v -> v + it.items }, nextPage = it.nextPage, loadingMore = false) },
                             { t ->
-                                state.update { copy(loadingMore = false) }
+                                state = state.copy(loadingMore = false)
                                 uiActions.execute { navigationController.showError(it, t.message) }
                             }
                     )
@@ -72,7 +72,7 @@ class SearchViewModel
     }
 
     fun refresh() {
-        val query = state.value.query
+        val query = state.query
         if (!query.isEmpty()) {
             reloadData(query)
         }

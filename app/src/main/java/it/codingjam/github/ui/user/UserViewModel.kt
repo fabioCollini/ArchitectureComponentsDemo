@@ -39,7 +39,7 @@ class UserViewModel
 
     fun load(login: String) {
         this.login = login
-        state.update { copy(Resource.Loading) }
+        state = state.copy(Resource.Loading)
         Singles.zip(
                 userRepository.loadUser(login).subscribeOn(Schedulers.io()),
                 repoRepository.loadRepos(login).subscribeOn(Schedulers.io()),
@@ -49,8 +49,8 @@ class UserViewModel
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                        state.updateOnEvent { copy(Resource.Success(it)) },
-                        state.updateOnEvent { copy(Resource.Error(it)) }
+                        { state = state.copy(Resource.Success(it)) },
+                        { state = state.copy(Resource.Error(it)) }
                 )
     }
 

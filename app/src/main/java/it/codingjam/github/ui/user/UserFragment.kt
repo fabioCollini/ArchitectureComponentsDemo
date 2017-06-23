@@ -48,7 +48,7 @@ class UserFragment : LifecycleFragment() {
         val adapter = DataBoundListAdapter { UserRepoViewHolder(it, viewModel) }
         binding.repoList.adapter = adapter
 
-        viewModel.observeState(this) {
+        viewModel.liveData.observe(this) {
             binding.state = it
             binding.executePendingBindings()
             adapter.replace(it.repos())

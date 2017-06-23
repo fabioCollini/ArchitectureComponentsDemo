@@ -40,15 +40,15 @@ class RepoViewModel(
     }
 
     fun reload() {
-        state.update { copy(Resource.Loading) }
+        state = state.copy(Resource.Loading)
 
         repository.loadRepo(repoId.owner, repoId.name)
                 .takeUntil(cleared)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                        state.updateOnEvent { copy(Resource.Success(it)) },
-                        state.updateOnEvent { copy(Resource.Error(it)) }
+                        { state = state.copy(Resource.Success(it)) },
+                        { state = state.copy(Resource.Error(it)) }
                 )
     }
 

@@ -16,14 +16,17 @@
 
 package it.codingjam.github.ui.repo
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.StringRes
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.view.View
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.willReturn
 import it.codingjam.github.NavigationController
 import it.codingjam.github.R
 import it.codingjam.github.util.FragmentTestRule
@@ -32,14 +35,14 @@ import it.codingjam.github.util.TestData.CONTRIBUTOR1
 import it.codingjam.github.util.TestData.CONTRIBUTOR2
 import it.codingjam.github.util.TestData.OWNER
 import it.codingjam.github.util.TestData.REPO_1
+import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoDetail
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import org.hamcrest.Matchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.willAnswer
-import org.mockito.Mock
 
 class RepoFragmentTest {
 
@@ -47,48 +50,38 @@ class RepoFragmentTest {
 
     @get:Rule var daggerMockRule = GitHubDaggerMockRule()
 
-    @Mock lateinit var viewModel: RepoViewModel
+    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock lateinit var navigationController: NavigationController
+    val liveData = MutableLiveData<RepoViewState>()
+
+    val viewModel: RepoViewModel = mock()
+
+    val navigationController: NavigationController = mock()
+
+    @Before fun setUp() {
+        given { viewModel.liveData } willReturn { ViewStateLiveData(RepoViewState(Resource.Empty), liveData) }
+    }
 
     @Test fun testLoading() {
-        val fragment = RepoFragment.create(RepoId("a", "b"))
-        setState(
-                fragment as RepoFragment,
-                RepoViewState(Resource.Empty),
-                RepoViewState(Resource.Loading)
-        )
+        fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        fragmentRule.launchFragment(fragment)
+        liveData.value = RepoViewState(Resource.Empty)
+        liveData.value = RepoViewState(Resource.Loading)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
     }
 
     @Test fun testValueWhileLoading() {
-        val fragment = RepoFragment.create(RepoId("a", "b"))
-        setState(fragment as RepoFragment,
-                RepoViewState(Resource.Empty),
-                RepoViewState(Resource.Loading),
-                RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
-        )
+        fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        fragmentRule.launchFragment(fragment)
+        liveData.value = RepoViewState(Resource.Loading)
+        liveData.value = RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
 
         onView(withId(R.id.progress_bar)).check(matches(not<View>(isDisplayed())))
         onView(withId(R.id.name)).check(matches(
                 withText(getString(R.string.repo_full_name, OWNER.login, REPO_1.name))))
         onView(withId(R.id.description)).check(matches(withText(REPO_1.description)))
-    }
-
-    private fun setState(fragment: RepoFragment, vararg states: RepoViewState) {
-        willAnswer { invocation ->
-            val observer = invocation.getArgument<(RepoViewState) -> Unit>(1)
-            for (viewState in states) {
-                observer(viewState)
-            }
-            null
-        }.given(viewModel).observeState(eq(fragment), any())
     }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {

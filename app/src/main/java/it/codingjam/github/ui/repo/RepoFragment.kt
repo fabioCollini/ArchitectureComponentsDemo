@@ -44,7 +44,7 @@ class RepoFragment : LifecycleFragment() {
         binding.contributorList.adapter = adapter
         binding.viewModel = viewModel
 
-        viewModel.observeState(this) {
+        viewModel.liveData.observe(this) {
             binding.state = it
             adapter.replace(it.contributors())
             binding.executePendingBindings()

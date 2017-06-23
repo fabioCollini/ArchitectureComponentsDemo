@@ -57,7 +57,7 @@ class SearchFragment : LifecycleFragment() {
             }
         })
 
-        viewModel.observeState(this) {
+        viewModel.liveData.observe(this) {
             binding.state = it
             adapter.replace(it.repos.orElse(emptyList()))
             binding.executePendingBindings()
