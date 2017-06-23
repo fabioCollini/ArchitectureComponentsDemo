@@ -16,6 +16,7 @@
 
 package it.codingjam.github.ui.user
 
+import android.arch.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Singles
@@ -25,7 +26,8 @@ import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
-import it.codingjam.github.ui.common.RxViewModel
+import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import javax.inject.Inject
@@ -35,11 +37,17 @@ class UserViewModel
         private val userRepository: UserRepository,
         private val repoRepository: RepoRepository,
         private val navigationController: NavigationController
-) : RxViewModel<UserViewState>(UserViewState(Resource.Empty)) {
+) : ViewModel() {
 
     private val disposable = CompositeDisposable()
 
     private lateinit var login: String
+
+    val liveData = ViewStateLiveData(UserViewState(Resource.Empty))
+
+    private var state by liveData
+
+    val uiActions = UiActionsLiveData()
 
     fun load(login: String) {
         this.login = login

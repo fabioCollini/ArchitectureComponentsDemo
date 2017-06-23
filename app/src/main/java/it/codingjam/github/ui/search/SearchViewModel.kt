@@ -16,6 +16,7 @@
 
 package it.codingjam.github.ui.search
 
+import android.arch.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -23,7 +24,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.ui.common.RxViewModel
+import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import java.util.*
@@ -33,9 +35,15 @@ class SearchViewModel
 @Inject constructor(
         private val repoRepository: RepoRepository,
         private val navigationController: NavigationController
-) : RxViewModel<SearchViewState>(SearchViewState()) {
+) : ViewModel() {
 
     private val disposable = CompositeDisposable()
+
+    val liveData = ViewStateLiveData(SearchViewState())
+
+    private var state by liveData
+
+    val uiActions = UiActionsLiveData()
 
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }

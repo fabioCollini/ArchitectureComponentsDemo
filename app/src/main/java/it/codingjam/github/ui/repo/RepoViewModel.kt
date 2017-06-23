@@ -16,6 +16,7 @@
 
 package it.codingjam.github.ui.repo
 
+import android.arch.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -23,18 +24,25 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.ui.common.RxViewModel
+import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 
 class RepoViewModel(
         private val navigationController: NavigationController,
         private val repository: RepoRepository
-) : RxViewModel<RepoViewState>(RepoViewState(Resource.Empty)) {
+) : ViewModel() {
 
     private val disposable = CompositeDisposable()
 
     private lateinit var repoId: RepoId
+
+    val liveData = ViewStateLiveData(RepoViewState(Resource.Empty))
+
+    private var state by liveData
+
+    val uiActions = UiActionsLiveData()
 
     fun retry() = reload()
 
