@@ -58,7 +58,7 @@ class SearchViewModelTest {
 
     @Before fun setUp() {
         viewModel.liveData.observeForever({ states.add(it) })
-        viewModel.observeUiActionsForever({ it(activity) })
+        viewModel.uiActions.observeForever({ it(activity) })
     }
 
     @Test fun load() {

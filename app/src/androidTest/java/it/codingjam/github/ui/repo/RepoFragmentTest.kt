@@ -35,6 +35,7 @@ import it.codingjam.github.util.TestData.CONTRIBUTOR1
 import it.codingjam.github.util.TestData.CONTRIBUTOR2
 import it.codingjam.github.util.TestData.OWNER
 import it.codingjam.github.util.TestData.REPO_1
+import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoDetail
 import it.codingjam.github.vo.RepoId
@@ -60,6 +61,7 @@ class RepoFragmentTest {
 
     @Before fun setUp() {
         given { viewModel.liveData } willReturn { ViewStateLiveData(RepoViewState(Resource.Empty), liveData) }
+        given { viewModel.uiActions } willReturn { UiActionsLiveData() }
     }
 
     @Test fun testLoading() {

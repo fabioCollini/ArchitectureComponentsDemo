@@ -55,7 +55,7 @@ class RepoViewModelTest {
 
     @Before fun setUp() {
         repoViewModel.liveData.observeForever({ states.add(it) })
-        repoViewModel.observeUiActionsForever({ it(activity) })
+        repoViewModel.uiActions.observeForever({ it(activity) })
     }
 
     @Test fun fetchData() {

@@ -56,7 +56,7 @@ class UserViewModelTest {
 
     @Before fun setUp() {
         userViewModel.liveData.observeForever({ states.add(it) })
-        userViewModel.observeUiActionsForever({ it(activity) })
+        userViewModel.uiActions.observeForever({ it(activity) })
     }
 
     @Test fun load() {

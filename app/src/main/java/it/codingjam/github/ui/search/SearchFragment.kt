@@ -62,7 +62,7 @@ class SearchFragment : LifecycleFragment() {
             adapter.replace(it.repos.orElse(emptyList()))
             binding.executePendingBindings()
         }
-        viewModel.observeUiActions(this, { it(activity) })
+        viewModel.uiActions.observe(this, { it(activity) })
 
         binding.viewModel = viewModel
     }
