@@ -17,7 +17,9 @@
 package it.codingjam.github.ui.user
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Singles
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
@@ -35,17 +37,18 @@ class UserViewModel
         private val navigationController: NavigationController
 ) : RxViewModel<UserViewState>(UserViewState(Resource.Empty)) {
 
+    private val disposable = CompositeDisposable()
+
     private lateinit var login: String
 
     fun load(login: String) {
         this.login = login
         state = state.copy(Resource.Loading)
-        Singles.zip(
+        disposable += Singles.zip(
                 userRepository.loadUser(login).subscribeOn(Schedulers.io()),
                 repoRepository.loadRepos(login).subscribeOn(Schedulers.io()),
                 ::UserDetail
         )
-                .takeUntil(cleared)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
@@ -58,4 +61,6 @@ class UserViewModel
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
+
+    override fun onCleared() = disposable.clear()
 }

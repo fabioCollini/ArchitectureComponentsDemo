@@ -17,6 +17,8 @@
 package it.codingjam.github.ui.search
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
@@ -33,6 +35,8 @@ class SearchViewModel
         private val navigationController: NavigationController
 ) : RxViewModel<SearchViewState>(SearchViewState()) {
 
+    private val disposable = CompositeDisposable()
+
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (input != state.query) {
@@ -42,8 +46,7 @@ class SearchViewModel
 
     private fun reloadData(input: String) {
         state = state.copy(input, Resource.Loading, false, null)
-        repoRepository.search(input)
-                .takeUntil(cleared)
+        disposable += repoRepository.search(input)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
@@ -57,8 +60,7 @@ class SearchViewModel
         val nextPage = state.nextPage
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
             state = state.copy(loadingMore = true)
-            repoRepository.searchNextPage(query, nextPage)
-                    .takeUntil(cleared)
+            disposable += repoRepository.searchNextPage(query, nextPage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
@@ -80,4 +82,6 @@ class SearchViewModel
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
+
+    override fun onCleared() = disposable.clear()
 }

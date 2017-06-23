@@ -17,6 +17,8 @@
 package it.codingjam.github.ui.repo
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
@@ -30,6 +32,8 @@ class RepoViewModel(
         private val repository: RepoRepository
 ) : RxViewModel<RepoViewState>(RepoViewState(Resource.Empty)) {
 
+    private val disposable = CompositeDisposable()
+
     private lateinit var repoId: RepoId
 
     fun retry() = reload()
@@ -42,8 +46,7 @@ class RepoViewModel(
     fun reload() {
         state = state.copy(Resource.Loading)
 
-        repository.loadRepo(repoId.owner, repoId.name)
-                .takeUntil(cleared)
+        disposable += repository.loadRepo(repoId.owner, repoId.name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
@@ -54,4 +57,6 @@ class RepoViewModel(
 
     fun openUserDetail(login: String) =
         uiActions { navigationController.navigateToUser(it, login) }
+
+    override fun onCleared() = disposable.clear()
 }
