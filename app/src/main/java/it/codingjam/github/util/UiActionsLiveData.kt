@@ -12,9 +12,13 @@ class UiActionsLiveData {
 
     private var list: MutableList<(FragmentActivity) -> Unit> = ArrayList()
 
-    fun execute(value: (FragmentActivity) -> Unit) {
-        list.add(value)
+    fun execute(action: (FragmentActivity) -> Unit) {
+        list.add(action)
         delegate.value = list
+    }
+
+    operator fun invoke(action: (FragmentActivity) -> Unit) {
+        execute(action)
     }
 
     fun observe(owner: LifecycleOwner, executor: ((FragmentActivity) -> Unit) -> Unit) {

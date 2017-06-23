@@ -65,7 +65,7 @@ class SearchViewModel
                             { state = state.copy(repos = state.repos.map { v -> v + it.items }, nextPage = it.nextPage, loadingMore = false) },
                             { t ->
                                 state = state.copy(loadingMore = false)
-                                uiActions.execute { navigationController.showError(it, t.message) }
+                                uiActions { navigationController.showError(it, t.message) }
                             }
                     )
         }
@@ -79,5 +79,5 @@ class SearchViewModel
     }
 
     fun openRepoDetail(id: RepoId) =
-            uiActions.execute { navigationController.navigateToRepo(it, id) }
+            uiActions { navigationController.navigateToRepo(it, id) }
 }

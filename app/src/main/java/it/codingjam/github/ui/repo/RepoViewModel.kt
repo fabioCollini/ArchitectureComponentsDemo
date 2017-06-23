@@ -53,5 +53,5 @@ class RepoViewModel(
     }
 
     fun openUserDetail(login: String) =
-            uiActions.execute { navigationController.navigateToUser(it, login) }
+        uiActions { navigationController.navigateToUser(it, login) }
 }

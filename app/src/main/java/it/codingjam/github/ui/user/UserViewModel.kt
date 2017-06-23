@@ -54,11 +54,8 @@ class UserViewModel
                 )
     }
 
-    fun retry() {
-        load(login)
-    }
+    fun retry() = load(login)
 
-    fun openRepoDetail(id: RepoId) {
-        uiActions.execute { navigationController.navigateToRepo(it, id) }
-    }
+    fun openRepoDetail(id: RepoId) =
+            uiActions { navigationController.navigateToRepo(it, id) }
 }
