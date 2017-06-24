@@ -17,9 +17,9 @@
 package it.codingjam.github
 
 import android.app.Application
-import android.arch.lifecycle.LifecycleFragment
 import android.content.Context
 import android.support.annotation.VisibleForTesting
+import android.support.v4.app.Fragment
 import it.codingjam.github.di.AppComponent
 import it.codingjam.github.di.DaggerAppComponent
 import timber.log.Timber
@@ -40,9 +40,7 @@ class GithubApp : Application() {
 }
 
 val Context.component: AppComponent
-    get() {
-        val app = applicationContext as GithubApp
-        return app.component
-    }
+    get() = (applicationContext as GithubApp).component
 
-val LifecycleFragment.component get() = activity.component
+val Fragment.component: AppComponent
+    get() = activity.component
