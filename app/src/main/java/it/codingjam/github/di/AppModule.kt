@@ -16,6 +16,8 @@
 
 package it.codingjam.github.di
 
+import android.app.Application
+import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -33,11 +35,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module class AppModule {
+@Module class AppModule(private val application: Application) {
     @Singleton @Provides fun provideGithubService() =
             createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
 
     @Provides fun provideNavigationController() = NavigationController()
+
+    @Provides fun providePrefs() = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides fun provideRepoViewModel(navigationController: NavigationController, repository: RepoRepository) =
             RepoViewModel(navigationController, repository)
