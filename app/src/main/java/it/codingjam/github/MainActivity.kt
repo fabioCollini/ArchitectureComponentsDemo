@@ -18,16 +18,13 @@ package it.codingjam.github
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(){
 
-    @Inject lateinit var navigationController: NavigationController
+    private val navigationController by lazy { component.navigationController() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        component.inject(this)
 
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {

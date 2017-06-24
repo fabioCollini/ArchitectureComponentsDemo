@@ -17,7 +17,7 @@
 package it.codingjam.github.di
 
 import dagger.Component
-import it.codingjam.github.MainActivity
+import it.codingjam.github.NavigationController
 import it.codingjam.github.ui.repo.RepoViewModel
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.user.UserViewModel
@@ -27,11 +27,11 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
 
-    fun inject(mainActivity: MainActivity)
-
     fun searchViewModel(): SearchViewModel
 
     fun repoViewModel(): RepoViewModel
 
     fun userViewModel(): UserViewModel
+
+    fun navigationController(): NavigationController
 }
