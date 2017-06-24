@@ -20,7 +20,6 @@ import android.arch.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
@@ -57,7 +56,7 @@ class SearchViewModel
         disposable += repoRepository.search(input)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
+                .subscribe(
                         { state = state.copy(repos = Resource.Success(it.items), nextPage = it.nextPage) },
                         { state = state.copy(repos = Resource.Error(it)) }
                 )
@@ -71,7 +70,7 @@ class SearchViewModel
             disposable += repoRepository.searchNextPage(query, nextPage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
+                    .subscribe(
                             { state = state.copy(repos = state.repos.map { v -> v + it.items }, nextPage = it.nextPage, loadingMore = false) },
                             { t ->
                                 state = state.copy(loadingMore = false)

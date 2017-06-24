@@ -20,7 +20,6 @@ import android.arch.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
@@ -57,7 +56,7 @@ class RepoViewModel(
         disposable += repository.loadRepo(repoId.owner, repoId.name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
+                .subscribe(
                         { state = state.copy(Resource.Success(it)) },
                         { state = state.copy(Resource.Error(it)) }
                 )
