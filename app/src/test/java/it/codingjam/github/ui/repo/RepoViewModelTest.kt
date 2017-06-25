@@ -26,7 +26,7 @@ import it.codingjam.github.util.TestData
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.util.shouldContain
 import it.codingjam.github.vo.RepoId
-import it.codingjam.github.willReturnSingle
+import it.codingjam.github.willReturnJust
 import it.codingjam.github.willThrowSingle
 import org.junit.Before
 import org.junit.Rule
@@ -59,7 +59,7 @@ class RepoViewModelTest {
     }
 
     @Test fun fetchData() {
-        given(repository.loadRepo("a", "b")) willReturnSingle { TestData.REPO_DETAIL }
+        given(repository.loadRepo("a", "b")) willReturnJust TestData.REPO_DETAIL
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -82,7 +82,7 @@ class RepoViewModelTest {
     fun retry() {
         given(repository.loadRepo("a", "b"))
                 .willThrowSingle { IOException() }
-                .willReturnSingle { TestData.REPO_DETAIL }
+                .willReturnJust(TestData.REPO_DETAIL)
 
         repoViewModel.init(RepoId("a", "b"))
 

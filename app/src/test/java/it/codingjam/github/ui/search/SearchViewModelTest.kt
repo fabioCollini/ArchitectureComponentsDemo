@@ -32,6 +32,7 @@ import it.codingjam.github.util.TestData.REPO_4
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
+import it.codingjam.github.willThrowSingle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -103,8 +104,7 @@ class SearchViewModelTest {
         given(repository.search(QUERY))
                 .willReturn(response(REPO_1, REPO_2, 2))
 
-        given(repository.searchNextPage(QUERY, 2))
-                .willReturn(Single.error(IOException(ERROR)))
+        given(repository.searchNextPage(QUERY, 2)) willThrowSingle { IOException(ERROR) }
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()

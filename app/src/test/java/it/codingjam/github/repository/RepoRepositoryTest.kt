@@ -1,16 +1,16 @@
 package it.codingjam.github.repository
 
 import com.nhaarman.mockito_kotlin.given
+import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.willReturnSingle
+import it.codingjam.github.willReturnJust
 import okhttp3.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import retrofit2.Response
 
@@ -18,7 +18,7 @@ class RepoRepositoryTest {
 
     @get:Rule var mockitoRule = MockitoJUnit.rule()
 
-    @Mock lateinit var githubService: GithubService
+    val githubService: GithubService = mock()
 
     @InjectMocks lateinit var repository: RepoRepository
 
@@ -27,9 +27,8 @@ class RepoRepositoryTest {
                 " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         val headers = mapOf("link" to header)
 
-        given { githubService.searchRepos(QUERY) } willReturnSingle {
-            Response.success(listOf(REPO_1, REPO_2), Headers.of(headers))
-        }
+        given { githubService.searchRepos(QUERY) } willReturnJust
+                Response.success(listOf(REPO_1, REPO_2), Headers.of(headers))
 
         val (items, nextPage) = repository.search(QUERY).blockingGet()
 
