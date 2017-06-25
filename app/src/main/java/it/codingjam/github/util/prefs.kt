@@ -8,22 +8,28 @@ import kotlin.reflect.KProperty
 private inline fun <T> SharedPreferences.delegate(
         defaultValue: T, key: String? = null,
         crossinline getter: SharedPreferences.(String, T) -> T,
-        crossinline setter: Editor.(String, T) -> Editor): ReadWriteProperty<Any, T> {
+        crossinline setter: Editor.(String, T) -> Editor
+): ReadWriteProperty<Any, T> {
     return object : ReadWriteProperty<Any, T> {
         override fun getValue(thisRef: Any, property: KProperty<*>): T =
-                getter(key ?: property.name, defaultValue)
+                getter(key ?: property.name, defaultValue)!!
 
         override fun setValue(thisRef: Any, property: KProperty<*>, value: T) =
                 edit().setter(key ?: property.name, value).apply()
     }
 }
 
-fun SharedPreferences.intDelegate(defaultValue: Int = 0, key: String? = null) = object : ReadWriteProperty<Any, Int> {
-    override fun getValue(thisRef: Any, property: KProperty<*>): Int =
-            getInt(key ?: property.name, defaultValue)
+fun SharedPreferences.intDelegate(
+        defaultValue: Int = 0,
+        key: String? = null
+): ReadWriteProperty<Any, Int> {
+    return object : ReadWriteProperty<Any, Int> {
+        override fun getValue(thisRef: Any, property: KProperty<*>) =
+                getInt(key ?: property.name, defaultValue)
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: Int) =
-            edit().putInt(key ?: property.name, value).apply()
+        override fun setValue(thisRef: Any, property: KProperty<*>, value: Int) =
+                edit().putInt(key ?: property.name, value).apply()
+    }
 }
 
 fun SharedPreferences.int(def: Int = 0, key: String? = null) =

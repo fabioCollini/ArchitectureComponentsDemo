@@ -23,8 +23,8 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 
@@ -37,7 +37,7 @@ class RepoViewModel(
 
     private lateinit var repoId: RepoId
 
-    val liveData = ViewStateLiveData(RepoViewState(Resource.Empty))
+    val liveData = LiveDataDelegate(RepoViewState(Resource.Empty))
 
     private var state by liveData
 

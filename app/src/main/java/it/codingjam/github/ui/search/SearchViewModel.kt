@@ -23,8 +23,8 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import java.util.*
@@ -38,7 +38,7 @@ class SearchViewModel
 
     private val disposable = CompositeDisposable()
 
-    val liveData = ViewStateLiveData(SearchViewState())
+    val liveData = LiveDataDelegate(SearchViewState())
 
     private var state by liveData
 

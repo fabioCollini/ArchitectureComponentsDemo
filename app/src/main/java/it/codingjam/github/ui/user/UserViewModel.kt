@@ -25,8 +25,8 @@ import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
+import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.ViewStateLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class UserViewModel
 
     private lateinit var login: String
 
-    val liveData = ViewStateLiveData(UserViewState(Resource.Empty))
+    val liveData = LiveDataDelegate(UserViewState(Resource.Empty))
 
     private var state by liveData
 
