@@ -21,17 +21,15 @@ class UiActionsLiveData {
         execute(action)
     }
 
-    fun observe(owner: LifecycleOwner, executor: ((FragmentActivity) -> Unit) -> Unit) {
-        delegate.observe(owner, Observer {
-            list.forEach { executor(it) }
-            list = ArrayList()
-        })
-    }
+    fun observe(owner: LifecycleOwner, executor: ((FragmentActivity) -> Unit) -> Unit) =
+            delegate.observe(owner, Observer {
+                list.forEach { executor(it) }
+                list = ArrayList()
+            })
 
-    @MainThread fun observeForever(executor: ((FragmentActivity) -> Unit) -> Unit) {
-        delegate.observeForever {
-            list.forEach { executor(it) }
-            list = ArrayList()
-        }
-    }
+    @MainThread fun observeForever(executor: ((FragmentActivity) -> Unit) -> Unit) =
+            delegate.observeForever {
+                list.forEach { executor(it) }
+                list = ArrayList()
+            }
 }
