@@ -18,7 +18,6 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
-import com.nhaarman.mockito_kotlin.given
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
@@ -27,7 +26,7 @@ import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.util.shouldContain
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.willReturnJust
-import it.codingjam.github.willThrowSingle
+import it.codingjam.github.willThrow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,7 +58,7 @@ class RepoViewModelTest {
     }
 
     @Test fun fetchData() {
-        given(repository.loadRepo("a", "b")) willReturnJust TestData.REPO_DETAIL
+        repository.loadRepo("a", "b") willReturnJust TestData.REPO_DETAIL
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -69,7 +68,7 @@ class RepoViewModelTest {
     }
 
     @Test fun errorFetchingData() {
-        given(repository.loadRepo("a", "b")) willThrowSingle { Throwable() }
+        repository.loadRepo("a", "b") willThrow Throwable()
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -80,8 +79,8 @@ class RepoViewModelTest {
 
     @Test
     fun retry() {
-        given(repository.loadRepo("a", "b"))
-                .willThrowSingle { IOException() }
+        repository.loadRepo("a", "b")
+                .willThrow(IOException())
                 .willReturnJust(TestData.REPO_DETAIL)
 
         repoViewModel.init(RepoId("a", "b"))
