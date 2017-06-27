@@ -26,12 +26,12 @@ import android.view.ViewGroup
 import it.codingjam.github.component
 import it.codingjam.github.databinding.SearchFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
-import it.codingjam.github.util.fragmentViewModel
+import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.orElse
 
 class SearchFragment : LifecycleFragment() {
 
-    private val viewModel by fragmentViewModel { component.searchViewModel() }
+    private val viewModel by viewModelProvider { component.searchViewModel() }
 
     lateinit var binding: SearchFragmentBinding
 
