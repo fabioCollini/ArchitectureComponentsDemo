@@ -49,7 +49,7 @@ class RepoFragment : LifecycleFragment() {
             adapter.replace(it.contributors())
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this, { it(this.activity) })
+        viewModel.uiActions.observe(this, { it(activity) })
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

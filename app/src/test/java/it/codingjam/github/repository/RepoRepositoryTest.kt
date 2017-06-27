@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.willReturnJust
+import it.codingjam.github.util.willReturnJust
 import okhttp3.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule

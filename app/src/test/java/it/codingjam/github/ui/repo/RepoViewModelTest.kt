@@ -21,12 +21,8 @@ import android.support.v4.app.FragmentActivity
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.util.TestData
-import it.codingjam.github.util.TrampolineSchedulerRule
-import it.codingjam.github.util.shouldContain
+import it.codingjam.github.util.*
 import it.codingjam.github.vo.RepoId
-import it.codingjam.github.willReturnJust
-import it.codingjam.github.willThrow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

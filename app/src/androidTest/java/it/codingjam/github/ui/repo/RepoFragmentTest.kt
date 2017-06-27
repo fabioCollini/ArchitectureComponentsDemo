@@ -22,10 +22,7 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
-import android.view.View
-import com.nhaarman.mockito_kotlin.given
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.willReturn
 import it.codingjam.github.NavigationController
 import it.codingjam.github.R
 import it.codingjam.github.util.*
@@ -56,8 +53,8 @@ class RepoFragmentTest {
     val navigationController: NavigationController = mock()
 
     @Before fun setUp() {
-        given { viewModel.liveData } willReturn { LiveDataDelegate(RepoViewState(Resource.Empty), liveData) }
-        given { viewModel.uiActions } willReturn { UiActionsLiveData() }
+        viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Empty), liveData)
+        viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
@@ -76,13 +73,11 @@ class RepoFragmentTest {
         liveData.postValue(RepoViewState(Resource.Loading))
         liveData.postValue(RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2)))))
 
-        onView(withId(R.id.progress_bar)).check(matches(not<View>(isDisplayed())))
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(matches(
                 withText(getString(R.string.repo_full_name, OWNER.login, REPO_1.name))))
         onView(withId(R.id.description)).check(matches(withText(REPO_1.description)))
     }
 
-    private fun getString(@StringRes id: Int, vararg args: Any): String {
-        return InstrumentationRegistry.getTargetContext().getString(id, *args)
-    }
+    private fun getString(@StringRes id: Int, vararg args: Any) = InstrumentationRegistry.getTargetContext().getString(id, *args)
 }

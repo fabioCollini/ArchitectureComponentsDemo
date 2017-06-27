@@ -30,9 +30,9 @@ import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
 import it.codingjam.github.util.TrampolineSchedulerRule
+import it.codingjam.github.util.willThrowSingle
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
-import it.codingjam.github.willThrowSingle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
