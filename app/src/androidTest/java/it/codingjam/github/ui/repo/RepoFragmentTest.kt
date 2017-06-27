@@ -16,7 +16,6 @@
 
 package it.codingjam.github.ui.repo
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.StringRes
 import android.support.test.InstrumentationRegistry
@@ -29,14 +28,11 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.willReturn
 import it.codingjam.github.NavigationController
 import it.codingjam.github.R
-import it.codingjam.github.util.FragmentTestRule
-import it.codingjam.github.util.GitHubDaggerMockRule
-import it.codingjam.github.util.LiveDataDelegate
+import it.codingjam.github.util.*
 import it.codingjam.github.util.TestData.CONTRIBUTOR1
 import it.codingjam.github.util.TestData.CONTRIBUTOR2
 import it.codingjam.github.util.TestData.OWNER
 import it.codingjam.github.util.TestData.REPO_1
-import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.RepoDetail
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
@@ -51,7 +47,7 @@ class RepoFragmentTest {
 
     @get:Rule var daggerMockRule = GitHubDaggerMockRule()
 
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantExecutorRule = EspressoInstantTaskExecutorRule()
 
     val liveData = MutableLiveData<RepoViewState>()
 
@@ -67,8 +63,8 @@ class RepoFragmentTest {
     @Test fun testLoading() {
         fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        liveData.value = RepoViewState(Resource.Empty)
-        liveData.value = RepoViewState(Resource.Loading)
+        liveData.postValue(RepoViewState(Resource.Empty))
+        liveData.postValue(RepoViewState(Resource.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -77,8 +73,8 @@ class RepoFragmentTest {
     @Test fun testValueWhileLoading() {
         fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        liveData.value = RepoViewState(Resource.Loading)
-        liveData.value = RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
+        liveData.postValue(RepoViewState(Resource.Loading))
+        liveData.postValue(RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2)))))
 
         onView(withId(R.id.progress_bar)).check(matches(not<View>(isDisplayed())))
         onView(withId(R.id.name)).check(matches(

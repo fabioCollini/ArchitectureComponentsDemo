@@ -9,11 +9,11 @@ import it.codingjam.github.di.AppModule
 
 import it.cosenonjaviste.daggermock.DaggerMockRule
 
-class GitHubDaggerMockRule : DaggerMockRule<AppComponent>(AppComponent::class.java, AppModule()) {
+class GitHubDaggerMockRule : DaggerMockRule<AppComponent>(AppComponent::class.java, AppModule(app)) {
     init {
         set { component -> app.component = component }
     }
-
-    private val app: GithubApp
-        get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as GithubApp
 }
+
+private val app: GithubApp
+    get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as GithubApp
