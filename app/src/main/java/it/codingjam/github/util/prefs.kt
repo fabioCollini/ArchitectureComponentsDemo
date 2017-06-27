@@ -6,7 +6,7 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 private inline fun <T> SharedPreferences.delegate(
-        defaultValue: T, key: String? = null,
+        defaultValue: T, key: String?,
         crossinline getter: SharedPreferences.(String, T) -> T,
         crossinline setter: Editor.(String, T) -> Editor
 ): ReadWriteProperty<Any, T> {
