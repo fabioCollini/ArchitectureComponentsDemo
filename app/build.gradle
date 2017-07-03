@@ -98,7 +98,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:$mockito_version"
     //noinspection GradleDependency
     testCompile 'org.assertj:assertj-core:2.5.0'
-    testCompile 'com.github.fabioCollini:DaggerMock:c36fc62ccd'
+    testCompile 'com.github.fabioCollini:DaggerMock:0.7.0'
     testCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
@@ -119,12 +119,12 @@ dependencies {
 
     androidTestCompile("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestCompile 'com.github.tmurakami:dexopener:0.9.8'
+    androidTestCompile 'com.github.tmurakami:dexopener:0.9.9'
     androidTestCompile "org.mockito:mockito-android:$mockito_version"
     androidTestCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    androidTestCompile 'com.github.fabioCollini:DaggerMock:c36fc62ccd'
+    androidTestCompile 'com.github.fabioCollini:DaggerMock:0.7.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
@@ -140,7 +140,6 @@ task fullCoverageReport(type: JacocoReport) {
                       '**/*Test*.*', 'android/**/*.*',
                       'com/android/databinding/**/*.class',
                       '**/databinding/*.class',
-                      '**/*AutoValue_*.class',
                       '**/*_MembersInjector.class',
                       '**/Dagger*Component.class',
                       '**/Dagger*Component$Builder.class',
