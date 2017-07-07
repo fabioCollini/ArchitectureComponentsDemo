@@ -53,7 +53,7 @@ class UserFragment : LifecycleFragment() {
             binding.executePendingBindings()
             adapter.replace(it.repos())
         }
-        viewModel.uiActions.observe(this, { it(activity) })
+        viewModel.uiActions.observe(this) { it(activity) }
     }
 
     companion object : StringFragmentCreator(::UserFragment)
