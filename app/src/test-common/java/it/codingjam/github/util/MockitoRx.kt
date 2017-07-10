@@ -19,5 +19,8 @@ infix fun <T> Single<T>?.willReturnJust(value: T): BDDMockito.BDDMyOngoingStubbi
 infix fun <T> Single<T>?.willThrow(throwable: Throwable): BDDMockito.BDDMyOngoingStubbing<Single<T>?> =
         given(this).willReturn(Single.error(throwable))
 
-infix fun <T> T.willReturn(value: T): BDDMockito.BDDMyOngoingStubbing<T?> =
+infix fun <T> T?.willReturn(value: T): BDDMockito.BDDMyOngoingStubbing<T?> =
         given(this).willReturn(value)
+
+infix fun <T> T?.willThrow(throwable: Throwable): BDDMockito.BDDMyOngoingStubbing<T?> =
+        given(this).willThrow(throwable)
