@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import kotlin.reflect.KProperty
 
-class LiveDataDelegate<T>(
+class LiveDataDelegate<T: Any>(
         initialState: T,
         private val liveData: MutableLiveData<T> =
             MutableLiveData<T>()
