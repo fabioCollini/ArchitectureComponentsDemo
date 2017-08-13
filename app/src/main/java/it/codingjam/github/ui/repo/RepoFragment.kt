@@ -25,6 +25,7 @@ import it.codingjam.github.component
 import it.codingjam.github.databinding.RepoFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
+import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.RepoId
 

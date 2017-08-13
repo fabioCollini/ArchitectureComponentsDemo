@@ -24,7 +24,8 @@ import android.view.ViewGroup
 import it.codingjam.github.component
 import it.codingjam.github.databinding.UserFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
-import it.codingjam.github.ui.common.StringFragmentCreator
+import it.codingjam.github.ui.common.FragmentCreator
+import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.util.viewModelProvider
 
 class UserFragment : LifecycleFragment() {
@@ -56,5 +57,5 @@ class UserFragment : LifecycleFragment() {
         viewModel.uiActions.observe(this) { it(activity) }
     }
 
-    companion object : StringFragmentCreator(::UserFragment)
+    companion object : FragmentCreator<String>(::UserFragment)
 }
