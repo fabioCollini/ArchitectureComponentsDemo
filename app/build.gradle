@@ -19,11 +19,10 @@ apply plugin: "io.mironov.smuggler"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "it.codingjam.github"
         minSdkVersion 16
@@ -119,7 +118,7 @@ dependencies {
 
     androidTestCompile("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestCompile 'com.github.tmurakami:dexopener:0.9.9'
+    androidTestCompile 'com.github.tmurakami:dexopener:0.10.3'
     androidTestCompile "org.mockito:mockito-android:$mockito_version"
     androidTestCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
