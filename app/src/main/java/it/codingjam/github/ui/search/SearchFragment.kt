@@ -16,8 +16,8 @@
 
 package it.codingjam.github.ui.search
 
-import android.arch.lifecycle.LifecycleFragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.orElse
 
-class SearchFragment : LifecycleFragment() {
+class SearchFragment : Fragment() {
 
     private val viewModel by viewModelProvider { component.searchViewModel() }
 

@@ -16,8 +16,8 @@
 
 package it.codingjam.github.ui.user
 
-import android.arch.lifecycle.LifecycleFragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +28,7 @@ import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.util.viewModelProvider
 
-class UserFragment : LifecycleFragment() {
+class UserFragment : Fragment() {
     private val viewModel by viewModelProvider {
         component.userViewModel().also { it.load(getParam(this)) }
     }

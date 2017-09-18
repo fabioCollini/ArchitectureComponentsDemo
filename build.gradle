@@ -32,11 +32,11 @@ buildscript {
     }
 }
 
-ext.arch_version = "1.0.0-alpha8"
-ext.support_version = "26.0.1"
-ext.dagger_version = "2.11-rc2"
+ext.arch_version = "1.0.0-alpha9"
+ext.support_version = "26.1.0"
+ext.dagger_version = "2.11"
 ext.junit_version = "4.12"
-ext.espresso_version = "2.2.2"
+ext.espresso_version = "3.0.1"
 ext.retrofit_version = "2.3.0"
 ext.okhttp_version = "3.8.1"
 ext.mockito_version = "2.8.9"
