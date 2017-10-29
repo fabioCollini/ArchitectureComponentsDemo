@@ -13,5 +13,5 @@ I converted it to kotlin and modified some architectural aspects to test ViewMod
  * minimal Dagger configuration
  * ViewModels are instantiated using a [Kotlin delegate](https://github.com/fabioCollini/ArchitectureComponentsDemo/blob/master/app/src/main/java/it/codingjam/github/util/ViewModels.kt)
  * Fragment args are managed using a [companion object base class](https://github.com/fabioCollini/ArchitectureComponentsDemo/blob/master/app/src/main/java/it/codingjam/github/ui/common/FragmentCreator.kt)
- * JVM tests are written using Mockito and AssertJ
+ * JVM tests are written using Mockito and [AssertK](https://github.com/willowtreeapps/assertk)
  * Espresso tests are written using [DaggerMock](https://github.com/fabioCollini/DaggerMock) and Mockito
