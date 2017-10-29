@@ -19,6 +19,9 @@ package it.codingjam.github.ui.search
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
+import assertk.assert
+import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import it.codingjam.github.NavigationController
@@ -33,7 +36,6 @@ import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -67,7 +69,7 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .empty().loading().success()
 
-        assertThat((states[2].repos as Resource.Success).data)
+        assert((states[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
     }
 
@@ -88,11 +90,10 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(states).
-                extracting { it.loadingMore }
+        assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((states[4].repos as Resource.Success).data)
+        assert((states[4].repos as Resource.Success).data)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -108,11 +109,10 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .empty().loading().success().success().success()
 
-        assertThat(states)
-                .extracting { it.loadingMore }
+        assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assertThat((states[2].repos as Resource.Success).data)
+        assert((states[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)

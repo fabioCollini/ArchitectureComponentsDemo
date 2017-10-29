@@ -18,6 +18,8 @@ package it.codingjam.github.ui.user
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
+import assertk.assert
+import assertk.assertions.containsExactly
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.Single
 import it.codingjam.github.NavigationController
@@ -29,7 +31,6 @@ import it.codingjam.github.util.TestData.USER
 import it.codingjam.github.util.TrampolineSchedulerRule
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -63,8 +64,7 @@ class UserViewModelTest {
 
         userViewModel.load(LOGIN)
 
-        assertThat(states)
-                .extracting { it.userDetail }
+        assert(states.map { it.userDetail })
                 .containsExactly(
                         Resource.Empty,
                         Resource.Loading,
@@ -82,8 +82,7 @@ class UserViewModelTest {
         userViewModel.load(LOGIN)
         userViewModel.retry()
 
-        assertThat(states)
-                .extracting { it.userDetail }
+        assert(states.map { it.userDetail })
                 .containsExactly(
                         Resource.Empty,
                         Resource.Loading,

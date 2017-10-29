@@ -16,11 +16,13 @@
 
 package it.codingjam.github.api
 
+import assertk.assert
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import it.codingjam.github.di.AppModule
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -45,12 +47,12 @@ class GithubServiceTest {
         val yigit = service.getUser("yigit").blockingGet()
 
         val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/users/yigit")
+        assert(request.path).isEqualTo("/users/yigit")
 
-        assertThat(yigit).isNotNull()
-        assertThat(yigit.avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
-        assertThat(yigit.company).isEqualTo("Google")
-        assertThat(yigit.blog).isEqualTo("birbit.com")
+        assert(yigit).isNotNull()
+        assert(yigit.avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
+        assert(yigit.company).isEqualTo("Google")
+        assert(yigit.blog).isEqualTo("birbit.com")
     }
 
     @Test fun repos() {
@@ -58,30 +60,30 @@ class GithubServiceTest {
         val repos = service.getRepos("yigit").blockingGet()
 
         val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/users/yigit/repos")
+        assert(request.path).isEqualTo("/users/yigit/repos")
 
-        assertThat(repos.size).isEqualTo(2)
+        assert(repos.size).isEqualTo(2)
 
         val (_, _, fullName, _, owner) = repos[0]
-        assertThat(fullName).isEqualTo("yigit/AckMate")
+        assert(fullName).isEqualTo("yigit/AckMate")
 
-        assertThat(owner).isNotNull()
-        assertThat(owner.login).isEqualTo("yigit")
-        assertThat(owner.url).isEqualTo("https://api.github.com/users/yigit")
+        assert(owner).isNotNull()
+        assert(owner.login).isEqualTo("yigit")
+        assert(owner.url).isEqualTo("https://api.github.com/users/yigit")
 
-        assertThat(repos[1].fullName).isEqualTo("yigit/android-architecture")
+        assert(repos[1].fullName).isEqualTo("yigit/android-architecture")
     }
 
     @Test fun getContributors() {
         enqueueResponse("contributors.json")
         val contributors = service.getContributors("foo", "bar").blockingGet()
-        assertThat(contributors.size).isEqualTo(3)
+        assert(contributors.size).isEqualTo(3)
         val (login, contributions, avatarUrl) = contributors[0]
-        assertThat(login).isEqualTo("yigit")
-        assertThat(avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
-        assertThat(contributions).isEqualTo(291)
-        assertThat(contributors[1].login).isEqualTo("guavabot")
-        assertThat(contributors[2].login).isEqualTo("coltin")
+        assert(login).isEqualTo("yigit")
+        assert(avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
+        assert(contributions).isEqualTo(291)
+        assert(contributors[1].login).isEqualTo("guavabot")
+        assert(contributors[2].login).isEqualTo("coltin")
     }
 
     @Test fun search() {
@@ -89,8 +91,8 @@ class GithubServiceTest {
         enqueueResponse("search.json", mapOf("link" to header))
         val response = service.searchRepos("foo").blockingGet()
 
-        assertThat(response).isNotNull()
-        assertThat(response.body()?.size).isEqualTo(30)
+        assert(response).isNotNull()
+        assert(response.body()?.size).isEqualTo(30)
     }
 
     private fun enqueueResponse(fileName: String, headers: Map<String, String> = emptyMap()) {

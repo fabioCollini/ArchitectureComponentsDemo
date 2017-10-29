@@ -1,7 +1,8 @@
 package it.codingjam.github.ui.search
 
+import assertk.assert
+import assertk.assertions.isEqualTo
 import it.codingjam.github.util.FakeSharedPreferences
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class TokenHolderTest {
@@ -12,7 +13,7 @@ class TokenHolderTest {
     tokenHolder.saveToken("a")
     tokenHolder.saveToken("b")
 
-    assertThat(tokenHolder.count).isEqualTo(2)
-    assertThat(prefs.getInt("count", 0)).isEqualTo(2)
+    assert(tokenHolder.count).isEqualTo(2)
+    assert(prefs.getInt("count", 0)).isEqualTo(2)
 }
 }

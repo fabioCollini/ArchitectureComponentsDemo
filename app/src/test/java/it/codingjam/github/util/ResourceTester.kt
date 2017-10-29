@@ -1,7 +1,8 @@
 package it.codingjam.github.util
 
+import assertk.assert
+import assertk.assertions.isInstanceOf
 import it.codingjam.github.vo.Resource
-import org.assertj.core.api.Assertions.assertThat
 
 class ResourceTester(private val list: List<Resource<*>>) {
     fun empty(): ResourceTester = check(Resource.Empty::class.java)
@@ -10,7 +11,7 @@ class ResourceTester(private val list: List<Resource<*>>) {
     fun loading(): ResourceTester = check(Resource.Loading::class.java)
 
     private fun check(clazz: Class<*>): ResourceTester {
-        assertThat(list[0]).isInstanceOf(clazz)
+        assert(list[0]).isInstanceOf(clazz)
         return ResourceTester(list.subList(1, list.size))
     }
 }

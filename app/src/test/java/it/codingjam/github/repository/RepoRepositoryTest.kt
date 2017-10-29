@@ -1,12 +1,14 @@
 package it.codingjam.github.repository
 
+import assertk.assert
+import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.willReturnJust
 import okhttp3.Headers
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import retrofit2.Response
 
@@ -26,8 +28,8 @@ class RepoRepositoryTest {
 
         val (items, nextPage) = repository.search(QUERY).blockingGet()
 
-        assertThat(items).containsExactly(REPO_1, REPO_2)
-        assertThat(nextPage).isEqualTo(2)
+        assert(items).containsExactly(REPO_1, REPO_2)
+        assert(nextPage).isEqualTo(2)
     }
 
     companion object {
