@@ -34,14 +34,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import org.mockito.InjectMocks
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
 import java.io.IOException
 
 class UserViewModelTest {
-    @get:Rule var mockitoRule = MockitoJUnit.rule()
-
     @get:Rule var trampolineSchedulerRule = TrampolineSchedulerRule()
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
@@ -50,7 +46,7 @@ class UserViewModelTest {
     val repoRepository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    @InjectMocks lateinit var userViewModel: UserViewModel
+    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController) }
 
     val states = mutableListOf<UserViewState>()
 

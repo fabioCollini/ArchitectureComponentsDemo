@@ -26,13 +26,9 @@ import it.codingjam.github.vo.RepoId
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.InjectMocks
-import org.mockito.junit.MockitoJUnit
 import java.io.IOException
 
 class RepoViewModelTest {
-
-    @get:Rule var mockitoRule = MockitoJUnit.rule()
 
     @get:Rule var trampolineSchedulerRule = TrampolineSchedulerRule()
 
@@ -44,7 +40,7 @@ class RepoViewModelTest {
 
     val activity: FragmentActivity = mock()
 
-    @InjectMocks lateinit var repoViewModel: RepoViewModel
+    val repoViewModel by lazy{ RepoViewModel(navigationController, repository) }
 
     val states = mutableListOf<RepoViewState>()
 

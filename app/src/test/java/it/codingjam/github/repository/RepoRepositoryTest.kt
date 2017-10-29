@@ -7,19 +7,14 @@ import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.willReturnJust
 import okhttp3.Headers
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Rule
 import org.junit.Test
-import org.mockito.InjectMocks
-import org.mockito.junit.MockitoJUnit
 import retrofit2.Response
 
 class RepoRepositoryTest {
 
-    @get:Rule var mockitoRule = MockitoJUnit.rule()
-
     val githubService: GithubService = mock()
 
-    @InjectMocks lateinit var repository: RepoRepository
+    val repository = RepoRepository(githubService)
 
     @Test fun search() {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +
