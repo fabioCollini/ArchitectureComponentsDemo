@@ -25,14 +25,13 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "io.mironov.smuggler:smuggler-plugin:0.12.13"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-ext.arch_version = "1.0.0-alpha9"
+ext.arch_version = "1.0.0-rc1"
 ext.support_version = "27.0.0"
 ext.dagger_version = "2.11"
 ext.junit_version = "4.12"

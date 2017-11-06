@@ -1,5 +1,7 @@
 package it.codingjam.github.vo
 
-import io.mironov.smuggler.AutoParcelable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-data class RepoId(val owner: String, val name: String) : AutoParcelable
+@Parcelize
+data class RepoId(val owner: String, val name: String) : Parcelable
