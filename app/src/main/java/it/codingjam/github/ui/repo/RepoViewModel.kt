@@ -27,8 +27,9 @@ import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
+import javax.inject.Inject
 
-class RepoViewModel(
+class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
         private val repository: RepoRepository
 ) : ViewModel() {

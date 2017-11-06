@@ -1,13 +1,11 @@
-package it.codingjam.github.util
+package it.codingjam.github
 
 
 import android.support.test.InstrumentationRegistry
-import it.codingjam.github.GithubApp
-import it.codingjam.github.di.AppComponent
 import it.codingjam.github.di.AppModule
 import it.cosenonjaviste.daggermock.DaggerMock
 
-fun gitHubDaggerMockRule() = DaggerMock.rule<AppComponent>(AppModule(app)) {
+fun gitHubDaggerMockRule() = DaggerMock.rule<TestComponent>(AppModule(app), TestModule()) {
     set { app.component = it }
 }
 

@@ -26,12 +26,16 @@ import android.support.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.R
+import it.codingjam.github.gitHubDaggerMockRule
 import it.codingjam.github.ui.common.create
-import it.codingjam.github.util.*
+import it.codingjam.github.util.FragmentTestRule
+import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.TestData.CONTRIBUTOR1
 import it.codingjam.github.util.TestData.CONTRIBUTOR2
 import it.codingjam.github.util.TestData.OWNER
 import it.codingjam.github.util.TestData.REPO_1
+import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.willReturn
 import it.codingjam.github.vo.RepoDetail
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource

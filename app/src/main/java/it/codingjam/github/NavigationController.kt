@@ -23,8 +23,10 @@ import it.codingjam.github.ui.repo.RepoFragment
 import it.codingjam.github.ui.search.SearchFragment
 import it.codingjam.github.ui.user.UserFragment
 import it.codingjam.github.vo.RepoId
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NavigationController {
+@Singleton class NavigationController @Inject constructor() {
 
     fun navigateToSearch(activity: FragmentActivity) {
         val searchFragment = SearchFragment()

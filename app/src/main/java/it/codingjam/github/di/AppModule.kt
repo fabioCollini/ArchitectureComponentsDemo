@@ -17,14 +17,12 @@
 package it.codingjam.github.di
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.BuildConfig
-import it.codingjam.github.NavigationController
 import it.codingjam.github.api.GithubService
-import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.ui.repo.RepoViewModel
 import it.codingjam.github.util.RetrofitFactory.createService
 import okhttp3.HttpUrl
 import javax.inject.Singleton
@@ -33,10 +31,5 @@ import javax.inject.Singleton
     @Singleton @Provides fun provideGithubService(): GithubService =
             createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
 
-    @Provides fun provideNavigationController() = NavigationController()
-
-    @Provides fun providePrefs() = PreferenceManager.getDefaultSharedPreferences(application)
-
-    @Provides fun provideRepoViewModel(navigationController: NavigationController, repository: RepoRepository) =
-            RepoViewModel(navigationController, repository)
+    @Provides fun providePrefs(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 }
