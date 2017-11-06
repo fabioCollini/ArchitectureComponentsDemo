@@ -35,7 +35,7 @@ class SearchFragment : Fragment() {
 
     lateinit var binding: SearchFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = SearchFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -62,7 +62,7 @@ class SearchFragment : Fragment() {
             adapter.replace(it.repos.orElse(emptyList()))
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this) { it(activity) }
+        viewModel.uiActions.observe(this) { it(activity!!) }
 
         binding.viewModel = viewModel
     }

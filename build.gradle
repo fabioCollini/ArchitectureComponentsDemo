@@ -33,7 +33,7 @@ buildscript {
 }
 
 ext.arch_version = "1.0.0-alpha9"
-ext.support_version = "26.1.0"
+ext.support_version = "27.0.0"
 ext.dagger_version = "2.11"
 ext.junit_version = "4.12"
 ext.espresso_version = "3.0.1"

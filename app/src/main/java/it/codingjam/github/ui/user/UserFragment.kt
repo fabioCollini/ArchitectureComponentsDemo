@@ -35,7 +35,7 @@ class UserFragment : Fragment() {
 
     lateinit var binding: UserFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = UserFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -54,7 +54,7 @@ class UserFragment : Fragment() {
             binding.executePendingBindings()
             adapter.replace(it.repos())
         }
-        viewModel.uiActions.observe(this) { it(activity) }
+        viewModel.uiActions.observe(this) { it(activity!!) }
     }
 
     companion object : FragmentCreator<String>(::UserFragment)

@@ -50,10 +50,10 @@ class RepoFragment : Fragment() {
             adapter.replace(it.contributors())
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this) { it(activity) }
+        viewModel.uiActions.observe(this) { it(activity!!) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = RepoFragmentBinding.inflate(inflater, container, false)
         return binding.root

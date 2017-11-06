@@ -16,7 +16,7 @@ fun <T : Parcelable> FragmentCreator<T>.create(param: T): Fragment =
         }
 
 fun <T : Parcelable> FragmentCreator<T>.getParam(fragment: Fragment): T =
-        fragment.arguments.getParcelable("param")
+        fragment.arguments!!.getParcelable("param")
 
 fun FragmentCreator<String>.create(param: String): Fragment =
         factory().apply {
@@ -26,4 +26,4 @@ fun FragmentCreator<String>.create(param: String): Fragment =
         }
 
 fun FragmentCreator<String>.getParam(fragment: Fragment): String =
-        fragment.arguments.getString("param")
+        fragment.arguments!!.getString("param")

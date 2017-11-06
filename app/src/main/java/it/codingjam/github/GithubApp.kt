@@ -44,4 +44,4 @@ val Context.component: AppComponent
     get() = (applicationContext as GithubApp).component
 
 val Fragment.component: AppComponent
-    get() = activity.component
+    get() = activity!!.component
