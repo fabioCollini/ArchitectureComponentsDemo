@@ -16,6 +16,7 @@
 
 package it.codingjam.github.ui.repo
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.StringRes
 import android.support.test.InstrumentationRegistry
@@ -43,9 +44,9 @@ class RepoFragmentTest {
 
     @get:Rule var fragmentRule = FragmentTestRule()
 
-    @get:Rule var daggerMockRule = GitHubDaggerMockRule()
+    @get:Rule var daggerMockRule = gitHubDaggerMockRule()
 
-    @get:Rule var instantExecutorRule = EspressoInstantTaskExecutorRule()
+    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
     val liveData = MutableLiveData<RepoViewState>()
 

@@ -100,7 +100,6 @@ dependencies {
     })
     testCompile "org.mockito:mockito-core:$mockito_version"
     testCompile 'com.willowtreeapps.assertk:assertk:0.9'
-    testCompile 'com.github.fabioCollini:DaggerMock:0.8.2'
     testCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
@@ -126,7 +125,8 @@ dependencies {
     androidTestCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    androidTestCompile 'com.github.fabioCollini:DaggerMock:0.8.2'
+    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock:79630f9b16'
+    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock-kotlin:79630f9b16'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
