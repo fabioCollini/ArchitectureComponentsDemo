@@ -19,7 +19,7 @@ package it.codingjam.github.api
 import assertk.assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import it.codingjam.github.di.AppModule
+import it.codingjam.github.util.RetrofitFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
@@ -35,7 +35,7 @@ class GithubServiceTest {
     val mockWebServer = MockWebServer()
 
     @Before fun createService() {
-        service = AppModule.createService(false, mockWebServer.url("/"))
+        service = RetrofitFactory.createService(false, mockWebServer.url("/"))
     }
 
     @After fun stopService() {

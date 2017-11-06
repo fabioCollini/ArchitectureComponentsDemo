@@ -18,7 +18,6 @@ package it.codingjam.github.di
 
 import android.app.Application
 import android.preference.PreferenceManager
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.BuildConfig
@@ -26,17 +25,12 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.ui.repo.RepoViewModel
-import it.codingjam.github.util.DenvelopingConverter
+import it.codingjam.github.util.RetrofitFactory.createService
 import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module class AppModule(private val application: Application) {
-    @Singleton @Provides fun provideGithubService() =
+    @Singleton @Provides fun provideGithubService(): GithubService =
             createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
 
     @Provides fun provideNavigationController() = NavigationController()
@@ -45,28 +39,4 @@ import javax.inject.Singleton
 
     @Provides fun provideRepoViewModel(navigationController: NavigationController, repository: RepoRepository) =
             RepoViewModel(navigationController, repository)
-
-    companion object {
-
-        fun createService(debug: Boolean, baseUrl: HttpUrl): GithubService {
-            val httpClient = OkHttpClient.Builder()
-
-            if (debug) {
-                val logging = HttpLoggingInterceptor()
-                logging.level = HttpLoggingInterceptor.Level.BODY
-                httpClient.addInterceptor(logging)
-            }
-
-            val gson = GsonBuilder().create()
-
-            return Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .addConverterFactory(DenvelopingConverter(gson))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .client(httpClient.build())
-                    .build()
-                    .create(GithubService::class.java)
-        }
-    }
 }
