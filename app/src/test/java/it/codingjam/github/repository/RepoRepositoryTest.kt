@@ -33,6 +33,6 @@ class RepoRepositoryTest {
     }
 
     companion object {
-        private val QUERY = "abc"
+        private const val QUERY = "abc"
     }
 }
