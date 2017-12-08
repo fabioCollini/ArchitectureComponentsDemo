@@ -17,18 +17,16 @@
 package it.codingjam.github.ui.user
 
 import android.arch.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Singles
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.async
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
 
 class UserViewModel
@@ -38,7 +36,7 @@ class UserViewModel
         private val navigationController: NavigationController
 ) : ViewModel() {
 
-    private val disposable = CompositeDisposable()
+    val job = Job()
 
     private lateinit var login: String
 
@@ -48,26 +46,28 @@ class UserViewModel
 
     val uiActions = UiActionsLiveData()
 
-    fun load(login: String) {
+    suspend fun load(login: String) {
         this.login = login
         state = state.copy(Resource.Loading)
-        disposable += Singles.zip(
-                userRepository.loadUser(login).subscribeOn(Schedulers.io()),
-                repoRepository.loadRepos(login).subscribeOn(Schedulers.io()),
-                ::UserDetail
-        )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { state = state.copy(Resource.Success(it)) },
-                        { state = state.copy(Resource.Error(it)) }
-                )
+
+        state = try {
+            val userDeferred = async { userRepository.loadUser(login) }
+            val reposDeferred = async { repoRepository.loadRepos(login) }
+            val detail = UserDetail(userDeferred.await(), reposDeferred.await())
+            state.copy(userDetail = Resource.Success(detail))
+        } catch (e: Exception) {
+            state.copy(userDetail = Resource.Error(e))
+        }
     }
 
-    fun retry() = load(login)
+    fun loadAsync(login: String) = job.async { load(login) }
+
+    suspend fun retry() = load(login)
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
 
-    override fun onCleared() = disposable.clear()
+    override fun onCleared() {
+        job.cancel()
+    }
 }

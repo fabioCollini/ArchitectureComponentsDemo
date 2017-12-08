@@ -17,16 +17,14 @@
 package it.codingjam.github.ui.repo
 
 import android.arch.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.async
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
+import kotlinx.coroutines.experimental.Job
 import javax.inject.Inject
 
 class RepoViewModel @Inject constructor(
@@ -34,7 +32,7 @@ class RepoViewModel @Inject constructor(
         private val repository: RepoRepository
 ) : ViewModel() {
 
-    private val disposable = CompositeDisposable()
+    val job = Job()
 
     private lateinit var repoId: RepoId
 
@@ -44,27 +42,30 @@ class RepoViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    fun retry() = reload()
+    suspend fun retry() = reload()
 
-    fun init(repoId: RepoId) {
+    suspend fun init(repoId: RepoId) {
         this.repoId = repoId
         reload()
     }
 
-    fun reload() {
+    fun initAsync(repoId: RepoId) = job.async { init(repoId) }
+
+    suspend fun reload() {
         state = state.copy(Resource.Loading)
 
-        disposable += repository.loadRepo(repoId.owner, repoId.name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { state = state.copy(Resource.Success(it)) },
-                        { state = state.copy(Resource.Error(it)) }
-                )
+        state = try {
+            val repo = repository.loadRepo(repoId.owner, repoId.name)
+            state.copy(Resource.Success(repo))
+        } catch (e: Exception) {
+            state.copy(Resource.Error(e))
+        }
     }
 
     fun openUserDetail(login: String) =
         uiActions { navigationController.navigateToUser(it, login) }
 
-    override fun onCleared() = disposable.clear()
+    override fun onCleared() {
+        job.cancel()
+    }
 }

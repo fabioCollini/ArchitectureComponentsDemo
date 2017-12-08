@@ -16,15 +16,15 @@
 
 package it.codingjam.github.repository
 
-import io.reactivex.Single
-import io.reactivex.rxkotlin.Singles
-import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.api.RepoSearchResponse
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.RepoDetail
+import kotlinx.coroutines.experimental.async
 import retrofit2.HttpException
 import retrofit2.Response
+import ru.gildor.coroutines.retrofit.await
+import ru.gildor.coroutines.retrofit.awaitResponse
 import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -33,21 +33,21 @@ import javax.inject.Singleton
 @Singleton class RepoRepository
 @Inject constructor(private val githubService: GithubService) {
 
-    fun loadRepos(owner: String): Single<List<Repo>> =
-            githubService.getRepos(owner)
+    suspend fun loadRepos(owner: String): List<Repo> =
+            githubService.getRepos(owner).await()
 
-    fun loadRepo(owner: String, name: String): Single<RepoDetail> =
-            Singles.zip(
-                    githubService.getRepo(owner, name).subscribeOn(Schedulers.io()),
-                    githubService.getContributors(owner, name).subscribeOn(Schedulers.io()),
-                    { repo, contributors -> RepoDetail(repo, contributors) }
-            )
+    suspend fun loadRepo(owner: String, name: String): RepoDetail {
+        val repo = async { githubService.getRepo(owner, name).await() }
+        val contributors = async { githubService.getContributors(owner, name).await() }
 
-    fun searchNextPage(query: String, nextPage: Int): Single<RepoSearchResponse> =
-            githubService.searchRepos(query, nextPage).map { toRepoSearchResponse(it) }
+        return RepoDetail(repo.await(), contributors.await())
+    }
 
-    fun search(query: String): Single<RepoSearchResponse> =
-            githubService.searchRepos(query).map { toRepoSearchResponse(it) }
+    suspend fun searchNextPage(query: String, nextPage: Int): RepoSearchResponse =
+            githubService.searchRepos(query, nextPage).awaitResponse().let { toRepoSearchResponse(it) }
+
+    suspend fun search(query: String): RepoSearchResponse =
+            githubService.searchRepos(query).awaitResponse().let { toRepoSearchResponse(it) }
 
     private fun toRepoSearchResponse(response: Response<List<Repo>>): RepoSearchResponse {
         if (response.isSuccessful) {

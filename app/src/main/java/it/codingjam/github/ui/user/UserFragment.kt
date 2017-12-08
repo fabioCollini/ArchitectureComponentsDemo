@@ -25,12 +25,14 @@ import it.codingjam.github.component
 import it.codingjam.github.databinding.UserFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
+import it.codingjam.github.ui.common.RetryCallback
 import it.codingjam.github.ui.common.getParam
+import it.codingjam.github.util.async
 import it.codingjam.github.util.viewModelProvider
 
 class UserFragment : Fragment() {
     private val viewModel by viewModelProvider {
-        component.userViewModel().also { it.load(getParam(this)) }
+        component.userViewModel().also { it.loadAsync(getParam(this)) }
     }
 
     lateinit var binding: UserFragmentBinding
@@ -45,6 +47,12 @@ class UserFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         binding.viewModel = viewModel
+
+        binding.loading.callback = object : RetryCallback {
+            override fun retry() {
+                viewModel.job.async { viewModel.retry() }
+            }
+        }
 
         val adapter = DataBoundListAdapter { UserRepoViewHolder(it, viewModel) }
         binding.repoList.adapter = adapter

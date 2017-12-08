@@ -7,10 +7,12 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.util.willReturnJust
+import it.codingjam.github.util.willReturn
+import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.Headers
 import org.junit.Test
 import retrofit2.Response
+import retrofit2.mock.Calls
 
 class RepoRepositoryTest {
 
@@ -18,15 +20,15 @@ class RepoRepositoryTest {
 
     val repository = RepoRepository(githubService)
 
-    @Test fun search() {
+    @Test fun search() = runBlocking {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +
                 " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         val headers = mapOf("link" to header)
 
-        githubService.searchRepos(QUERY) willReturnJust
-                Response.success(listOf(REPO_1, REPO_2), Headers.of(headers))
+        githubService.searchRepos(QUERY) willReturn
+                Calls.response(Response.success(listOf(REPO_1, REPO_2), Headers.of(headers)))
 
-        val (items, nextPage) = repository.search(QUERY).blockingGet()
+        val (items, nextPage) = repository.search(QUERY)
 
         assert(items).containsExactly(REPO_1, REPO_2)
         assert(nextPage).isEqualTo(2)

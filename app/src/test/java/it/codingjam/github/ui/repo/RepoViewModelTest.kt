@@ -21,16 +21,17 @@ import android.support.v4.app.FragmentActivity
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.util.*
+import it.codingjam.github.util.TestData
+import it.codingjam.github.util.shouldContain
+import it.codingjam.github.util.willReturn
+import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.RepoId
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
 
 class RepoViewModelTest {
-
-    @get:Rule var trampolineSchedulerRule = TrampolineSchedulerRule()
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
@@ -49,8 +50,8 @@ class RepoViewModelTest {
         repoViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun fetchData() {
-        repository.loadRepo("a", "b") willReturnJust TestData.REPO_DETAIL
+    @Test fun fetchData() = runBlocking {
+        repository.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -59,8 +60,8 @@ class RepoViewModelTest {
         }
     }
 
-    @Test fun errorFetchingData() {
-        repository.loadRepo("a", "b") willThrow Throwable()
+    @Test fun errorFetchingData() = runBlocking {
+        repository.loadRepo("a", "b") willThrow RuntimeException()
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -69,11 +70,10 @@ class RepoViewModelTest {
         }
     }
 
-    @Test
-    fun retry() {
+    @Test fun retry() = runBlocking {
         repository.loadRepo("a", "b")
-                .willThrow(IOException())
-                .willReturnJust(TestData.REPO_DETAIL)
+                .willThrow(RuntimeException())
+                .willReturn(TestData.REPO_DETAIL)
 
         repoViewModel.init(RepoId("a", "b"))
 

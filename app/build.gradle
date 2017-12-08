@@ -74,18 +74,16 @@ dependencies {
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     compile "com.github.bumptech.glide:glide:$glide_version"
+
+    compile "org.jetbrains.anko:anko-coroutines:0.10.3"
+    compile 'ru.gildor.coroutines:kotlin-coroutines-retrofit:0.8.2'
 
     compile "com.google.dagger:dagger:$dagger_version"
     compile "com.android.support.constraint:constraint-layout:$constraint_layout_version"
 
     compile "com.jakewharton.timber:timber:$timber_version"
-
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.6'
-    compile 'io.reactivex.rxjava2:rxkotlin:2.0.3'
 
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -103,6 +101,7 @@ dependencies {
     testCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
+    testCompile "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
 
     androidTestCompile "com.android.support:appcompat-v7:$support_version"
     androidTestCompile "com.android.support:recyclerview-v7:$support_version"

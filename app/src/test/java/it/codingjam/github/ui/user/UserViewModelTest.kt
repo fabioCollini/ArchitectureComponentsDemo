@@ -21,26 +21,23 @@ import android.support.v4.app.FragmentActivity
 import assertk.assert
 import assertk.assertions.containsExactly
 import com.nhaarman.mockito_kotlin.mock
-import io.reactivex.Single
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
-import it.codingjam.github.util.TrampolineSchedulerRule
+import it.codingjam.github.util.willReturn
+import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
-import java.io.IOException
 
 class UserViewModelTest {
-    @get:Rule var trampolineSchedulerRule = TrampolineSchedulerRule()
-
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
     val userRepository: UserRepository = mock()
@@ -56,11 +53,9 @@ class UserViewModelTest {
         userViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun load() {
-        given(userRepository.loadUser(LOGIN))
-                .willReturn(Single.just(USER))
-        given(repoRepository.loadRepos(LOGIN))
-                .willReturn(Single.just(listOf(REPO_1, REPO_2)))
+    @Test fun load() = runBlocking {
+        userRepository.loadUser(LOGIN) willReturn USER
+        repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
 
         userViewModel.load(LOGIN)
 
@@ -72,12 +67,11 @@ class UserViewModelTest {
                 )
     }
 
-    @Test fun retry() {
-        given(userRepository.loadUser(LOGIN))
-                .willReturn(Single.error(IOException(ERROR)))
-                .willReturn(Single.just(USER))
-        given(repoRepository.loadRepos(LOGIN))
-                .willReturn(Single.just(listOf(REPO_1, REPO_2)))
+    @Test fun retry() = runBlocking {
+        userRepository.loadUser(LOGIN)
+                .willThrow(RuntimeException(ERROR))
+                .willReturn(USER)
+        repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
 
         userViewModel.load(LOGIN)
         userViewModel.retry()

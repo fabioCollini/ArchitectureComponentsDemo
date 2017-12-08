@@ -44,7 +44,7 @@ class GithubServiceTest {
 
     @Test fun getUser() {
         enqueueResponse("user-yigit.json")
-        val yigit = service.getUser("yigit").blockingGet()
+        val yigit = service.getUser("yigit").execute().body()!!
 
         val request = mockWebServer.takeRequest()
         assert(request.path).isEqualTo("/users/yigit")
@@ -57,7 +57,7 @@ class GithubServiceTest {
 
     @Test fun repos() {
         enqueueResponse("repos-yigit.json")
-        val repos = service.getRepos("yigit").blockingGet()
+        val repos = service.getRepos("yigit").execute().body()!!
 
         val request = mockWebServer.takeRequest()
         assert(request.path).isEqualTo("/users/yigit/repos")
@@ -76,7 +76,7 @@ class GithubServiceTest {
 
     @Test fun getContributors() {
         enqueueResponse("contributors.json")
-        val contributors = service.getContributors("foo", "bar").blockingGet()
+        val contributors = service.getContributors("foo", "bar").execute().body()!!
         assert(contributors.size).isEqualTo(3)
         val (login, contributions, avatarUrl) = contributors[0]
         assert(login).isEqualTo("yigit")
@@ -89,7 +89,7 @@ class GithubServiceTest {
     @Test fun search() {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," + " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         enqueueResponse("search.json", mapOf("link" to header))
-        val response = service.searchRepos("foo").blockingGet()
+        val response = service.searchRepos("foo").execute()!!
 
         assert(response).isNotNull()
         assert(response.body()?.size).isEqualTo(30)

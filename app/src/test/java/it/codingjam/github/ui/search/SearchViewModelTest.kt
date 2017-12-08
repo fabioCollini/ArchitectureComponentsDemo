@@ -23,7 +23,6 @@ import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
-import io.reactivex.Single
 import it.codingjam.github.NavigationController
 import it.codingjam.github.api.RepoSearchResponse
 import it.codingjam.github.repository.RepoRepository
@@ -32,20 +31,17 @@ import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
-import it.codingjam.github.util.TrampolineSchedulerRule
+import it.codingjam.github.util.willReturn
 import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
-import java.io.IOException
 
 class SearchViewModelTest {
-    @get:Rule var trampolineSchedulerRule = TrampolineSchedulerRule()
-
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
     val repository: RepoRepository = mock()
@@ -60,9 +56,8 @@ class SearchViewModelTest {
         viewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun load() {
-        given(repository.search(QUERY))
-                .willReturn(response(REPO_1, REPO_2, 2))
+    @Test fun load() = runBlocking {
+        repository.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
         viewModel.setQuery(QUERY)
 
@@ -73,16 +68,14 @@ class SearchViewModelTest {
                 .containsExactly(REPO_1, REPO_2)
     }
 
-    private fun response(repo1: Repo, repo2: Repo, nextPage: Int): Single<RepoSearchResponse> {
-        return Single.just(RepoSearchResponse(listOf(repo1, repo2), nextPage))
+    private fun response(repo1: Repo, repo2: Repo, nextPage: Int): RepoSearchResponse {
+        return RepoSearchResponse(listOf(repo1, repo2), nextPage)
     }
 
-    @Test fun loadMore() {
-        given(repository.search(QUERY))
-                .willReturn(response(REPO_1, REPO_2, 2))
+    @Test fun loadMore() = runBlocking {
+        repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
 
-        given(repository.searchNextPage(QUERY, 2))
-                .willReturn(response(REPO_3, REPO_4, 3))
+        repository.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -97,11 +90,10 @@ class SearchViewModelTest {
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
-    @Test fun errorLoadingMore() {
-        given(repository.search(QUERY))
-                .willReturn(response(REPO_1, REPO_2, 2))
+    @Test fun errorLoadingMore() = runBlocking {
+        repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
 
-        repository.searchNextPage(QUERY, 2) willThrow IOException(ERROR)
+        repository.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -119,7 +111,7 @@ class SearchViewModelTest {
     }
 
     companion object {
-        private val QUERY = "query"
-        private val ERROR = "error"
+        private const val QUERY = "query"
+        private const val ERROR = "error"
     }
 }

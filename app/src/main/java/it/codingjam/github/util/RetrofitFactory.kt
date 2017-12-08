@@ -5,7 +5,6 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitFactory {
@@ -24,7 +23,6 @@ object RetrofitFactory {
                 .baseUrl(baseUrl)
                 .addConverterFactory(DenvelopingConverter(gson))
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient.build())
                 .build()
                 .create(T::class.java)

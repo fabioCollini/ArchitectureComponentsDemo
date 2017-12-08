@@ -16,19 +16,17 @@
 
 package it.codingjam.github.repository
 
-import io.reactivex.Single
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.vo.User
+import ru.gildor.coroutines.retrofit.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Repository that handles User objects.
- */
-@Singleton
-class UserRepository @Inject constructor(private val githubService: GithubService) {
+@Singleton class UserRepository @Inject constructor(
+        private val githubService: GithubService
+) {
 
-    fun loadUser(login: String): Single<User> {
-        return githubService.getUser(login)
+    suspend fun loadUser(login: String): User {
+        return githubService.getUser(login).await()
     }
 }

@@ -17,16 +17,13 @@
 package it.codingjam.github.ui.search
 
 import android.arch.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
+import kotlinx.coroutines.experimental.Job
 import java.util.*
 import javax.inject.Inject
 
@@ -36,7 +33,7 @@ class SearchViewModel
         private val navigationController: NavigationController
 ) : ViewModel() {
 
-    private val disposable = CompositeDisposable()
+    val job = Job()
 
     val liveData = LiveDataDelegate(SearchViewState())
 
@@ -44,43 +41,41 @@ class SearchViewModel
 
     val uiActions = UiActionsLiveData()
 
-    fun setQuery(originalInput: String) {
+    suspend fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (input != state.query) {
             reloadData(input)
         }
     }
 
-    private fun reloadData(input: String) {
+    private suspend fun reloadData(input: String) {
         state = state.copy(input, Resource.Loading, false, null)
-        disposable += repoRepository.search(input)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { state = state.copy(repos = Resource.Success(it.items), nextPage = it.nextPage) },
-                        { state = state.copy(repos = Resource.Error(it)) }
-                )
+        state = try {
+            val response = repoRepository.search(input)
+            val items = response.items
+            state.copy(repos = Resource.Success(items), nextPage = response.nextPage)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            state.copy(repos = Resource.Error(e))
+        }
     }
 
-    fun loadNextPage() {
+    suspend fun loadNextPage() {
         val query = state.query
         val nextPage = state.nextPage
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
             state = state.copy(loadingMore = true)
-            disposable += repoRepository.searchNextPage(query, nextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { state = state.copy(repos = state.repos.map { v -> v + it.items }, nextPage = it.nextPage, loadingMore = false) },
-                            { t ->
-                                state = state.copy(loadingMore = false)
-                                uiActions { navigationController.showError(it, t.message) }
-                            }
-                    )
+            try {
+                val response = repoRepository.searchNextPage(query, nextPage)
+                state = state.copy(repos = state.repos.map { v -> v + response.items }, nextPage = response.nextPage, loadingMore = false)
+            } catch (t: Exception) {
+                state = state.copy(loadingMore = false)
+                uiActions { navigationController.showError(it, t.message) }
+            }
         }
     }
 
-    fun refresh() {
+    suspend fun refresh() {
         val query = state.query
         if (!query.isEmpty()) {
             reloadData(query)
@@ -90,5 +85,7 @@ class SearchViewModel
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
 
-    override fun onCleared() = disposable.clear()
+    override fun onCleared() {
+        job.cancel()
+    }
 }
