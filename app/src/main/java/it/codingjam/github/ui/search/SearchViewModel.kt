@@ -21,19 +21,18 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
-import kotlinx.coroutines.experimental.Job
 import java.util.*
 import javax.inject.Inject
 
 class SearchViewModel
 @Inject constructor(
         private val repoRepository: RepoRepository,
-        private val navigationController: NavigationController
+        private val navigationController: NavigationController,
+        private val ui: UiScheduler
 ) : ViewModel() {
-
-    val job = Job()
 
     val liveData = LiveDataDelegate(SearchViewState())
 
@@ -41,7 +40,7 @@ class SearchViewModel
 
     val uiActions = UiActionsLiveData()
 
-    suspend fun setQuery(originalInput: String) {
+    fun setQuery(originalInput: String) = ui {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (input != state.query) {
             reloadData(input)
@@ -60,7 +59,7 @@ class SearchViewModel
         }
     }
 
-    suspend fun loadNextPage() {
+    fun loadNextPage() = ui {
         val query = state.query
         val nextPage = state.nextPage
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
@@ -75,7 +74,7 @@ class SearchViewModel
         }
     }
 
-    suspend fun refresh() {
+    fun refresh() = ui {
         val query = state.query
         if (!query.isEmpty()) {
             reloadData(query)
@@ -86,6 +85,6 @@ class SearchViewModel
             uiActions { navigationController.navigateToRepo(it, id) }
 
     override fun onCleared() {
-        job.cancel()
+        ui.cancel()
     }
 }

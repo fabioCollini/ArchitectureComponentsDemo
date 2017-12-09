@@ -27,8 +27,8 @@ import it.codingjam.github.repository.UserRepository
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
+import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.util.willReturn
-import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.verify
+import ru.gildor.coroutines.retrofit.Result
 
 class UserViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
@@ -44,7 +45,7 @@ class UserViewModelTest {
     val repoRepository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController) }
+    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController, UiScheduler()) }
 
     val states = mutableListOf<UserViewState>()
 
@@ -53,9 +54,11 @@ class UserViewModelTest {
         userViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun load() = runBlocking {
-        userRepository.loadUser(LOGIN) willReturn USER
-        repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
+    @Test fun load() {
+        runBlocking {
+            userRepository.loadUser(LOGIN) willReturn Result.Ok(USER, mock())
+            repoRepository.loadRepos(LOGIN) willReturn Result.Ok(listOf(REPO_1, REPO_2), mock())
+        }
 
         userViewModel.load(LOGIN)
 
@@ -67,11 +70,13 @@ class UserViewModelTest {
                 )
     }
 
-    @Test fun retry() = runBlocking {
-        userRepository.loadUser(LOGIN)
-                .willThrow(RuntimeException(ERROR))
-                .willReturn(USER)
-        repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
+    @Test fun retry() {
+        runBlocking {
+            userRepository.loadUser(LOGIN)
+                    .willReturn(Result.Exception(RuntimeException(ERROR)))
+                    .willReturn(Result.Ok(USER, mock()))
+            repoRepository.loadRepos(LOGIN) willReturn Result.Ok(listOf(REPO_1, REPO_2), mock())
+        }
 
         userViewModel.load(LOGIN)
         userViewModel.retry()

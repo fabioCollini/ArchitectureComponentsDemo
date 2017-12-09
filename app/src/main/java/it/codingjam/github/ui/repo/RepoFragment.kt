@@ -25,9 +25,7 @@ import it.codingjam.github.component
 import it.codingjam.github.databinding.RepoFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
-import it.codingjam.github.ui.common.RetryCallback
 import it.codingjam.github.ui.common.getParam
-import it.codingjam.github.util.async
 import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.RepoId
 
@@ -36,7 +34,7 @@ class RepoFragment : Fragment() {
     lateinit var binding: RepoFragmentBinding
 
     private val viewModel by viewModelProvider {
-        component.repoViewModel().also { it.initAsync(getParam(this)) }
+        component.repoViewModel().also { it.init(getParam(this)) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -46,12 +44,6 @@ class RepoFragment : Fragment() {
 
         binding.contributorList.adapter = adapter
         binding.viewModel = viewModel
-
-        binding.loading.callback = object : RetryCallback {
-            override fun retry() {
-                viewModel.job.async { viewModel.retry() }
-            }
-        }
 
         viewModel.liveData.observe(this) {
             binding.state = it

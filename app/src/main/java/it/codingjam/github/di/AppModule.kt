@@ -24,6 +24,8 @@ import dagger.Provides
 import it.codingjam.github.BuildConfig
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.RetrofitFactory.createService
+import it.codingjam.github.util.UiScheduler
+import kotlinx.coroutines.experimental.android.UI
 import okhttp3.HttpUrl
 import javax.inject.Singleton
 
@@ -32,4 +34,6 @@ import javax.inject.Singleton
             createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
 
     @Provides fun providePrefs(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+
+    @Provides fun uiScheduler(): UiScheduler = UiScheduler(UI)
 }

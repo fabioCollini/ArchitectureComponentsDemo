@@ -31,6 +31,7 @@ import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
+import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.util.willReturn
 import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Repo
@@ -47,7 +48,7 @@ class SearchViewModelTest {
     val repository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val viewModel by lazy { SearchViewModel(repository, navigationController) }
+    val viewModel by lazy { SearchViewModel(repository, navigationController, UiScheduler()) }
 
     val states = mutableListOf<SearchViewState>()
 
@@ -56,8 +57,10 @@ class SearchViewModelTest {
         viewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun load() = runBlocking {
-        repository.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+    @Test fun load() {
+        runBlocking {
+            repository.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+        }
 
         viewModel.setQuery(QUERY)
 
@@ -72,10 +75,11 @@ class SearchViewModelTest {
         return RepoSearchResponse(listOf(repo1, repo2), nextPage)
     }
 
-    @Test fun loadMore() = runBlocking {
-        repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-
-        repository.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
+    @Test fun loadMore() {
+        runBlocking {
+            repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+            repository.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
+        }
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -90,10 +94,11 @@ class SearchViewModelTest {
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
-    @Test fun errorLoadingMore() = runBlocking {
-        repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-
-        repository.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
+    @Test fun errorLoadingMore() {
+        runBlocking {
+            repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+            repository.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
+        }
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()

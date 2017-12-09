@@ -22,11 +22,10 @@ import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.async
+import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 import ru.gildor.coroutines.retrofit.Result
 import javax.inject.Inject
@@ -35,10 +34,9 @@ class UserViewModel
 @Inject constructor(
         private val userRepository: UserRepository,
         private val repoRepository: RepoRepository,
-        private val navigationController: NavigationController
+        private val navigationController: NavigationController,
+        private val ui: UiScheduler
 ) : ViewModel() {
-
-    val job = Job()
 
     private lateinit var login: String
 
@@ -48,7 +46,7 @@ class UserViewModel
 
     val uiActions = UiActionsLiveData()
 
-    suspend fun load(login: String) {
+    fun load(login: String) = ui {
         this.login = login
         state = state.copy(userDetail = Resource.Loading)
 
@@ -59,16 +57,12 @@ class UserViewModel
         state = state.copy(userDetail = Resource.create(result))
     }
 
-    fun loadAsync(login: String) = job.async { load(login) }
-
-    suspend fun retry() = load(login)
+    fun retry() = ui { load(login) }
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
 
-    override fun onCleared() {
-        job.cancel()
-    }
+    override fun onCleared() = ui.cancel()
 }
 
 suspend fun <T1 : Any, T2 : Any, R : Any> zip(d1: Deferred<Result<T1>>, d2: Deferred<Result<T2>>, zipper: (T1, T2) -> R): Result<R> {

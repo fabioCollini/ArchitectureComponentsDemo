@@ -21,18 +21,16 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.async
+import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
-import kotlinx.coroutines.experimental.Job
 import javax.inject.Inject
 
 class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
-        private val repository: RepoRepository
+        private val repository: RepoRepository,
+        private val ui: UiScheduler
 ) : ViewModel() {
-
-    val job = Job()
 
     private lateinit var repoId: RepoId
 
@@ -42,30 +40,28 @@ class RepoViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    suspend fun retry() = reload()
+    fun retry() = ui { reload() }
 
-    suspend fun init(repoId: RepoId) {
+    fun init(repoId: RepoId) = ui {
         this.repoId = repoId
         reload()
     }
 
-    fun initAsync(repoId: RepoId) = job.async { init(repoId) }
-
-    suspend fun reload() {
-        state = state.copy(Resource.Loading)
+    private suspend fun reload() {
+        state = state.copy(repoDetail = Resource.Loading)
 
         state = try {
             val repo = repository.loadRepo(repoId.owner, repoId.name)
-            state.copy(Resource.Success(repo))
+            state.copy(repoDetail = Resource.Success(repo))
         } catch (e: Exception) {
-            state.copy(Resource.Error(e))
+            state.copy(repoDetail = Resource.Error(e))
         }
     }
 
     fun openUserDetail(login: String) =
-        uiActions { navigationController.navigateToUser(it, login) }
+            uiActions { navigationController.navigateToUser(it, login) }
 
     override fun onCleared() {
-        job.cancel()
+        ui.cancel()
     }
 }

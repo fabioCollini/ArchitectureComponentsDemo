@@ -21,10 +21,7 @@ import android.support.v4.app.FragmentActivity
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.util.TestData
-import it.codingjam.github.util.shouldContain
-import it.codingjam.github.util.willReturn
-import it.codingjam.github.util.willThrow
+import it.codingjam.github.util.*
 import it.codingjam.github.vo.RepoId
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -41,7 +38,7 @@ class RepoViewModelTest {
 
     val activity: FragmentActivity = mock()
 
-    val repoViewModel by lazy{ RepoViewModel(navigationController, repository) }
+    val repoViewModel by lazy { RepoViewModel(navigationController, repository, UiScheduler()) }
 
     val states = mutableListOf<RepoViewState>()
 
@@ -50,8 +47,10 @@ class RepoViewModelTest {
         repoViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun fetchData() = runBlocking {
-        repository.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
+    @Test fun fetchData() {
+        runBlocking {
+            repository.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
+        }
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -60,8 +59,10 @@ class RepoViewModelTest {
         }
     }
 
-    @Test fun errorFetchingData() = runBlocking {
-        repository.loadRepo("a", "b") willThrow RuntimeException()
+    @Test fun errorFetchingData() {
+        runBlocking {
+            repository.loadRepo("a", "b") willThrow RuntimeException()
+        }
 
         repoViewModel.init(RepoId("a", "b"))
 
@@ -70,10 +71,12 @@ class RepoViewModelTest {
         }
     }
 
-    @Test fun retry() = runBlocking {
-        repository.loadRepo("a", "b")
-                .willThrow(RuntimeException())
-                .willReturn(TestData.REPO_DETAIL)
+    @Test fun retry() {
+        runBlocking {
+            repository.loadRepo("a", "b")
+                    .willThrow(RuntimeException())
+                    .willReturn(TestData.REPO_DETAIL)
+        }
 
         repoViewModel.init(RepoId("a", "b"))
 

@@ -23,14 +23,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.binding.OnTextListener
-import it.codingjam.github.binding.onKeyDown
-import it.codingjam.github.binding.onSearch
 import it.codingjam.github.component
 import it.codingjam.github.databinding.SearchFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
-import it.codingjam.github.ui.common.RetryCallback
-import it.codingjam.github.util.async
 import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.orElse
 
@@ -51,27 +46,13 @@ class SearchFragment : Fragment() {
         val adapter = DataBoundListAdapter { RepoViewHolder(it, viewModel) }
         binding.repoList.adapter = adapter
 
-        binding.loading.callback = object : RetryCallback {
-            override fun retry() {
-                viewModel.job.async { viewModel.refresh() }
-            }
-        }
-
-        val listener = object : OnTextListener {
-            override fun onChanged(s: String) {
-                viewModel.job.async { viewModel.setQuery(s) }
-            }
-        }
-        onKeyDown(binding.input, listener)
-        onSearch(binding.input, listener)
-
         binding.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastPosition = layoutManager
                         .findLastVisibleItemPosition()
                 if (lastPosition == adapter.itemCount - 1) {
-                    viewModel.job.async { viewModel.loadNextPage() }
+                    viewModel.loadNextPage()
                 }
             }
         })

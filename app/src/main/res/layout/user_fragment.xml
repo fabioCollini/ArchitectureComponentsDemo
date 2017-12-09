@@ -86,8 +86,8 @@
             tools:listitem="@layout/repo_item"/>
 
         <include
-            android:id="@+id/loading"
             layout="@layout/loading_state"
+            app:callback="@{() -> viewModel.retry()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
