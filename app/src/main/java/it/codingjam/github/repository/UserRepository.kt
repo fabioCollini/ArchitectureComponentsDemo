@@ -18,7 +18,8 @@ package it.codingjam.github.repository
 
 import it.codingjam.github.api.GithubService
 import it.codingjam.github.vo.User
-import ru.gildor.coroutines.retrofit.await
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,7 +27,7 @@ import javax.inject.Singleton
         private val githubService: GithubService
 ) {
 
-    suspend fun loadUser(login: String): User {
-        return githubService.getUser(login).await()
+    suspend fun loadUser(login: String): Result<User> {
+        return githubService.getUser(login).awaitResult()
     }
 }

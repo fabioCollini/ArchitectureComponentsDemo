@@ -23,8 +23,10 @@ import it.codingjam.github.vo.RepoDetail
 import kotlinx.coroutines.experimental.async
 import retrofit2.HttpException
 import retrofit2.Response
+import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.await
 import ru.gildor.coroutines.retrofit.awaitResponse
+import ru.gildor.coroutines.retrofit.awaitResult
 import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -33,8 +35,8 @@ import javax.inject.Singleton
 @Singleton class RepoRepository
 @Inject constructor(private val githubService: GithubService) {
 
-    suspend fun loadRepos(owner: String): List<Repo> =
-            githubService.getRepos(owner).await()
+    suspend fun loadRepos(owner: String): Result<List<Repo>> =
+            githubService.getRepos(owner).awaitResult()
 
     suspend fun loadRepo(owner: String, name: String): RepoDetail {
         val repo = async { githubService.getRepo(owner, name).await() }
