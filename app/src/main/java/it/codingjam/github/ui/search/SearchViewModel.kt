@@ -19,9 +19,9 @@ package it.codingjam.github.ui.search
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import java.util.*
@@ -31,7 +31,7 @@ class SearchViewModel
 @Inject constructor(
         private val repoRepository: RepoRepository,
         private val navigationController: NavigationController,
-        private val ui: UiScheduler
+        private val coroutines: Coroutines
 ) : ViewModel() {
 
     val liveData = LiveDataDelegate(SearchViewState())
@@ -40,7 +40,7 @@ class SearchViewModel
 
     val uiActions = UiActionsLiveData()
 
-    fun setQuery(originalInput: String) = ui {
+    fun setQuery(originalInput: String) = coroutines {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (input != state.query) {
             reloadData(input)
@@ -59,7 +59,7 @@ class SearchViewModel
         }
     }
 
-    fun loadNextPage() = ui {
+    fun loadNextPage() = coroutines {
         val query = state.query
         val nextPage = state.nextPage
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
@@ -74,7 +74,7 @@ class SearchViewModel
         }
     }
 
-    fun refresh() = ui {
+    fun refresh() = coroutines {
         val query = state.query
         if (!query.isEmpty()) {
             reloadData(query)
@@ -85,6 +85,6 @@ class SearchViewModel
             uiActions { navigationController.navigateToRepo(it, id) }
 
     override fun onCleared() {
-        ui.cancel()
+        coroutines.cancel()
     }
 }

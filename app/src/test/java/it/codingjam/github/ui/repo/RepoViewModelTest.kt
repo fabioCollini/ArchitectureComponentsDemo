@@ -38,7 +38,7 @@ class RepoViewModelTest {
 
     val activity: FragmentActivity = mock()
 
-    val repoViewModel by lazy { RepoViewModel(navigationController, repository, UiScheduler()) }
+    val repoViewModel by lazy { RepoViewModel(navigationController, repository, TestCoroutines()) }
 
     val states = mutableListOf<RepoViewState>()
 

@@ -20,9 +20,9 @@ import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
+import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.Deferred
@@ -35,7 +35,7 @@ class UserViewModel
         private val userRepository: UserRepository,
         private val repoRepository: RepoRepository,
         private val navigationController: NavigationController,
-        private val ui: UiScheduler
+        private val coroutines: Coroutines
 ) : ViewModel() {
 
     private lateinit var login: String
@@ -46,7 +46,7 @@ class UserViewModel
 
     val uiActions = UiActionsLiveData()
 
-    fun load(login: String) = ui {
+    fun load(login: String) = coroutines {
         this.login = login
         state = state.copy(userDetail = Resource.Loading)
 
@@ -57,12 +57,12 @@ class UserViewModel
         state = state.copy(userDetail = Resource.create(result))
     }
 
-    fun retry() = ui { load(login) }
+    fun retry() = coroutines { load(login) }
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
 
-    override fun onCleared() = ui.cancel()
+    override fun onCleared() = coroutines.cancel()
 }
 
 suspend fun <T1 : Any, T2 : Any, R : Any> zip(d1: Deferred<Result<T1>>, d2: Deferred<Result<T2>>, zipper: (T1, T2) -> R): Result<R> {

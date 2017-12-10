@@ -27,11 +27,11 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.api.RepoSearchResponse
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.ResourceTester
+import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
-import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.util.willReturn
 import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Repo
@@ -48,7 +48,7 @@ class SearchViewModelTest {
     val repository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val viewModel by lazy { SearchViewModel(repository, navigationController, UiScheduler()) }
+    val viewModel by lazy { SearchViewModel(repository, navigationController, TestCoroutines()) }
 
     val states = mutableListOf<SearchViewState>()
 

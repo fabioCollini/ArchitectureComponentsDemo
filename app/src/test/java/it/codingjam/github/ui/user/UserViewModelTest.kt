@@ -24,10 +24,10 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.repository.UserRepository
+import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
-import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.util.willReturn
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
@@ -45,7 +45,7 @@ class UserViewModelTest {
     val repoRepository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController, UiScheduler()) }
+    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController, TestCoroutines()) }
 
     val states = mutableListOf<UserViewState>()
 

@@ -19,9 +19,9 @@ package it.codingjam.github.ui.repo
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.UiScheduler
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
         private val repository: RepoRepository,
-        private val ui: UiScheduler
+        private val coroutines: Coroutines
 ) : ViewModel() {
 
     private lateinit var repoId: RepoId
@@ -40,9 +40,9 @@ class RepoViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    fun retry() = ui { reload() }
+    fun retry() = coroutines { reload() }
 
-    fun init(repoId: RepoId) = ui {
+    fun init(repoId: RepoId) = coroutines {
         this.repoId = repoId
         reload()
     }
@@ -62,6 +62,6 @@ class RepoViewModel @Inject constructor(
             uiActions { navigationController.navigateToUser(it, login) }
 
     override fun onCleared() {
-        ui.cancel()
+        coroutines.cancel()
     }
 }
