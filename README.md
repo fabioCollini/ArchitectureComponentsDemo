@@ -15,3 +15,4 @@ I converted it to kotlin and modified some architectural aspects to test ViewMod
  * Fragment args are managed using a [companion object base class](https://github.com/fabioCollini/ArchitectureComponentsDemo/blob/master/app/src/main/java/it/codingjam/github/ui/common/FragmentCreator.kt)
  * JVM tests are written using Mockito and [AssertK](https://github.com/willowtreeapps/assertk)
  * Espresso tests are written using [DaggerMock](https://github.com/fabioCollini/DaggerMock) and Mockito
+ * asynchronous tasks are managed using [Coroutines](https://github.com/Kotlin/kotlinx.coroutines/blob/master/coroutines-guide.md) (the [rxjava branch](https://github.com/fabioCollini/ArchitectureComponentsDemo/tree/rxjava) contains the same example with RxJava singles instead of coroutines)
