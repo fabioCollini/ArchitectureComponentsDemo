@@ -86,10 +86,11 @@ private fun dismissKeyboard(view: TextView) {
 
 @BindingAdapter("errorMessage")
 fun bindErrorMessage(t: TextView, resource: Resource<*>?) {
-    t.text = if (resource is Resource.Error)
-        if (resource.message.isBlank()) t.resources.getString(R.string.unknown_error) else resource.message
-    else
-        ""
+    t.text = when {
+        resource !is Resource.Error -> ""
+        resource.message.isBlank() -> t.resources.getString(R.string.unknown_error)
+        else -> resource.message
+    }
 }
 
 @BindingAdapter("visibleWhileLoading")
