@@ -21,14 +21,12 @@ import android.support.v7.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private val navigationController by lazy { component.navigationController() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
-            navigationController.navigateToSearch(this)
+            component.navigationController.navigateToSearch(this)
         }
     }
 }

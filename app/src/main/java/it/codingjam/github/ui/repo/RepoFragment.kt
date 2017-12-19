@@ -34,7 +34,7 @@ class RepoFragment : Fragment() {
     lateinit var binding: RepoFragmentBinding
 
     private val viewModel by viewModelProvider {
-        component.repoViewModel().also { it.init(getParam(this)) }
+        component.repoViewModel.also { it.init(getParam(this)) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -24,14 +24,14 @@ import it.codingjam.github.ui.user.UserViewModel
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(AppModule::class))
+@Component(modules = [AppModule::class])
 interface AppComponent {
 
-    fun searchViewModel(): SearchViewModel
+    val searchViewModel: SearchViewModel
 
-    fun repoViewModel(): RepoViewModel
+    val repoViewModel: RepoViewModel
 
-    fun userViewModel(): UserViewModel
+    val userViewModel: UserViewModel
 
-    fun navigationController(): NavigationController
+    val navigationController: NavigationController
 }

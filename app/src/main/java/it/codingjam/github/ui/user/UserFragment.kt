@@ -30,7 +30,7 @@ import it.codingjam.github.util.viewModelProvider
 
 class UserFragment : Fragment() {
     private val viewModel by viewModelProvider {
-        component.userViewModel().also { it.load(getParam(this)) }
+        component.userViewModel.also { it.load(getParam(this)) }
     }
 
     lateinit var binding: UserFragmentBinding

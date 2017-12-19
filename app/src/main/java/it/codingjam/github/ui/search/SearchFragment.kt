@@ -31,7 +31,7 @@ import it.codingjam.github.vo.orElse
 
 class SearchFragment : Fragment() {
 
-    private val viewModel by viewModelProvider { component.searchViewModel() }
+    private val viewModel by viewModelProvider { component.searchViewModel }
 
     lateinit var binding: SearchFragmentBinding
 
