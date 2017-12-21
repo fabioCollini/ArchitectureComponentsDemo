@@ -17,6 +17,8 @@
 package it.codingjam.github.ui.search
 
 import android.arch.lifecycle.ViewModel
+import android.content.SharedPreferences
+import com.nalulabs.prefs.string
 import it.codingjam.github.NavigationController
 import it.codingjam.github.repository.RepoRepository
 import it.codingjam.github.util.Coroutines
@@ -31,16 +33,20 @@ class SearchViewModel
 @Inject constructor(
         private val repoRepository: RepoRepository,
         private val navigationController: NavigationController,
-        private val coroutines: Coroutines
+        private val coroutines: Coroutines,
+        prefs: SharedPreferences
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(SearchViewState())
+    private var lastSearch by prefs.string("")
+
+    val liveData = LiveDataDelegate(SearchViewState(lastSearch))
 
     private var state by liveData
 
     val uiActions = UiActionsLiveData()
 
     fun setQuery(originalInput: String) = coroutines {
+        lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (input != state.query) {
             reloadData(input)

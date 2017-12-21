@@ -52,6 +52,7 @@
                 android:hint="@string/search_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
+                android:text="@{state.query}"
                 app:onKeyDown="@{viewModel::setQuery}"
                 app:onSearch="@{viewModel::setQuery}"
                 tools:text="google"/>

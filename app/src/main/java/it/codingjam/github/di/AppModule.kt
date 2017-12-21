@@ -29,11 +29,11 @@ import it.codingjam.github.util.RetrofitFactory.createService
 import okhttp3.HttpUrl
 import javax.inject.Singleton
 
-@Module class AppModule(private val application: Application) {
+@Module class AppModule {
     @Singleton @Provides fun provideGithubService(): GithubService =
             createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
 
-    @Provides fun providePrefs(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    @Provides fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
 }

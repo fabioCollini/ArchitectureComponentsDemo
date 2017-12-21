@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentActivity
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
+import com.nalulabs.prefs.fake.FakeSharedPreferences
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.api.RepoSearchResponse
@@ -48,13 +49,13 @@ class SearchViewModelTest {
     val repository: RepoRepository = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val viewModel by lazy { SearchViewModel(repository, navigationController, TestCoroutines()) }
+    val viewModel by lazy { SearchViewModel(repository, navigationController, TestCoroutines(), FakeSharedPreferences()) }
 
     val states = mutableListOf<SearchViewState>()
 
     @Before fun setUp() {
-        viewModel.liveData.observeForever({ states.add(it) })
-        viewModel.uiActions.observeForever({ it(activity) })
+        viewModel.liveData.observeForever { states.add(it) }
+        viewModel.uiActions.observeForever { it(activity) }
     }
 
     @Test fun load() {

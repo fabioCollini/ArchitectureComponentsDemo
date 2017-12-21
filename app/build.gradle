@@ -85,6 +85,8 @@ dependencies {
 
     compile "com.jakewharton.timber:timber:$timber_version"
 
+    compile 'com.github.nalulabs.prefs-delegates:prefs-delegates:0.1'
+
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "android.arch.lifecycle:compiler:$arch_version"
@@ -102,6 +104,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     testCompile "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
+    testCompile 'com.github.nalulabs.prefs-delegates:fake-prefs:0.1'
 
     androidTestCompile "com.android.support:appcompat-v7:$support_version"
     androidTestCompile "com.android.support:recyclerview-v7:$support_version"
@@ -125,8 +128,8 @@ dependencies {
     androidTestCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock:79630f9b16'
-    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock-kotlin:79630f9b16'
+    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
+    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 

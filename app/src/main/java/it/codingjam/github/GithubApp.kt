@@ -21,7 +21,6 @@ import android.content.Context
 import android.support.annotation.VisibleForTesting
 import android.support.v4.app.Fragment
 import it.codingjam.github.di.AppComponent
-import it.codingjam.github.di.AppModule
 import it.codingjam.github.di.DaggerAppComponent
 import timber.log.Timber
 
@@ -36,7 +35,7 @@ class GithubApp : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        component = DaggerAppComponent.builder().appModule(AppModule(this)).build()
+        component = DaggerAppComponent.builder().application(this).build()
     }
 }
 
