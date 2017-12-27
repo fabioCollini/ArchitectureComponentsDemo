@@ -16,8 +16,6 @@
 
 package it.codingjam.github.vo
 
-import ru.gildor.coroutines.retrofit.Result
-
 sealed class Resource<out T> {
 
     abstract fun <R> map(f: (T) -> R): Resource<R>
@@ -38,16 +36,6 @@ sealed class Resource<out T> {
 
     object Empty : Resource<Nothing>() {
         override fun <R> map(f: (Nothing) -> R): Resource<R> = this
-    }
-
-    companion object {
-        fun <T : Any> create(res: Result<T>): Resource<T> {
-            return when (res) {
-                is Result.Ok -> Resource.Success(res.value)
-                is Result.Error -> Resource.Error(res.exception)
-                is Result.Exception -> Resource.Error(res.exception)
-            }
-        }
     }
 }
 

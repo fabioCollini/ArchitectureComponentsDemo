@@ -1,6 +1,7 @@
 package it.codingjam.github.util
 
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,6 +24,7 @@ object RetrofitFactory {
                 .baseUrl(baseUrl)
                 .addConverterFactory(DenvelopingConverter(gson))
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(httpClient.build())
                 .build()
                 .create(T::class.java)

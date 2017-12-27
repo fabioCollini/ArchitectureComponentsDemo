@@ -25,9 +25,7 @@ import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
-import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import ru.gildor.coroutines.retrofit.Result
 import javax.inject.Inject
 
 class UserViewModel
@@ -50,11 +48,14 @@ class UserViewModel
         this.login = login
         state = state.copy(userDetail = Resource.Loading)
 
-        val userDeferred = async { userRepository.loadUser(login) }
-        val reposDeferred = async { repoRepository.loadRepos(login) }
-        val result = zip(userDeferred, reposDeferred, ::UserDetail)
-
-        state = state.copy(userDetail = Resource.create(result))
+        state = try {
+            val userDeferred = async { userRepository.loadUser(login) }
+            val reposDeferred = async { repoRepository.loadRepos(login) }
+            val detail = UserDetail(userDeferred.await(), reposDeferred.await())
+            state.copy(userDetail = Resource.Success(detail))
+        } catch (e: Exception) {
+            state.copy(userDetail = Resource.Error(e))
+        }
     }
 
     fun retry() = coroutines { load(login) }
@@ -63,20 +64,4 @@ class UserViewModel
             uiActions { navigationController.navigateToRepo(it, id) }
 
     override fun onCleared() = coroutines.cancel()
-}
-
-suspend fun <T1 : Any, T2 : Any, R : Any> zip(d1: Deferred<Result<T1>>, d2: Deferred<Result<T2>>, zipper: (T1, T2) -> R): Result<R> {
-    val r1 = d1.await()
-    return when (r1) {
-        is Result.Ok -> {
-            val r2 = d2.await()
-            when (r2) {
-                is Result.Ok -> Result.Ok(zipper(r1.value, r2.value), r2.response)
-                is Result.Exception -> r2
-                is Result.Error -> r2
-            }
-        }
-        is Result.Exception -> r1
-        is Result.Error -> r1
-    }
 }

@@ -78,7 +78,7 @@ dependencies {
     compile "com.github.bumptech.glide:glide:$glide_version"
 
     compile "org.jetbrains.anko:anko-coroutines:0.10.3"
-    compile 'ru.gildor.coroutines:kotlin-coroutines-retrofit:0.8.2'
+    compile 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
 
     compile "com.google.dagger:dagger:$dagger_version"
     compile "com.android.support.constraint:constraint-layout:$constraint_layout_version"

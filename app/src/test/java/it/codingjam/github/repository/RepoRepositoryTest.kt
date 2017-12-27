@@ -8,11 +8,11 @@ import it.codingjam.github.api.GithubService
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.willReturn
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.Headers
 import org.junit.Test
 import retrofit2.Response
-import retrofit2.mock.Calls
 
 class RepoRepositoryTest {
 
@@ -26,7 +26,7 @@ class RepoRepositoryTest {
         val headers = mapOf("link" to header)
 
         githubService.searchRepos(QUERY) willReturn
-                Calls.response(Response.success(listOf(REPO_1, REPO_2), Headers.of(headers)))
+                async { Response.success(listOf(REPO_1, REPO_2), Headers.of(headers)) }
 
         val (items, nextPage) = repository.search(QUERY)
 
