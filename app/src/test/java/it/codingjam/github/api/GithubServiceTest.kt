@@ -20,6 +20,7 @@ import assertk.assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import it.codingjam.github.util.RetrofitFactory
+import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
@@ -42,9 +43,9 @@ class GithubServiceTest {
         mockWebServer.shutdown()
     }
 
-    @Test fun getUser() {
+    @Test fun getUser() = runBlocking {
         enqueueResponse("user-yigit.json")
-        val yigit = service.getUser("yigit").execute().body()!!
+        val yigit = service.getUser("yigit").await()
 
         val request = mockWebServer.takeRequest()
         assert(request.path).isEqualTo("/users/yigit")
@@ -55,9 +56,9 @@ class GithubServiceTest {
         assert(yigit.blog).isEqualTo("birbit.com")
     }
 
-    @Test fun repos() {
+    @Test fun repos() = runBlocking {
         enqueueResponse("repos-yigit.json")
-        val repos = service.getRepos("yigit").execute().body()!!
+        val repos = service.getRepos("yigit").await()
 
         val request = mockWebServer.takeRequest()
         assert(request.path).isEqualTo("/users/yigit/repos")
@@ -74,9 +75,9 @@ class GithubServiceTest {
         assert(repos[1].fullName).isEqualTo("yigit/android-architecture")
     }
 
-    @Test fun getContributors() {
+    @Test fun getContributors() = runBlocking {
         enqueueResponse("contributors.json")
-        val contributors = service.getContributors("foo", "bar").execute().body()!!
+        val contributors = service.getContributors("foo", "bar").await()
         assert(contributors.size).isEqualTo(3)
         val (login, contributions, avatarUrl) = contributors[0]
         assert(login).isEqualTo("yigit")
@@ -86,10 +87,10 @@ class GithubServiceTest {
         assert(contributors[2].login).isEqualTo("coltin")
     }
 
-    @Test fun search() {
+    @Test fun search() = runBlocking {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," + " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         enqueueResponse("search.json", mapOf("link" to header))
-        val response = service.searchRepos("foo").execute()!!
+        val response = service.searchRepos("foo").await()
 
         assert(response).isNotNull()
         assert(response.body()?.size).isEqualTo(30)

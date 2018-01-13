@@ -20,13 +20,8 @@ import it.codingjam.github.api.GithubService
 import it.codingjam.github.api.RepoSearchResponse
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.RepoDetail
-import kotlinx.coroutines.experimental.async
 import retrofit2.HttpException
 import retrofit2.Response
-import ru.gildor.coroutines.retrofit.Result
-import ru.gildor.coroutines.retrofit.await
-import ru.gildor.coroutines.retrofit.awaitResponse
-import ru.gildor.coroutines.retrofit.awaitResult
 import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -35,21 +30,20 @@ import javax.inject.Singleton
 @Singleton class RepoRepository
 @Inject constructor(private val githubService: GithubService) {
 
-    suspend fun loadRepos(owner: String): Result<List<Repo>> =
-            githubService.getRepos(owner).awaitResult()
+    suspend fun loadRepos(owner: String): List<Repo> = githubService.getRepos(owner).await()
 
     suspend fun loadRepo(owner: String, name: String): RepoDetail {
-        val repo = async { githubService.getRepo(owner, name).await() }
-        val contributors = async { githubService.getContributors(owner, name).await() }
+        val repo = githubService.getRepo(owner, name)
+        val contributors = githubService.getContributors(owner, name)
 
         return RepoDetail(repo.await(), contributors.await())
     }
 
     suspend fun searchNextPage(query: String, nextPage: Int): RepoSearchResponse =
-            githubService.searchRepos(query, nextPage).awaitResponse().let { toRepoSearchResponse(it) }
+            githubService.searchRepos(query, nextPage).await().let { toRepoSearchResponse(it) }
 
     suspend fun search(query: String): RepoSearchResponse =
-            githubService.searchRepos(query).awaitResponse().let { toRepoSearchResponse(it) }
+            githubService.searchRepos(query).await().let { toRepoSearchResponse(it) }
 
     private fun toRepoSearchResponse(response: Response<List<Repo>>): RepoSearchResponse {
         if (response.isSuccessful) {

@@ -29,6 +29,7 @@ import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
 import it.codingjam.github.util.willReturn
+import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
@@ -36,7 +37,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.verify
-import ru.gildor.coroutines.retrofit.Result
 
 class UserViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
@@ -56,8 +56,8 @@ class UserViewModelTest {
 
     @Test fun load() {
         runBlocking {
-            userRepository.loadUser(LOGIN) willReturn Result.Ok(USER, mock())
-            repoRepository.loadRepos(LOGIN) willReturn Result.Ok(listOf(REPO_1, REPO_2), mock())
+            userRepository.loadUser(LOGIN) willReturn USER
+            repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
         }
 
         userViewModel.load(LOGIN)
@@ -73,9 +73,9 @@ class UserViewModelTest {
     @Test fun retry() {
         runBlocking {
             userRepository.loadUser(LOGIN)
-                    .willReturn(Result.Exception(RuntimeException(ERROR)))
-                    .willReturn(Result.Ok(USER, mock()))
-            repoRepository.loadRepos(LOGIN) willReturn Result.Ok(listOf(REPO_1, REPO_2), mock())
+                    .willThrow(RuntimeException(ERROR))
+                    .willReturn(USER)
+            repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
         }
 
         userViewModel.load(LOGIN)

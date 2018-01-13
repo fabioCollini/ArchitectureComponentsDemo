@@ -20,29 +20,30 @@ import it.codingjam.github.util.EnvelopePayload
 import it.codingjam.github.vo.Contributor
 import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.User
-import retrofit2.Call
+import kotlinx.coroutines.experimental.Deferred
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubService {
     @GET("users/{login}")
-    fun getUser(@Path("login") login: String): Call<User>
+    fun getUser(@Path("login") login: String): Deferred<User>
 
     @GET("users/{login}/repos")
-    fun getRepos(@Path("login") login: String): Call<List<Repo>>
+    fun getRepos(@Path("login") login: String): Deferred<List<Repo>>
 
     @GET("repos/{owner}/{name}")
-    fun getRepo(@Path("owner") owner: String, @Path("name") name: String): Call<Repo>
+    fun getRepo(@Path("owner") owner: String, @Path("name") name: String): Deferred<Repo>
 
     @GET("repos/{owner}/{name}/contributors")
-    fun getContributors(@Path("owner") owner: String, @Path("name") name: String): Call<List<Contributor>>
+    fun getContributors(@Path("owner") owner: String, @Path("name") name: String): Deferred<List<Contributor>>
 
     @EnvelopePayload("items")
     @GET("search/repositories")
-    fun searchRepos(@Query("q") query: String): Call<List<Repo>>
+    fun searchRepos(@Query("q") query: String): Deferred<Response<List<Repo>>>
 
     @EnvelopePayload("items")
     @GET("search/repositories")
-    fun searchRepos(@Query("q") query: String, @Query("page") page: Int): Call<List<Repo>>
+    fun searchRepos(@Query("q") query: String, @Query("page") page: Int): Deferred<Response<List<Repo>>>
 }
