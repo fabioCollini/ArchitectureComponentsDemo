@@ -66,71 +66,71 @@ jacoco {
 
 dependencies {
     kapt 'com.android.databinding:compiler:2.3.3'
-    compile "com.android.support:appcompat-v7:$support_version"
-    compile "com.android.support:recyclerview-v7:$support_version"
-    compile "com.android.support:cardview-v7:$support_version"
-    compile "com.android.support:design:$support_version"
-    compile "android.arch.lifecycle:runtime:$arch_version"
-    compile "android.arch.lifecycle:extensions:$arch_version"
-    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    compile "com.github.bumptech.glide:glide:$glide_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "android.arch.lifecycle:runtime:$arch_version"
+    implementation "android.arch.lifecycle:extensions:$arch_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
 
-    compile "org.jetbrains.anko:anko-coroutines:0.10.3"
-    compile 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
+    implementation "org.jetbrains.anko:anko-coroutines:0.10.3"
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
 
-    compile "com.google.dagger:dagger:$dagger_version"
-    compile "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
 
-    compile "com.jakewharton.timber:timber:$timber_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
-    compile 'com.github.nalulabs.prefs-delegates:prefs-delegates:0.1'
+    implementation 'com.github.nalulabs.prefs-delegates:prefs-delegates:0.1'
 
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
-    testCompile "junit:junit:$junit_version"
-    testCompile "com.squareup.okhttp3:mockwebserver:$okhttp_version"
-    testCompile ("android.arch.core:core-testing:$arch_version", {
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+    testImplementation ("android.arch.core:core-testing:$arch_version", {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
-    testCompile "org.mockito:mockito-core:$mockito_version"
-    testCompile 'com.willowtreeapps.assertk:assertk:0.9'
-    testCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
+    testImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    testCompile "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
-    testCompile 'com.github.nalulabs.prefs-delegates:fake-prefs:0.1'
+    testImplementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
+    testImplementation 'com.github.nalulabs.prefs-delegates:fake-prefs:0.1'
 
-    androidTestCompile "com.android.support:appcompat-v7:$support_version"
-    androidTestCompile "com.android.support:recyclerview-v7:$support_version"
-    androidTestCompile "com.android.support:support-v4:$support_version"
-    androidTestCompile "com.android.support:design:$support_version"
+    androidTestImplementation "com.android.support:appcompat-v7:$support_version"
+    androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
+    androidTestImplementation "com.android.support:support-v4:$support_version"
+    androidTestImplementation "com.android.support:design:$support_version"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
 
-    androidTestCompile("com.android.support.test.espresso:espresso-core:$espresso_version", {
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$espresso_version", {
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
 
-    androidTestCompile("android.arch.core:core-testing:$arch_version", {
+    androidTestImplementation("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestCompile 'com.github.tmurakami:dexopener:0.10.3'
-    androidTestCompile "org.mockito:mockito-android:$mockito_version"
-    androidTestCompile('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
+    androidTestImplementation 'com.github.tmurakami:dexopener:0.10.3'
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
-    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 task fullCoverageReport(type: JacocoReport) {
