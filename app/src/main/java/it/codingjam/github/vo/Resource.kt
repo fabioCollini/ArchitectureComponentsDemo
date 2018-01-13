@@ -16,7 +16,9 @@
 
 package it.codingjam.github.vo
 
-sealed class Resource<out T> {
+interface GenericResource
+
+sealed class Resource<out T> : GenericResource {
 
     abstract fun <R> map(f: (T) -> R): Resource<R>
 

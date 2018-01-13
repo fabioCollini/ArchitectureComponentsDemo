@@ -27,6 +27,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import it.codingjam.github.R
+import it.codingjam.github.vo.GenericResource
 import it.codingjam.github.vo.Resource
 
 @BindingAdapter("visibleGone")
@@ -85,7 +86,7 @@ private fun dismissKeyboard(view: TextView) {
 }
 
 @BindingAdapter("errorMessage")
-fun bindErrorMessage(t: TextView, resource: Resource<*>?) {
+fun bindErrorMessage(t: TextView, resource: GenericResource?) {
     t.text = when {
         resource !is Resource.Error -> ""
         resource.message.isBlank() -> t.resources.getString(R.string.unknown_error)
@@ -94,11 +95,11 @@ fun bindErrorMessage(t: TextView, resource: Resource<*>?) {
 }
 
 @BindingAdapter("visibleWhileLoading")
-fun bindVisibleWhileLoading(t: View, resource: Resource<*>?) {
+fun bindVisibleWhileLoading(t: View, resource: GenericResource?) {
     t.visibility = if (resource is Resource.Loading) View.VISIBLE else View.GONE
 }
 
 @BindingAdapter("visibleOnError")
-fun bindVisibleOnError(t: View, resource: Resource<*>?) {
+fun bindVisibleOnError(t: View, resource: GenericResource?) {
     t.visibility = if (resource is Resource.Error) View.VISIBLE else View.GONE
 }

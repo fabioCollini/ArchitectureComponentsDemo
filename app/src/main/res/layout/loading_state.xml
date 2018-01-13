@@ -22,7 +22,7 @@
 
         <variable
             name="resource"
-            type="it.codingjam.github.vo.Resource"/>
+            type="it.codingjam.github.vo.GenericResource"/>
 
         <variable
             name="callback"
