@@ -46,7 +46,7 @@
             android:text="@{@string/repo_full_name(state.repo.owner.login, state.repo.name)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleGone="@{state.repo != null}"
+            app:visibleOrGone="@{state.repo != null}"
             tools:text="name of the user"/>
 
         <TextView
@@ -60,7 +60,7 @@
             android:text="@{state.repo.description}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"
-            app:visibleGone="@{state.repo != null}"
+            app:visibleOrGone="@{state.repo != null}"
             tools:text="description of the user"/>
 
         <android.support.v7.widget.RecyclerView

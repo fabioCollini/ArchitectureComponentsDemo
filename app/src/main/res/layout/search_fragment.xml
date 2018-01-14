@@ -67,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:visibleGone="@{state.loadingMore}"/>
+            app:visibleOrGone="@{state.loadingMore}"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/repo_list"
@@ -93,7 +93,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleGone="@{state.emptyStateVisible}"
+            app:visibleOrGone="@{state.emptyStateVisible}"
             tools:layout_editor_absoluteY="247dp"/>
 
         <include

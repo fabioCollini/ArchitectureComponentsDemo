@@ -41,7 +41,7 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleGone="@{state.user != null}"
+            app:visibleOrGone="@{state.user != null}"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="154dp">
 
