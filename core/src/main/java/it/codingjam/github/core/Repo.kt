@@ -19,23 +19,14 @@ package it.codingjam.github.core
 import com.google.gson.annotations.SerializedName
 
 data class Repo(
-
         val id: Int,
-
         val name: String,
-
         @SerializedName("full_name")
-    val fullName: String,
-
+        val fullName: String,
         val description: String?,
-
         val owner: Owner,
-
         @SerializedName("stargazers_count")
-    val stars: Int
+        val stars: Int
 ) {
-
-    fun repoId(): RepoId {
-        return RepoId(owner.login, name)
-    }
+    val repoId = RepoId(owner.login, name)
 }

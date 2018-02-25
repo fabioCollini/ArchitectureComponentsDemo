@@ -11,7 +11,7 @@ class UserRepoViewHolder(parent: ViewGroup, viewModel: UserViewModel) :
     init {
         binding.showFullName = false
         binding.root.setOnClickListener {
-            viewModel.openRepoDetail(item.repoId())
+            viewModel.openRepoDetail(item.repoId)
         }
     }
 
