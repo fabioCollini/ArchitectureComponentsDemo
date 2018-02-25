@@ -16,21 +16,21 @@
 
 package it.codingjam.github.api
 
-import it.codingjam.github.core.*
+import it.codingjam.github.core.GithubRepository
+import it.codingjam.github.core.Repo
+import it.codingjam.github.core.RepoSearchResponse
+import it.codingjam.github.core.User
 import retrofit2.HttpException
 import retrofit2.Response
 import java.util.regex.Pattern
 
 class GithubRepositoryImpl(private val githubService: GithubService) : GithubRepository {
 
+    override suspend fun getRepo(owner: String, name: String) = githubService.getRepo(owner, name).await()
+
+    override suspend fun getContributors(owner: String, name: String) = githubService.getContributors(owner, name).await()
+
     override suspend fun loadRepos(owner: String): List<Repo> = githubService.getRepos(owner).await()
-
-    override suspend fun loadRepo(owner: String, name: String): RepoDetail {
-        val repo = githubService.getRepo(owner, name)
-        val contributors = githubService.getContributors(owner, name)
-
-        return RepoDetail(repo.await(), contributors.await())
-    }
 
     override suspend fun searchNextPage(query: String, nextPage: Int): RepoSearchResponse =
             githubService.searchRepos(query, nextPage).await().let { toRepoSearchResponse(it) }
