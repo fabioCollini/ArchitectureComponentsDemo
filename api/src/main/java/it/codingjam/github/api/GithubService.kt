@@ -16,10 +16,10 @@
 
 package it.codingjam.github.api
 
+import it.codingjam.github.api.util.EnvelopePayload
 import it.codingjam.github.core.Contributor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.User
-import it.codingjam.github.util.EnvelopePayload
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Response
 import retrofit2.http.GET

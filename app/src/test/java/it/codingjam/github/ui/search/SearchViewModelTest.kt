@@ -28,14 +28,14 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
+import it.codingjam.github.test.willReturn
+import it.codingjam.github.test.willThrow
 import it.codingjam.github.util.ResourceTester
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
-import it.codingjam.github.util.willReturn
-import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -44,7 +44,8 @@ import org.junit.Test
 import org.mockito.Mockito.verify
 
 class SearchViewModelTest {
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     val interactor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
@@ -53,12 +54,14 @@ class SearchViewModelTest {
 
     val states = mutableListOf<SearchViewState>()
 
-    @Before fun setUp() {
+    @Before
+    fun setUp() {
         viewModel.liveData.observeForever { states.add(it) }
         viewModel.uiActions.observeForever { it(activity) }
     }
 
-    @Test fun load() {
+    @Test
+    fun load() {
         runBlocking {
             interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
         }
@@ -76,7 +79,8 @@ class SearchViewModelTest {
         return RepoSearchResponse(listOf(repo1, repo2), nextPage)
     }
 
-    @Test fun loadMore() {
+    @Test
+    fun loadMore() {
         runBlocking {
             interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
             interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
@@ -95,7 +99,8 @@ class SearchViewModelTest {
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
-    @Test fun errorLoadingMore() {
+    @Test
+    fun errorLoadingMore() {
         runBlocking {
             interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
             interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)

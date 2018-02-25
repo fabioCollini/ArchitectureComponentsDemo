@@ -1,4 +1,4 @@
-package it.codingjam.github.core
+package it.codingjam.github.test
 
 import com.nhaarman.mockito_kotlin.given
 import org.mockito.BDDMockito

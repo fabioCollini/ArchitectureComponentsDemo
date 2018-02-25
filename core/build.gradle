@@ -14,9 +14,6 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -31,12 +28,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     api "org.jetbrains.anko:anko-coroutines:0.10.3"
 
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "org.mockito:mockito-core:$mockito_version"
-    testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
-    testImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
+    testImplementation project(':testLib')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

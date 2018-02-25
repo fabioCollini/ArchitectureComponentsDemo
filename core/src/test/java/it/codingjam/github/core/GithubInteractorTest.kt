@@ -2,6 +2,7 @@ package it.codingjam.github.core
 
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
+import it.codingjam.github.test.willReturn
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 

@@ -22,13 +22,13 @@ import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.BuildConfig
+import it.codingjam.github.api.GithubRepositoryImpl
 import it.codingjam.github.api.GithubService
+import it.codingjam.github.api.util.RetrofitFactory.createService
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
-import it.codingjam.github.repository.GithubRepositoryImpl
 import it.codingjam.github.util.AndroidCoroutines
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.RetrofitFactory.createService
 import okhttp3.HttpUrl
 import javax.inject.Singleton
 
@@ -40,7 +40,7 @@ import javax.inject.Singleton
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
 
-    @Provides @Singleton fun githubRepository(githubRepositoryImpl: GithubRepositoryImpl): GithubRepository = githubRepositoryImpl
+    @Provides @Singleton fun githubRepository(githubService: GithubService): GithubRepository = GithubRepositoryImpl(githubService)
 
     @Provides @Singleton fun githubIntercator(githubRepository: GithubRepository) = GithubInteractor(githubRepository)
 }

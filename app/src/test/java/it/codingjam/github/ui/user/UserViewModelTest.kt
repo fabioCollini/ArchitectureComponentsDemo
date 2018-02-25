@@ -25,12 +25,12 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
+import it.codingjam.github.test.willReturn
+import it.codingjam.github.test.willThrow
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
-import it.codingjam.github.util.willReturn
-import it.codingjam.github.util.willThrow
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -39,7 +39,8 @@ import org.junit.Test
 import org.mockito.Mockito.verify
 
 class UserViewModelTest {
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     val githubInteractor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
@@ -48,12 +49,14 @@ class UserViewModelTest {
 
     val states = mutableListOf<UserViewState>()
 
-    @Before fun setUp() {
+    @Before
+    fun setUp() {
         userViewModel.liveData.observeForever({ states.add(it) })
         userViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun load() {
+    @Test
+    fun load() {
         runBlocking {
             githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
         }
@@ -68,7 +71,8 @@ class UserViewModelTest {
                 )
     }
 
-    @Test fun retry() {
+    @Test
+    fun retry() {
         runBlocking {
             githubInteractor.loadUserDetail(LOGIN)
                     .willThrow(RuntimeException(ERROR))
@@ -88,7 +92,8 @@ class UserViewModelTest {
                 )
     }
 
-    @Test fun openRepoDetail() {
+    @Test
+    fun openRepoDetail() {
         userViewModel.openRepoDetail(REPO_ID)
 
         verify(navigationController).navigateToRepo(activity, REPO_ID)

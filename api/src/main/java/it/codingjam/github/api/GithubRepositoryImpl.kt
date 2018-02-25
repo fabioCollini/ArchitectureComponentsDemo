@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.repository
+package it.codingjam.github.api
 
-import it.codingjam.github.api.GithubService
 import it.codingjam.github.core.*
 import retrofit2.HttpException
 import retrofit2.Response
-import timber.log.Timber
 import java.util.regex.Pattern
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class GithubRepositoryImpl @Inject constructor(
-        private val githubService: GithubService
-) : GithubRepository {
+class GithubRepositoryImpl(private val githubService: GithubService) : GithubRepository {
 
     override suspend fun loadRepos(owner: String): List<Repo> = githubService.getRepos(owner).await()
 
@@ -70,7 +63,6 @@ class GithubRepositoryImpl @Inject constructor(
                         return try {
                             Integer.parseInt(pageMatcher.group(1))
                         } catch (ex: NumberFormatException) {
-                            Timber.w("cannot parse next page from %s", next)
                             null
                         }
 

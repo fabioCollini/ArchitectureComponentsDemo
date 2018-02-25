@@ -1,4 +1,4 @@
-package it.codingjam.github.util
+package it.codingjam.github.api.util
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

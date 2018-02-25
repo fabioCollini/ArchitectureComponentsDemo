@@ -1,13 +1,12 @@
-package it.codingjam.github.repository
+package it.codingjam.github.api
 
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
-import it.codingjam.github.api.GithubService
-import it.codingjam.github.util.TestData.REPO_1
-import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.util.willReturn
+import it.codingjam.github.core.Owner
+import it.codingjam.github.core.Repo
+import it.codingjam.github.test.willReturn
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.Headers
@@ -36,5 +35,8 @@ class GithubRepositoryTest {
 
     companion object {
         private const val QUERY = "abc"
+        val OWNER = Owner("login", "url")
+        val REPO_1 = Repo(1, "name", "fullName", "desc", OWNER, 10000)
+        val REPO_2 = Repo(2, "name", "fullName", "desc", OWNER, 10000)
     }
 }

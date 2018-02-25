@@ -1,4 +1,4 @@
-package it.codingjam.github.util
+package it.codingjam.github.api.util
 
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
