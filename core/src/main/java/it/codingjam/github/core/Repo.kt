@@ -28,5 +28,5 @@ data class Repo(
         @SerializedName("stargazers_count")
         val stars: Int
 ) {
-    val repoId = RepoId(owner.login, name)
+    inline val repoId get() = RepoId(owner.login, name)
 }
