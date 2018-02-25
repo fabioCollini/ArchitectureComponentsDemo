@@ -27,7 +27,7 @@
 
         <variable
             name="repo"
-            type="it.codingjam.github.vo.Repo"/>
+            type="it.codingjam.github.core.Repo"/>
     </data>
 
     <android.support.v7.widget.CardView

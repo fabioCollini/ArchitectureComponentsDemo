@@ -18,17 +18,17 @@ package it.codingjam.github.ui.repo
 
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
-import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import javax.inject.Inject
 
 class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
-        private val repository: RepoRepository,
+        private val githubInteractor: GithubInteractor,
         private val coroutines: Coroutines
 ) : ViewModel() {
 
@@ -51,7 +51,7 @@ class RepoViewModel @Inject constructor(
         state = state.copy(repoDetail = Resource.Loading)
 
         state = try {
-            val repo = repository.loadRepo(repoId.owner, repoId.name)
+            val repo = githubInteractor.loadRepo(repoId.owner, repoId.name)
             state.copy(repoDetail = Resource.Success(repo))
         } catch (e: Exception) {
             state.copy(repoDetail = Resource.Error(e))

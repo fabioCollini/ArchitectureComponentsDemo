@@ -26,6 +26,8 @@ import android.support.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.R
+import it.codingjam.github.core.RepoDetail
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.gitHubDaggerMockRule
 import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.FragmentTestRule
@@ -36,8 +38,6 @@ import it.codingjam.github.util.TestData.OWNER
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.willReturn
-import it.codingjam.github.vo.RepoDetail
-import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import org.hamcrest.Matchers.not
 import org.junit.Before

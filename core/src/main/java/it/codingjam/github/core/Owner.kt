@@ -1,3 +1,3 @@
-package it.codingjam.github.vo
+package it.codingjam.github.core
 
 data class Owner(val login: String, val url: String)

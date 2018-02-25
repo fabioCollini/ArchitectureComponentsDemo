@@ -17,9 +17,7 @@
 package it.codingjam.github.repository
 
 import it.codingjam.github.api.GithubService
-import it.codingjam.github.api.RepoSearchResponse
-import it.codingjam.github.vo.Repo
-import it.codingjam.github.vo.RepoDetail
+import it.codingjam.github.core.*
 import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
@@ -27,27 +25,30 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton class RepoRepository
-@Inject constructor(private val githubService: GithubService) {
+@Singleton
+class GithubRepositoryImpl @Inject constructor(
+        private val githubService: GithubService
+) : GithubRepository {
 
-    suspend fun loadRepos(owner: String): List<Repo> = githubService.getRepos(owner).await()
+    override suspend fun loadRepos(owner: String): List<Repo> = githubService.getRepos(owner).await()
 
-    suspend fun loadRepo(owner: String, name: String): RepoDetail {
+    override suspend fun loadRepo(owner: String, name: String): RepoDetail {
         val repo = githubService.getRepo(owner, name)
         val contributors = githubService.getContributors(owner, name)
 
         return RepoDetail(repo.await(), contributors.await())
     }
 
-    suspend fun searchNextPage(query: String, nextPage: Int): RepoSearchResponse =
+    override suspend fun searchNextPage(query: String, nextPage: Int): RepoSearchResponse =
             githubService.searchRepos(query, nextPage).await().let { toRepoSearchResponse(it) }
 
-    suspend fun search(query: String): RepoSearchResponse =
+    override suspend fun search(query: String): RepoSearchResponse =
             githubService.searchRepos(query).await().let { toRepoSearchResponse(it) }
 
     private fun toRepoSearchResponse(response: Response<List<Repo>>): RepoSearchResponse {
         if (response.isSuccessful) {
-            return RepoSearchResponse(response.body() ?: emptyList(), extractNextPage(response))
+            return RepoSearchResponse(response.body()
+                    ?: emptyList(), extractNextPage(response))
         } else {
             throw HttpException(response)
         }
@@ -66,11 +67,11 @@ import javax.inject.Singleton
                         if (!pageMatcher.find() || pageMatcher.groupCount() != 1) {
                             return null
                         }
-                        try {
-                            return Integer.parseInt(pageMatcher.group(1))
+                        return try {
+                            Integer.parseInt(pageMatcher.group(1))
                         } catch (ex: NumberFormatException) {
                             Timber.w("cannot parse next page from %s", next)
-                            return null
+                            null
                         }
 
                     }
@@ -80,11 +81,13 @@ import javax.inject.Singleton
         return null
     }
 
+    override suspend fun loadUser(login: String): User = githubService.getUser(login).await()
+
     companion object {
 
         private val LINK_PATTERN = Pattern
                 .compile("<([^>]*)>[\\s]*;[\\s]*rel=\"([a-zA-Z0-9]+)\"")
         private val PAGE_PATTERN = Pattern.compile("page=(\\d)+")
-        private val NEXT_LINK = "next"
+        private const val NEXT_LINK = "next"
     }
 }

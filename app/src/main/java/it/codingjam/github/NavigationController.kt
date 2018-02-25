@@ -18,11 +18,11 @@ package it.codingjam.github
 
 import android.support.design.widget.Snackbar
 import android.support.v4.app.FragmentActivity
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.create
 import it.codingjam.github.ui.repo.RepoFragment
 import it.codingjam.github.ui.search.SearchFragment
 import it.codingjam.github.ui.user.UserFragment
-import it.codingjam.github.vo.RepoId
 import javax.inject.Inject
 import javax.inject.Singleton
 

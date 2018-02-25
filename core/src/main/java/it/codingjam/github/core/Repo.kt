@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.vo
+package it.codingjam.github.core
 
 import com.google.gson.annotations.SerializedName
 
-data class Contributor(
-        val login: String,
+data class Repo(
 
-        val contributions: Int,
+        val id: Int,
 
-        @SerializedName("avatar_url")
-        val avatarUrl: String
-)
+        val name: String,
+
+        @SerializedName("full_name")
+    val fullName: String,
+
+        val description: String?,
+
+        val owner: Owner,
+
+        @SerializedName("stargazers_count")
+    val stars: Int
+) {
+
+    fun repoId(): RepoId {
+        return RepoId(owner.login, name)
+    }
+}

@@ -25,8 +25,9 @@ import assertk.assertions.isEqualTo
 import com.nalulabs.prefs.fake.FakeSharedPreferences
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
-import it.codingjam.github.api.RepoSearchResponse
-import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.Repo
+import it.codingjam.github.core.RepoSearchResponse
 import it.codingjam.github.util.ResourceTester
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
@@ -35,7 +36,6 @@ import it.codingjam.github.util.TestData.REPO_3
 import it.codingjam.github.util.TestData.REPO_4
 import it.codingjam.github.util.willReturn
 import it.codingjam.github.util.willThrow
-import it.codingjam.github.vo.Repo
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -46,10 +46,10 @@ import org.mockito.Mockito.verify
 class SearchViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    val repository: RepoRepository = mock()
+    val interactor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val viewModel by lazy { SearchViewModel(repository, navigationController, TestCoroutines(), FakeSharedPreferences()) }
+    val viewModel by lazy { SearchViewModel(interactor, navigationController, TestCoroutines(), FakeSharedPreferences()) }
 
     val states = mutableListOf<SearchViewState>()
 
@@ -60,7 +60,7 @@ class SearchViewModelTest {
 
     @Test fun load() {
         runBlocking {
-            repository.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+            interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
         }
 
         viewModel.setQuery(QUERY)
@@ -78,8 +78,8 @@ class SearchViewModelTest {
 
     @Test fun loadMore() {
         runBlocking {
-            repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-            repository.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
+            interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+            interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
         }
 
         viewModel.setQuery(QUERY)
@@ -97,8 +97,8 @@ class SearchViewModelTest {
 
     @Test fun errorLoadingMore() {
         runBlocking {
-            repository.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-            repository.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
+            interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+            interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
         }
 
         viewModel.setQuery(QUERY)

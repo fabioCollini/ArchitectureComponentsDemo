@@ -1,6 +1,6 @@
 package it.codingjam.github.ui.search
 
-import it.codingjam.github.vo.Repo
+import it.codingjam.github.core.Repo
 import it.codingjam.github.vo.Resource
 
 data class SearchViewState(

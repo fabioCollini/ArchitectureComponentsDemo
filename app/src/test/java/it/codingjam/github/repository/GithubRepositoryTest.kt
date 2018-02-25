@@ -14,11 +14,11 @@ import okhttp3.Headers
 import org.junit.Test
 import retrofit2.Response
 
-class RepoRepositoryTest {
+class GithubRepositoryTest {
 
     val githubService: GithubService = mock()
 
-    val repository = RepoRepository(githubService)
+    val repository = GithubRepositoryImpl(githubService)
 
     @Test fun search() = runBlocking {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +

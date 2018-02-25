@@ -1,4 +1,4 @@
-package it.codingjam.github.vo
+package it.codingjam.github.core
 
 data class RepoDetail(
         val repo: Repo,

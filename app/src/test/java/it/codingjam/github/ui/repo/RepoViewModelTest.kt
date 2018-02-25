@@ -20,9 +20,9 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
-import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
-import it.codingjam.github.vo.RepoId
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -32,13 +32,13 @@ class RepoViewModelTest {
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    val repository: RepoRepository = mock()
+    val interactor: GithubInteractor = mock()
 
     val navigationController: NavigationController = mock()
 
     val activity: FragmentActivity = mock()
 
-    val repoViewModel by lazy { RepoViewModel(navigationController, repository, TestCoroutines()) }
+    val repoViewModel by lazy { RepoViewModel(navigationController, interactor, TestCoroutines()) }
 
     val states = mutableListOf<RepoViewState>()
 
@@ -49,7 +49,7 @@ class RepoViewModelTest {
 
     @Test fun fetchData() {
         runBlocking {
-            repository.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
+            interactor.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
         }
 
         repoViewModel.init(RepoId("a", "b"))
@@ -61,7 +61,7 @@ class RepoViewModelTest {
 
     @Test fun errorFetchingData() {
         runBlocking {
-            repository.loadRepo("a", "b") willThrow RuntimeException()
+            interactor.loadRepo("a", "b") willThrow RuntimeException()
         }
 
         repoViewModel.init(RepoId("a", "b"))
@@ -73,7 +73,7 @@ class RepoViewModelTest {
 
     @Test fun retry() {
         runBlocking {
-            repository.loadRepo("a", "b")
+            interactor.loadRepo("a", "b")
                     .willThrow(RuntimeException())
                     .willReturn(TestData.REPO_DETAIL)
         }

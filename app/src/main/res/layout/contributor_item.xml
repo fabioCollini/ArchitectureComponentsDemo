@@ -23,7 +23,7 @@
 
         <variable
             name="contributor"
-            type="it.codingjam.github.vo.Contributor"/>
+            type="it.codingjam.github.core.Contributor"/>
 
         <variable
             name="viewHolder"

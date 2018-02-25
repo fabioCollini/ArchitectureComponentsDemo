@@ -20,18 +20,18 @@ import android.arch.lifecycle.ViewModel
 import android.content.SharedPreferences
 import com.nalulabs.prefs.string
 import it.codingjam.github.NavigationController
-import it.codingjam.github.repository.RepoRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import java.util.*
 import javax.inject.Inject
 
 class SearchViewModel
 @Inject constructor(
-        private val repoRepository: RepoRepository,
+        private val githubInteractor: GithubInteractor,
         private val navigationController: NavigationController,
         private val coroutines: Coroutines,
         prefs: SharedPreferences
@@ -54,13 +54,11 @@ class SearchViewModel
     }
 
     private suspend fun reloadData(input: String) {
-        state = state.copy(input, Resource.Loading, false, null)
+        state = state.copy(query = input, repos = Resource.Loading, loadingMore = false, nextPage = null)
         state = try {
-            val response = repoRepository.search(input)
-            val items = response.items
-            state.copy(repos = Resource.Success(items), nextPage = response.nextPage)
+            val (items, nextPage) = githubInteractor.search(input)
+            state.copy(repos = Resource.Success(items), nextPage = nextPage)
         } catch (e: Exception) {
-            e.printStackTrace()
             state.copy(repos = Resource.Error(e))
         }
     }
@@ -71,8 +69,8 @@ class SearchViewModel
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
             state = state.copy(loadingMore = true)
             try {
-                val response = repoRepository.searchNextPage(query, nextPage)
-                state = state.copy(repos = state.repos.map { v -> v + response.items }, nextPage = response.nextPage, loadingMore = false)
+                val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
+                state = state.copy(repos = state.repos.map { v -> v + items }, nextPage = newNextPage, loadingMore = false)
             } catch (t: Exception) {
                 state = state.copy(loadingMore = false)
                 uiActions { navigationController.showError(it, t.message) }

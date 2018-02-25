@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.repository
+package it.codingjam.github.core
 
-import it.codingjam.github.api.GithubService
-import it.codingjam.github.vo.User
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton class UserRepository @Inject constructor(
-        private val githubService: GithubService
-) {
-
-    suspend fun loadUser(login: String): User = githubService.getUser(login).await()
-}
+data class RepoSearchResponse(
+        val items: List<Repo>,
+        val nextPage: Int?
+)

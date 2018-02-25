@@ -1,4 +1,4 @@
-package it.codingjam.github.vo
+package it.codingjam.github.core
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

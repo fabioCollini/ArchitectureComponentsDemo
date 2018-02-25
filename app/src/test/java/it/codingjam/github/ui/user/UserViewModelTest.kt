@@ -22,15 +22,15 @@ import assertk.assert
 import assertk.assertions.containsExactly
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
-import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.repository.UserRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoId
+import it.codingjam.github.core.UserDetail
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.util.TestData.REPO_1
 import it.codingjam.github.util.TestData.REPO_2
 import it.codingjam.github.util.TestData.USER
 import it.codingjam.github.util.willReturn
 import it.codingjam.github.util.willThrow
-import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -41,11 +41,10 @@ import org.mockito.Mockito.verify
 class UserViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    val userRepository: UserRepository = mock()
-    val repoRepository: RepoRepository = mock()
+    val githubInteractor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val userViewModel by lazy { UserViewModel(userRepository, repoRepository, navigationController, TestCoroutines()) }
+    val userViewModel by lazy { UserViewModel(githubInteractor, navigationController, TestCoroutines()) }
 
     val states = mutableListOf<UserViewState>()
 
@@ -56,8 +55,7 @@ class UserViewModelTest {
 
     @Test fun load() {
         runBlocking {
-            userRepository.loadUser(LOGIN) willReturn USER
-            repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
+            githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
         }
 
         userViewModel.load(LOGIN)
@@ -72,10 +70,9 @@ class UserViewModelTest {
 
     @Test fun retry() {
         runBlocking {
-            userRepository.loadUser(LOGIN)
+            githubInteractor.loadUserDetail(LOGIN)
                     .willThrow(RuntimeException(ERROR))
-                    .willReturn(USER)
-            repoRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
+                    .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
         }
 
         userViewModel.load(LOGIN)

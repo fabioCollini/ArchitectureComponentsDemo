@@ -18,20 +18,17 @@ package it.codingjam.github.ui.user
 
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
-import it.codingjam.github.repository.RepoRepository
-import it.codingjam.github.repository.UserRepository
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.vo.RepoId
 import it.codingjam.github.vo.Resource
-import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
 
 class UserViewModel
 @Inject constructor(
-        private val userRepository: UserRepository,
-        private val repoRepository: RepoRepository,
+        private val githubInteractor: GithubInteractor,
         private val navigationController: NavigationController,
         private val coroutines: Coroutines
 ) : ViewModel() {
@@ -49,9 +46,7 @@ class UserViewModel
         state = state.copy(userDetail = Resource.Loading)
 
         state = try {
-            val userDeferred = async { userRepository.loadUser(login) }
-            val reposDeferred = async { repoRepository.loadRepos(login) }
-            val detail = UserDetail(userDeferred.await(), reposDeferred.await())
+            val detail = githubInteractor.loadUserDetail(login)
             state.copy(userDetail = Resource.Success(detail))
         } catch (e: Exception) {
             state.copy(userDetail = Resource.Error(e))

@@ -1,6 +1,6 @@
 package it.codingjam.github.util
 
-import it.codingjam.github.vo.*
+import it.codingjam.github.core.*
 
 object TestData {
     val OWNER = Owner("login", "url")
