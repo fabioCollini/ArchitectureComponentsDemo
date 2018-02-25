@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -28,8 +29,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     api "com.github.bumptech.glide:glide:$glide_version"
     api "com.android.support:appcompat-v7:$support_version"
     api "com.android.support:recyclerview-v7:$support_version"
@@ -38,4 +37,6 @@ dependencies {
     api "org.jetbrains.anko:anko-coroutines:0.10.3"
     api "android.arch.lifecycle:runtime:$arch_version"
     api "android.arch.lifecycle:extensions:$arch_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
