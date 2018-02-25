@@ -21,8 +21,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import it.codingjam.github.core.GithubInteractor
-import it.codingjam.github.core.GithubRepository
 import it.codingjam.github.util.AndroidCoroutines
 import it.codingjam.github.util.Coroutines
 import javax.inject.Singleton
@@ -31,6 +29,4 @@ import javax.inject.Singleton
     @Provides @Singleton fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
-
-    @Provides @Singleton fun githubIntercator(githubRepository: GithubRepository) = GithubInteractor(githubRepository)
 }

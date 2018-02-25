@@ -2,8 +2,11 @@ package it.codingjam.github.core
 
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GithubInteractor(private val githubRepository: GithubRepository) {
+@Singleton
+class GithubInteractor @Inject constructor(private val githubRepository: GithubRepository) {
 
     suspend fun search(query: String) = githubRepository.search(query)
 
