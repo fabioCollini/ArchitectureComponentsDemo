@@ -21,26 +21,16 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import it.codingjam.github.BuildConfig
-import it.codingjam.github.api.GithubRepositoryImpl
-import it.codingjam.github.api.GithubService
-import it.codingjam.github.api.util.RetrofitFactory.createService
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
 import it.codingjam.github.util.AndroidCoroutines
 import it.codingjam.github.util.Coroutines
-import okhttp3.HttpUrl
 import javax.inject.Singleton
 
 @Module class AppModule {
-    @Singleton @Provides fun provideGithubService(): GithubService =
-            createService(BuildConfig.DEBUG, HttpUrl.parse("https://api.github.com/")!!)
-
     @Provides @Singleton fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
-
-    @Provides @Singleton fun githubRepository(githubService: GithubService): GithubRepository = GithubRepositoryImpl(githubService)
 
     @Provides @Singleton fun githubIntercator(githubRepository: GithubRepository) = GithubInteractor(githubRepository)
 }

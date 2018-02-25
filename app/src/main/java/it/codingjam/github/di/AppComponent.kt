@@ -20,6 +20,7 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import it.codingjam.github.NavigationController
+import it.codingjam.github.api.ApiModule
 import it.codingjam.github.ui.repo.RepoViewModel
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.user.UserViewModel
@@ -28,7 +29,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [AppModule::class])
+@Component(modules = [AppModule::class, ApiModule::class])
 interface AppComponent {
 
     val searchViewModel: SearchViewModel
