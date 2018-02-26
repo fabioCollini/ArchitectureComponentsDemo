@@ -21,20 +21,29 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.component
+import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.databinding.RepoFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.util.viewModelProvider
+import javax.inject.Inject
+import javax.inject.Provider
 
 class RepoFragment : Fragment() {
 
     lateinit var binding: RepoFragmentBinding
 
+    @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
+
     private val viewModel by viewModelProvider {
-        component.repoViewModel.also { it.init(getParam(this)) }
+        viewModelProvider.get().also { it.init(getParam(this)) }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

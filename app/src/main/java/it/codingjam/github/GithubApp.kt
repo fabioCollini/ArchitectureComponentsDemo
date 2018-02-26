@@ -16,27 +16,32 @@
 
 package it.codingjam.github
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.support.annotation.VisibleForTesting
 import android.support.v4.app.Fragment
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import it.codingjam.github.di.AppComponent
 import it.codingjam.github.di.DaggerAppComponent
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class GithubApp : Application() {
+class GithubApp : Application(), HasActivityInjector {
 
-    @set:VisibleForTesting
-    lateinit var component: AppComponent
+    @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        component = DaggerAppComponent.builder().application(this).build()
+        DaggerAppComponent.builder().application(this).build().inject(this)
     }
+
+    override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
 }
 
 val Context.component: AppComponent

@@ -21,16 +21,21 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.component
+import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.databinding.UserFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.util.viewModelProvider
+import javax.inject.Inject
+import javax.inject.Provider
 
 class UserFragment : Fragment() {
+
+    @Inject lateinit var viewModelProvider: Provider<UserViewModel>
+
     private val viewModel by viewModelProvider {
-        component.userViewModel.also { it.load(getParam(this)) }
+        viewModelProvider.get().also { it.load(getParam(this)) }
     }
 
     lateinit var binding: UserFragmentBinding
@@ -39,6 +44,11 @@ class UserFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = UserFragmentBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

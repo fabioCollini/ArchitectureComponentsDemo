@@ -23,15 +23,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.component
+import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.databinding.SearchFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.util.viewModelProvider
 import it.codingjam.github.vo.orElse
+import javax.inject.Inject
+import javax.inject.Provider
 
 class SearchFragment : Fragment() {
 
-    private val viewModel by viewModelProvider { component.searchViewModel }
+    @Inject lateinit var viewModelProvider: Provider<SearchViewModel>
+
+    private val viewModel by viewModelProvider { viewModelProvider.get() }
 
     lateinit var binding: SearchFragmentBinding
 
@@ -39,6 +43,11 @@ class SearchFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = SearchFragmentBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

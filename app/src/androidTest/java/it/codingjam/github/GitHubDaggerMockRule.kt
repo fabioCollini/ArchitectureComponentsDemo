@@ -6,7 +6,7 @@ import it.codingjam.github.di.AppModule
 import it.cosenonjaviste.daggermock.DaggerMock
 
 fun gitHubDaggerMockRule() = DaggerMock.rule<TestComponent>(AppModule(), TestModule()) {
-    set { app.component = it }
+    set { it.inject(app) }
     customizeBuilder<TestComponent.Builder> { it.application(app) }
 }
 

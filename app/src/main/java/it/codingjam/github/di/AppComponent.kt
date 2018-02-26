@@ -19,24 +19,18 @@ package it.codingjam.github.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.support.AndroidSupportInjectionModule
+import it.codingjam.github.GithubApp
 import it.codingjam.github.NavigationController
 import it.codingjam.github.api.ApiModule
-import it.codingjam.github.ui.repo.RepoViewModel
-import it.codingjam.github.ui.search.SearchViewModel
-import it.codingjam.github.ui.user.UserViewModel
+import it.codingjam.github.ui.repo.RepoFragment
 import javax.inject.Singleton
 
 
 
 @Singleton
-@Component(modules = [AppModule::class, ApiModule::class])
+@Component(modules = [AppModule::class, ApiModule::class, AndroidInjectorActivityBindingModule::class, AndroidSupportInjectionModule::class])
 interface AppComponent {
-
-    val searchViewModel: SearchViewModel
-
-    val repoViewModel: RepoViewModel
-
-    val userViewModel: UserViewModel
 
     val navigationController: NavigationController
 
@@ -45,4 +39,8 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+
+    fun inject(repoFragment: RepoFragment)
+
+    fun inject(repoFragment: GithubApp)
 }
