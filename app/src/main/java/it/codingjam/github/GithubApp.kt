@@ -18,12 +18,9 @@ package it.codingjam.github
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
-import android.support.v4.app.Fragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
-import it.codingjam.github.di.AppComponent
 import it.codingjam.github.di.DaggerAppComponent
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,9 +40,3 @@ class GithubApp : Application(), HasActivityInjector {
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
 }
-
-val Context.component: AppComponent
-    get() = (applicationContext as GithubApp).component
-
-val Fragment.component: AppComponent
-    get() = activity!!.component

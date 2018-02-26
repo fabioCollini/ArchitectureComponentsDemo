@@ -31,13 +31,15 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject lateinit var navigationController: NavigationController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
-            component.navigationController.navigateToSearch(this)
+            navigationController.navigateToSearch(this)
         }
     }
 
