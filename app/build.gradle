@@ -79,6 +79,7 @@ dependencies {
 
     testImplementation project(':testLib')
     testImplementation project(':testData')
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     androidTestImplementation project(':testLib')
     androidTestImplementation project(':testData')
