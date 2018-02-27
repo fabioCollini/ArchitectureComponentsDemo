@@ -22,7 +22,7 @@ android {
 
 dependencies {
     api project(':core')
-    api project(':viewLib')
+    api project(':viewlib')
     api project(':testLib')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-include ':app', ':core', ':api', ':testLib', ':viewLib', ':uiRepo', ':testData'
+include ':app', ':core', ':api', ':testLib', ':viewlib', ':uiRepo', ':testData'

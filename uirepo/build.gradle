@@ -30,7 +30,7 @@ android {
 
 dependencies {
     implementation project(':core')
-    implementation project(':viewLib')
+    implementation project(':viewlib')
 
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"

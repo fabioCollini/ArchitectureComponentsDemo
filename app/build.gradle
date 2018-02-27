@@ -62,7 +62,7 @@ jacoco {
 dependencies {
     implementation project(':api')
     implementation project(':core')
-    implementation project(':viewLib')
+    implementation project(':viewlib')
     implementation project(':uiRepo')
 
     implementation "com.google.dagger:dagger:$dagger_version"
