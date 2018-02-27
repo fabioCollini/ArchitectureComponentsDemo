@@ -1,8 +1,7 @@
-package it.codingjam.github
+package it.codingjam.github.espresso
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import it.codingjam.github.espresso.SingleFragmentActivity
 
 @Module
 abstract class TestAndroidInjectorActivityBindingModule {

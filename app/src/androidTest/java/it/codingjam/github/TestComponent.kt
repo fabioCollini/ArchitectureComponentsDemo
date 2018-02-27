@@ -8,6 +8,7 @@ import it.codingjam.github.api.ApiModule
 import it.codingjam.github.di.AndroidInjectorActivityBindingModule
 import it.codingjam.github.di.AppComponent
 import it.codingjam.github.di.AppModule
+import it.codingjam.github.espresso.TestAndroidInjectorActivityBindingModule
 import javax.inject.Singleton
 
 

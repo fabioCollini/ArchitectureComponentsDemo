@@ -1,9 +1,8 @@
-package it.codingjam.github.util
+package it.codingjam.github.espresso
 
 
 import android.support.test.rule.ActivityTestRule
 import android.support.v4.app.Fragment
-import it.codingjam.github.espresso.SingleFragmentActivity
 
 class FragmentTestRule : ActivityTestRule<SingleFragmentActivity>(SingleFragmentActivity::class.java, false, false) {
 

@@ -28,6 +28,7 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.R
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
+import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.gitHubDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
@@ -35,7 +36,6 @@ import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.ui.common.create
-import it.codingjam.github.util.FragmentTestRule
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.Resource
