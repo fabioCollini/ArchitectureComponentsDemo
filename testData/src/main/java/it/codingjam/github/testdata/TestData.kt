@@ -1,4 +1,4 @@
-package it.codingjam.github.util
+package it.codingjam.github.testdata
 
 import it.codingjam.github.core.*
 

@@ -30,12 +30,12 @@ import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.test.willThrow
-import it.codingjam.github.util.ResourceTester
+import it.codingjam.github.testdata.ResourceTester
+import it.codingjam.github.testdata.TestData.REPO_1
+import it.codingjam.github.testdata.TestData.REPO_2
+import it.codingjam.github.testdata.TestData.REPO_3
+import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.util.TestCoroutines
-import it.codingjam.github.util.TestData.REPO_1
-import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.util.TestData.REPO_3
-import it.codingjam.github.util.TestData.REPO_4
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before

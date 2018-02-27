@@ -14,4 +14,15 @@
  * limitations under the License.
  */
 
-include ':app', ':core', ':api', ':testLib', ':viewLib', ':uiRepo', ':testData'
+package it.codingjam.github
+
+import android.support.v4.app.FragmentActivity
+import it.codingjam.github.core.RepoId
+
+interface NavigationController {
+    fun navigateToSearch(activity: FragmentActivity)
+    fun navigateToRepo(activity: FragmentActivity, repoId: RepoId)
+    fun navigateToUser(activity: FragmentActivity, login: String)
+    fun showError(activity: FragmentActivity, error: String?)
+}
+

@@ -21,6 +21,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
+import it.codingjam.github.AndroidNavigationController
+import it.codingjam.github.NavigationController
 import it.codingjam.github.util.AndroidCoroutines
 import it.codingjam.github.util.Coroutines
 import javax.inject.Singleton
@@ -29,4 +31,6 @@ import javax.inject.Singleton
     @Provides @Singleton fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
+
+    @Provides @Singleton fun navigationController(androidNavigationController: AndroidNavigationController): NavigationController = androidNavigationController
 }

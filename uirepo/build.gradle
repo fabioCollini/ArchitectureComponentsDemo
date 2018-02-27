@@ -30,5 +30,13 @@ android {
 
 dependencies {
     implementation project(':core')
-    implementation project(':viewlib')
+    implementation project(':viewLib')
+
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+
+    testImplementation project(':testLib')
+    testImplementation project(':testData')
 }

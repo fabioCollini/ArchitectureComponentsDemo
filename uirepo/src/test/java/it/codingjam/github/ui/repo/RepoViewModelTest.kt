@@ -24,9 +24,9 @@ import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.test.willThrow
+import it.codingjam.github.testdata.TestData
+import it.codingjam.github.testdata.shouldContain
 import it.codingjam.github.util.TestCoroutines
-import it.codingjam.github.util.TestData
-import it.codingjam.github.util.shouldContain
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule

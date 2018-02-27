@@ -29,6 +29,9 @@ android {
 }
 
 dependencies {
+    implementation project(':core')
+
+    api "com.android.support.constraint:constraint-layout:$constraint_layout_version"
     api "com.github.bumptech.glide:glide:$glide_version"
     api "com.android.support:appcompat-v7:$support_version"
     api "com.android.support:recyclerview-v7:$support_version"

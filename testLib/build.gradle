@@ -4,11 +4,18 @@ apply plugin: 'kotlin'
 dependencies {
     api "junit:junit:$junit_version"
     api "org.mockito:mockito-core:$mockito_version"
+    api "org.mockito:mockito-inline:$mockito_version"
     api 'com.willowtreeapps.assertk:assertk:0.9'
     api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api ("android.arch.core:core-testing:$arch_version", {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    })
+    api 'com.github.nalulabs.prefs-delegates:fake-prefs:0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 sourceCompatibility = "1.7"

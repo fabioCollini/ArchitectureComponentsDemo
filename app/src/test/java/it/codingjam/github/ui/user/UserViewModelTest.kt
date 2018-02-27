@@ -27,10 +27,10 @@ import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.test.willThrow
+import it.codingjam.github.testdata.TestData.REPO_1
+import it.codingjam.github.testdata.TestData.REPO_2
+import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.util.TestCoroutines
-import it.codingjam.github.util.TestData.REPO_1
-import it.codingjam.github.util.TestData.REPO_2
-import it.codingjam.github.util.TestData.USER
 import it.codingjam.github.vo.Resource
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before

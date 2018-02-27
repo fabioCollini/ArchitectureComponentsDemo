@@ -23,10 +23,10 @@ import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.databinding.RepoFragmentBinding
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.common.getParam
+import it.codingjam.github.ui.repo.databinding.RepoFragmentBinding
 import it.codingjam.github.util.viewModelProvider
 import javax.inject.Inject
 import javax.inject.Provider
