@@ -18,7 +18,7 @@
           package="it.codingjam.github">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application>
-        <activity android:name=".testing.SingleFragmentActivity">
+        <activity android:name=".espresso.SingleFragmentActivity">
         </activity>
     </application>
 

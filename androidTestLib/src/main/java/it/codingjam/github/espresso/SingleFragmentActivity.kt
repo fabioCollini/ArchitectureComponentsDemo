@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.testing
+package it.codingjam.github.espresso
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -26,7 +26,6 @@ import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import it.codingjam.github.R
 import javax.inject.Inject
 
 class SingleFragmentActivity : AppCompatActivity(), HasSupportFragmentInjector {
