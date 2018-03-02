@@ -23,13 +23,13 @@ import dagger.android.support.AndroidSupportInjectionModule
 import it.codingjam.github.GithubApp
 import it.codingjam.github.NavigationController
 import it.codingjam.github.api.ApiModule
-import it.codingjam.github.ui.repo.RepoFragment
+import it.codingjam.github.ui.repo.RepoModule
 import javax.inject.Singleton
 
 
 
 @Singleton
-@Component(modules = [AppModule::class, ApiModule::class, AndroidInjectorActivityBindingModule::class, AndroidSupportInjectionModule::class])
+@Component(modules = [AppModule::class, ApiModule::class, AndroidInjectorActivityBindingModule::class, AndroidSupportInjectionModule::class, RepoModule::class])
 interface AppComponent {
 
     val navigationController: NavigationController
@@ -39,8 +39,6 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
-
-    fun inject(repoFragment: RepoFragment)
 
     fun inject(repoFragment: GithubApp)
 }
