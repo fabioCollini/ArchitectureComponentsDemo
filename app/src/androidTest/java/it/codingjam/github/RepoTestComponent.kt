@@ -1,27 +1,23 @@
 package it.codingjam.github
 
-import android.app.Application
-import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import it.codingjam.github.espresso.TestAndroidInjectorActivityBindingModule
-import it.codingjam.github.espresso.TestApplication
+import it.codingjam.github.espresso.TestComponent
+import it.codingjam.github.espresso.TestComponentBuilder
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.ui.repo.RepoModule
 import javax.inject.Singleton
 
-
 @Singleton
 @Component(modules = [TestAppModule::class, ViewLibModule::class, AndroidSupportInjectionModule::class, TestAndroidInjectorActivityBindingModule::class, RepoModule::class])
-interface TestComponent {
+interface RepoTestComponent : TestComponent {
 
-    fun inject(app: TestApplication)
-
-    @Component.Builder interface Builder {
-        @BindsInstance fun application(application: Application): Builder
+    @Component.Builder
+    interface Builder : TestComponentBuilder {
 
         fun viewLibModule(viewLibModule: ViewLibModule): Builder
 
-        fun build(): TestComponent
+        fun build(): RepoTestComponent
     }
 }

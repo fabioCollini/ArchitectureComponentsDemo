@@ -23,12 +23,14 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
+import it.codingjam.github.RepoTestComponent
+import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.TestViewModelFactory
+import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.espresso.viewModel
-import it.codingjam.github.gitHubDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
@@ -47,7 +49,7 @@ class RepoFragmentTest {
 
     @get:Rule var fragmentRule = FragmentTestRule()
 
-    @get:Rule var daggerMockRule = gitHubDaggerMockRule()
+    @get:Rule var daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
 
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
