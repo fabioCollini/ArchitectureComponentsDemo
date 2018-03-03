@@ -42,4 +42,5 @@ dependencies {
 
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
     androidTestImplementation project(':androidTestLib')
+    androidTestImplementation project(':testData')
 }

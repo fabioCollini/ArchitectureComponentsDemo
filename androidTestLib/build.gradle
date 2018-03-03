@@ -23,7 +23,7 @@ android {
 
 dependencies {
     api project(':testLib')
-    api project(':testData')
+    api project(':viewlib')
 
     implementation "com.jakewharton.timber:timber:$timber_version"
 
