@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package it.codingjam.github
+package it.codingjam.github.testdata
 
 import com.nhaarman.mockito_kotlin.mock
 import dagger.Module
 import dagger.Provides
+import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubRepository
 import javax.inject.Singleton
 

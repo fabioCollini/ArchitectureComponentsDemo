@@ -25,5 +25,7 @@ dependencies {
     api project(':viewlib')
     api project(':testLib')
 
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

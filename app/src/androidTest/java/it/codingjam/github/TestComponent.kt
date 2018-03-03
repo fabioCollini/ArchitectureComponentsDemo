@@ -6,6 +6,7 @@ import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import it.codingjam.github.espresso.TestAndroidInjectorActivityBindingModule
 import it.codingjam.github.espresso.TestApplication
+import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.ui.repo.RepoModule
 import javax.inject.Singleton
 
