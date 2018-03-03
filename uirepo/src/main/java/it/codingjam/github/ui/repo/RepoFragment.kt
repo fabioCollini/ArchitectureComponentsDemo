@@ -34,13 +34,13 @@ class RepoFragment : Fragment() {
 
     lateinit var binding: RepoFragmentBinding
 
-    @Inject
-    lateinit var viewModelProvider: Provider<RepoViewModel>
+    @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel by lazy { viewModelFactory(this, viewModelProvider) }
+    private val viewModel by lazy {
+        viewModelFactory(this, viewModelProvider).apply { reload() }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)

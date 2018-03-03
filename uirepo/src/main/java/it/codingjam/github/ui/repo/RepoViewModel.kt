@@ -39,17 +39,8 @@ class RepoViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    init {
-        coroutines {
-            reload()
-        }
-    }
-
-    fun retry() = coroutines { reload() }
-
-    private suspend fun reload() {
+    fun reload() = coroutines {
         state = state.copy(repoDetail = Resource.Loading)
-
         state = try {
             val repo = githubInteractor.loadRepo(repoId.owner, repoId.name)
             state.copy(repoDetail = Resource.Success(repo))

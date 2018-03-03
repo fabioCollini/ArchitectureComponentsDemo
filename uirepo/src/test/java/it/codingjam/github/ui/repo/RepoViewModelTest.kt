@@ -42,7 +42,7 @@ class RepoViewModelTest {
 
     val activity: FragmentActivity = mock()
 
-    val repoViewModel by lazy { RepoViewModel(navigationController, interactor, TestCoroutines()) }
+    val repoViewModel by lazy { RepoViewModel(navigationController, interactor, TestCoroutines(), RepoId("a", "b")) }
 
     val states = mutableListOf<RepoViewState>()
 
@@ -51,40 +51,34 @@ class RepoViewModelTest {
         repoViewModel.uiActions.observeForever({ it(activity) })
     }
 
-    @Test fun fetchData() {
-        runBlocking {
-            interactor.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
-        }
+    @Test fun fetchData() = runBlocking {
+        interactor.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
 
-        repoViewModel.init(RepoId("a", "b"))
+        repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
             empty().loading().success()
         }
     }
 
-    @Test fun errorFetchingData() {
-        runBlocking {
-            interactor.loadRepo("a", "b") willThrow RuntimeException()
-        }
+    @Test fun errorFetchingData() = runBlocking {
+        interactor.loadRepo("a", "b") willThrow RuntimeException()
 
-        repoViewModel.init(RepoId("a", "b"))
+        repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
             empty().loading().error()
         }
     }
 
-    @Test fun retry() {
-        runBlocking {
-            interactor.loadRepo("a", "b")
-                    .willThrow(RuntimeException())
-                    .willReturn(TestData.REPO_DETAIL)
-        }
+    @Test fun retry() = runBlocking {
+        interactor.loadRepo("a", "b")
+                .willThrow(RuntimeException())
+                .willReturn(TestData.REPO_DETAIL)
 
-        repoViewModel.init(RepoId("a", "b"))
+        repoViewModel.reload()
 
-        repoViewModel.retry()
+        repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
             empty().loading().error().loading().success()
