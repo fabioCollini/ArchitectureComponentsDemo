@@ -8,11 +8,14 @@ import android.content.BroadcastReceiver
 import android.content.ContentProvider
 import android.support.test.InstrumentationRegistry
 import dagger.android.*
+import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class TestApplication : Application(), HasActivityInjector,
+class TestApplication : Application(),
+        HasActivityInjector,
         HasFragmentInjector,
+        HasSupportFragmentInjector,
         HasServiceInjector,
         HasBroadcastReceiverInjector,
         HasContentProviderInjector {
@@ -20,6 +23,7 @@ class TestApplication : Application(), HasActivityInjector,
     @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var broadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
     @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<android.support.v4.app.Fragment>
     @Inject lateinit var serviceInjector: DispatchingAndroidInjector<Service>
     @Inject lateinit var contentProviderInjector: DispatchingAndroidInjector<ContentProvider>
 
@@ -31,6 +35,8 @@ class TestApplication : Application(), HasActivityInjector,
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 
     override fun fragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    override fun supportFragmentInjector(): AndroidInjector<android.support.v4.app.Fragment> = supportFragmentInjector
 
     override fun serviceInjector(): AndroidInjector<Service> = serviceInjector
 

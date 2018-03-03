@@ -49,7 +49,7 @@ dependencies {
 
     api("android.arch.core:core-testing:$arch_version", {
     })
-    api 'com.github.tmurakami:dexopener:0.10.3'
+    api 'com.github.tmurakami:dexopener:0.12.1'
     api "org.mockito:mockito-android:$mockito_version"
     api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'

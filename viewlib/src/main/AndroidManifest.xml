@@ -1,2 +1,9 @@
-<manifest
-    package="it.codingjam.github.viewlib"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="it.codingjam.github.viewlib">
+
+    <application>
+        <activity android:name="it.codingjam.github.espresso.SingleFragmentActivity">
+        </activity>
+    </application>
+
+</manifest>

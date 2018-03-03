@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    implementation project(':core')
-    implementation project(':viewlib')
+    api project(':core')
+    api project(':viewlib')
 
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
@@ -39,8 +39,4 @@ dependencies {
     testImplementation project(':testLib')
     testImplementation project(':testData')
     testImplementation "org.mockito:mockito-inline:$mockito_version"
-
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
-    androidTestImplementation project(':androidTestLib')
-    androidTestImplementation project(':testData')
 }
