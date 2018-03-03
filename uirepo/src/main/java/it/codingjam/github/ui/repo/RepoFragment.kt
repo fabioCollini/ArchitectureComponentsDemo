@@ -25,9 +25,8 @@ import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
-import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.ui.repo.databinding.RepoFragmentBinding
-import it.codingjam.github.util.viewModelProvider
+import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -35,11 +34,13 @@ class RepoFragment : Fragment() {
 
     lateinit var binding: RepoFragmentBinding
 
-    @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
+    @Inject
+    lateinit var viewModelProvider: Provider<RepoViewModel>
 
-    private val viewModel by viewModelProvider {
-        viewModelProvider.get().also { it.init(getParam(this)) }
-    }
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy { viewModelFactory(this, viewModelProvider) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)

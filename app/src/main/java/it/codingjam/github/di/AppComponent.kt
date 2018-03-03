@@ -19,9 +19,11 @@ package it.codingjam.github.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import it.codingjam.github.GithubApp
 import it.codingjam.github.NavigationController
+import it.codingjam.github.ViewLibModule
 import it.codingjam.github.api.ApiModule
 import it.codingjam.github.ui.repo.RepoModule
 import javax.inject.Singleton
@@ -29,8 +31,8 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [AppModule::class, ApiModule::class, AndroidInjectorActivityBindingModule::class, AndroidSupportInjectionModule::class, RepoModule::class])
-interface AppComponent {
+@Component(modules = [AppModule::class, ApiModule::class, ViewLibModule::class, AndroidInjectorActivityBindingModule::class, AndroidSupportInjectionModule::class, RepoModule::class])
+interface AppComponent: AndroidInjector<GithubApp> {
 
     val navigationController: NavigationController
 
@@ -39,6 +41,4 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
-
-    fun inject(repoFragment: GithubApp)
 }

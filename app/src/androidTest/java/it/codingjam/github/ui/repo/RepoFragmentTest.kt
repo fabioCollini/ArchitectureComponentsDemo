@@ -25,10 +25,11 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
-import it.codingjam.github.R
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.FragmentTestRule
+import it.codingjam.github.espresso.TestViewModelFactory
+import it.codingjam.github.espresso.viewModel
 import it.codingjam.github.gitHubDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
@@ -54,9 +55,11 @@ class RepoFragmentTest {
 
     val liveData = MutableLiveData<RepoViewState>()
 
-    val viewModel: RepoViewModel = mock()
+    val factory = TestViewModelFactory.create<RepoViewModel>()
 
     val navigationController: NavigationController = mock()
+
+    val viewModel get() = factory.viewModel<RepoViewModel>()
 
     @Before fun setUp() {
         viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Empty), liveData)

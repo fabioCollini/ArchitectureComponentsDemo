@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.di
+package it.codingjam.github
 
+import com.nhaarman.mockito_kotlin.mock
 import dagger.Module
 import dagger.Provides
-import it.codingjam.github.AndroidNavigationController
-import it.codingjam.github.NavigationController
+import it.codingjam.github.core.GithubRepository
 import javax.inject.Singleton
 
-@Module class AppModule {
-    @Provides @Singleton fun navigationController(androidNavigationController: AndroidNavigationController): NavigationController = androidNavigationController
+@Module
+class TestAppModule {
+    @Provides @Singleton fun navigationController() = mock<NavigationController>()
+
+    @Provides @Singleton fun githubRepository() = mock<GithubRepository>()
 }

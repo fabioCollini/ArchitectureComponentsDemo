@@ -12,8 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner 'it.codingjam.github.espresso.MockTestRunner'
     }
 
     buildTypes {
@@ -40,4 +39,7 @@ dependencies {
     testImplementation project(':testLib')
     testImplementation project(':testData')
     testImplementation "org.mockito:mockito-inline:$mockito_version"
+
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+    androidTestImplementation project(':androidTestLib')
 }

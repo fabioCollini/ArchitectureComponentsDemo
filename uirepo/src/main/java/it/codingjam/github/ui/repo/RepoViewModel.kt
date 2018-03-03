@@ -29,10 +29,9 @@ import javax.inject.Inject
 class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
         private val githubInteractor: GithubInteractor,
-        private val coroutines: Coroutines
+        private val coroutines: Coroutines,
+        private val repoId: RepoId
 ) : ViewModel() {
-
-    private lateinit var repoId: RepoId
 
     val liveData = LiveDataDelegate(RepoViewState(Resource.Empty))
 
@@ -40,12 +39,13 @@ class RepoViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    fun retry() = coroutines { reload() }
-
-    fun init(repoId: RepoId) = coroutines {
-        this.repoId = repoId
-        reload()
+    init {
+        coroutines {
+            reload()
+        }
     }
+
+    fun retry() = coroutines { reload() }
 
     private suspend fun reload() {
         state = state.copy(repoDetail = Resource.Loading)

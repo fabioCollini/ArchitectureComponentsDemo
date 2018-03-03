@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.di
+package it.codingjam.github
 
+import android.app.Application
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import it.codingjam.github.AndroidNavigationController
-import it.codingjam.github.NavigationController
+import it.codingjam.github.util.AndroidCoroutines
+import it.codingjam.github.util.AndroidViewModelFactory
+import it.codingjam.github.util.Coroutines
+import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Singleton
 
-@Module class AppModule {
-    @Provides @Singleton fun navigationController(androidNavigationController: AndroidNavigationController): NavigationController = androidNavigationController
+@Module class ViewLibModule {
+    @Provides @Singleton fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+
+    @Provides fun coroutines(): Coroutines = AndroidCoroutines()
+
+    @Provides fun viewModelFactory(): ViewModelFactory = AndroidViewModelFactory()
 }

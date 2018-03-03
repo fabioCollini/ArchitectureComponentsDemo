@@ -1,14 +1,11 @@
 package it.codingjam.github
 
 
-import android.support.test.InstrumentationRegistry
-import it.codingjam.github.di.AppModule
+import it.codingjam.github.espresso.TestApplication
 import it.cosenonjaviste.daggermock.DaggerMock
 
-fun gitHubDaggerMockRule() = DaggerMock.rule<TestComponent>(AppModule(), TestModule()) {
-    set { it.inject(app) }
-    customizeBuilder<TestComponent.Builder> { it.application(app) }
+fun gitHubDaggerMockRule() = DaggerMock.rule<TestComponent>(ViewLibModule()) {
+    set { it.inject(TestApplication.get()) }
+    customizeBuilder<TestComponent.Builder> { it.application(TestApplication.get()) }
 }
 
-private val app: GithubApp
-    get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as GithubApp
