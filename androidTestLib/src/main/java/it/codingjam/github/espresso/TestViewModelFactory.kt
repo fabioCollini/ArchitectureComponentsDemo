@@ -11,8 +11,8 @@ class TestViewModelFactory<out VM : ViewModel>(kclass: KClass<VM>) : ViewModelFa
 
     val viewModel = Mockito.mock(kclass.java)
 
-    override fun <VM : ViewModel> invoke(fragment: Fragment, provider: Provider<VM>): VM {
-        return viewModel as VM
+    override fun <VM : ViewModel> invoke(fragment: Fragment, provider: Provider<VM>, init: (VM) -> Unit): VM {
+        return (viewModel as VM).also(init)
     }
 
     companion object {
