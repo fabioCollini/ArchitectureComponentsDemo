@@ -24,7 +24,6 @@ import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
-import it.codingjam.github.ui.common.getParam
 import it.codingjam.github.ui.user.databinding.UserFragmentBinding
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class UserFragment : Fragment() {
     @Inject lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        viewModelFactory(this, viewModelProvider).also { it.load(getParam(this)) }
+        viewModelFactory(this, viewModelProvider) { it.load() }
     }
 
     lateinit var binding: UserFragmentBinding

@@ -15,5 +15,5 @@ abstract class UserModule {
 @Module
 class UserLocalModule {
 
-    @Provides fun repoId(fragment: UserFragment) = UserFragment.getParam(fragment)
+    @Provides fun param(fragment: UserFragment) = UserFragment.getParam(fragment)
 }

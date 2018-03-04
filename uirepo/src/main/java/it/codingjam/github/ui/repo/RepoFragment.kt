@@ -39,7 +39,7 @@ class RepoFragment : Fragment() {
     @Inject lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        viewModelFactory(this, viewModelProvider).apply { reload() }
+        viewModelFactory(this, viewModelProvider) { it.reload() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -44,7 +44,7 @@ class UserViewModelTest {
     val githubInteractor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
     val activity: FragmentActivity = mock()
-    val userViewModel by lazy { UserViewModel(githubInteractor, navigationController, TestCoroutines()) }
+    val userViewModel by lazy { UserViewModel(githubInteractor, navigationController, TestCoroutines(), LOGIN) }
 
     val states = mutableListOf<UserViewState>()
 
@@ -58,7 +58,7 @@ class UserViewModelTest {
             githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
         }
 
-        userViewModel.load(LOGIN)
+        userViewModel.load()
 
         assert(states.map { it.userDetail })
                 .containsExactly(
@@ -75,7 +75,7 @@ class UserViewModelTest {
                     .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
         }
 
-        userViewModel.load(LOGIN)
+        userViewModel.load()
         userViewModel.retry()
 
         assert(states.map { it.userDetail })

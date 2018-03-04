@@ -26,14 +26,12 @@ import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.Resource
 import javax.inject.Inject
 
-class UserViewModel
-@Inject constructor(
+class UserViewModel @Inject constructor(
         private val githubInteractor: GithubInteractor,
         private val navigationController: NavigationController,
-        private val coroutines: Coroutines
+        private val coroutines: Coroutines,
+        private val login: String
 ) : ViewModel() {
-
-    private lateinit var login: String
 
     val liveData = LiveDataDelegate(UserViewState(Resource.Empty))
 
@@ -41,8 +39,7 @@ class UserViewModel
 
     val uiActions = UiActionsLiveData()
 
-    fun load(login: String) = coroutines {
-        this.login = login
+    fun load() = coroutines {
         state = state.copy(userDetail = Resource.Loading)
 
         state = try {
@@ -53,7 +50,7 @@ class UserViewModel
         }
     }
 
-    fun retry() = coroutines { load(login) }
+    fun retry() = load()
 
     fun openRepoDetail(id: RepoId) =
             uiActions { navigationController.navigateToRepo(it, id) }
