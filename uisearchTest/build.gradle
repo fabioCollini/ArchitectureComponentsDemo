@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    implementation project(':uirepo')
+    implementation project(':uisearch')
 
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
     androidTestImplementation project(':androidTestLib')

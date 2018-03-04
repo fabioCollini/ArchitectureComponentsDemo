@@ -1,11 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-
-androidExtensions {
-    experimental = true
-}
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -22,21 +18,20 @@ android {
             minifyEnabled false
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.2'
-    api "org.jetbrains.anko:anko-coroutines:0.10.3"
+    api project(':core')
+    api project(':viewlib')
 
-    api "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    api('com.github.nalulabs.prefs-delegates:prefs-delegates:0.1') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
-
     testImplementation project(':testLib')
-
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation project(':testData')
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 }

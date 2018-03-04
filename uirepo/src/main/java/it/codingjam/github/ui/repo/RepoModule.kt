@@ -16,14 +16,4 @@ abstract class RepoModule {
 class RepoLocalModule {
 
     @Provides fun repoId(fragment: RepoFragment) = RepoFragment.getParam(fragment)
-
-//    @Provides
-//    fun viewModel(
-//            navigationController: NavigationController,
-//            githubInteractor: GithubInteractor,
-//            coroutines: Coroutines,
-//            fragment: RepoFragment
-//    ): RepoViewModel {
-//        return RepoViewModel(navigationController, githubInteractor, coroutines, RepoFragment.getParam(fragment))
-//    }
 }

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-include ':app', ':core', ':api', ':testLib', ':viewlib', ':uirepo', ':testData', ':androidTestLib', ':uirepoTest'
+include ':app', ':core', ':api', ':testLib', ':viewlib', ':testData', ':androidTestLib', ':uisearch', ':uisearchTest', ':uiuser', ':uiuserTest', ':uirepo', ':uirepoTest'
