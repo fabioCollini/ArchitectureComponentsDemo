@@ -18,7 +18,6 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -40,13 +39,8 @@ import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.vo.Resource
 import org.hamcrest.Matchers.not
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-
-inline fun <reified T : ViewModel> mockViewModelFactory(): ViewModelFactory {
-    return ViewModelFactory { mock<T>() }
-}
 
 class SearchFragmentTest {
 
@@ -58,14 +52,9 @@ class SearchFragmentTest {
 
     val liveData = MutableLiveData<SearchViewState>()
 
-//    val factory = mockViewModelFactory<SearchViewModel>()
-//
-//    val viewModel by factory
-
-
     val factory = ViewModelFactory { viewModel }
 
-    @Ignore val viewModel = mock<SearchViewModel>()
+    val viewModel by lazy { mock<SearchViewModel>() }
 
     @Before fun setUp() {
         viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Resource.Empty), liveData)
