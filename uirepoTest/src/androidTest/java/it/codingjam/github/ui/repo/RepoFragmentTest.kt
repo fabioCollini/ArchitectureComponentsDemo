@@ -23,13 +23,12 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
+import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.FragmentTestRule
-import it.codingjam.github.espresso.TestViewModelFactory
 import it.codingjam.github.espresso.espressoDaggerMockRule
-import it.codingjam.github.espresso.viewModel
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
@@ -38,6 +37,7 @@ import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.vo.Resource
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -54,9 +54,9 @@ class RepoFragmentTest {
 
     val liveData = MutableLiveData<RepoViewState>()
 
-    val factory = TestViewModelFactory.create<RepoViewModel>()
+    val factory = ViewModelFactory { viewModel }
 
-    val viewModel get() = factory.viewModel<RepoViewModel>()
+    val viewModel by lazy { mock<RepoViewModel>() }
 
     @Before fun setUp() {
         viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Empty), liveData)

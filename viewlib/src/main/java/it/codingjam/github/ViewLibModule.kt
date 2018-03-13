@@ -22,7 +22,6 @@ import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.util.AndroidCoroutines
-import it.codingjam.github.util.AndroidViewModelFactory
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Singleton
@@ -32,5 +31,5 @@ import javax.inject.Singleton
 
     @Provides fun coroutines(): Coroutines = AndroidCoroutines()
 
-    @Provides fun viewModelFactory(): ViewModelFactory = AndroidViewModelFactory()
+    @Provides fun viewModelFactory() = ViewModelFactory()
 }

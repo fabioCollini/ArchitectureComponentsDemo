@@ -72,6 +72,7 @@ class SearchFragment : Fragment() {
 
         viewModel.liveData.observe(this) {
             binding.state = it
+            println("observe " + it.repos::class)
             adapter.replace(it.repos.orElse(emptyList()))
             binding.executePendingBindings()
         }

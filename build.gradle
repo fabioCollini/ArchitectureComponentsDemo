@@ -23,7 +23,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0-beta4'
+        classpath 'com.android.tools.build:gradle:3.1.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -41,7 +41,7 @@ ext.okhttp_version = "3.8.1"
 ext.mockito_version = "2.15.0"
 ext.constraint_layout_version = "1.0.2"
 ext.glide_version = "3.7.0"
-ext.timber_version = "4.5.1"
+ext.timber_version = "4.6.1"
 
 allprojects {
     repositories {

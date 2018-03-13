@@ -18,16 +18,16 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
+import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.espresso.FragmentTestRule
-import it.codingjam.github.espresso.TestViewModelFactory
 import it.codingjam.github.espresso.espressoDaggerMockRule
-import it.codingjam.github.espresso.viewModel
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
@@ -36,11 +36,17 @@ import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.vo.Resource
 import org.hamcrest.Matchers.not
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+
+inline fun <reified T : ViewModel> mockViewModelFactory(): ViewModelFactory {
+    return ViewModelFactory { mock<T>() }
+}
 
 class SearchFragmentTest {
 
@@ -52,9 +58,14 @@ class SearchFragmentTest {
 
     val liveData = MutableLiveData<SearchViewState>()
 
-    val factory = TestViewModelFactory.create<SearchViewModel>()
+//    val factory = mockViewModelFactory<SearchViewModel>()
+//
+//    val viewModel by factory
 
-    val viewModel get() = factory.viewModel<SearchViewModel>()
+
+    val factory = ViewModelFactory { viewModel }
+
+    @Ignore val viewModel = mock<SearchViewModel>()
 
     @Before fun setUp() {
         viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Resource.Empty), liveData)
