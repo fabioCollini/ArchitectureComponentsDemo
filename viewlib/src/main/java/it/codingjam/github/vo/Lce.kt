@@ -35,6 +35,17 @@ sealed class Lce<out T> : BaseLce {
     object Loading : Lce<Nothing>() {
         override fun <R> map(f: (Nothing) -> R): Lce<R> = this
     }
+
+    companion object {
+        suspend fun <T> exec(copy: (Lce<T>) -> Unit, f: suspend () -> T) {
+            copy(Lce.Loading)
+            try {
+                copy(Lce.Success(f()))
+            } catch (e: Exception) {
+                copy(Lce.Error(e))
+            }
+        }
+    }
 }
 
 fun <T> Lce<T>.orElse(defaultValue: T): T = (this as? Lce.Success)?.data ?: defaultValue
