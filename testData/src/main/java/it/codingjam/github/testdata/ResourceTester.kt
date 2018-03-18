@@ -5,7 +5,6 @@ import assertk.assertions.isInstanceOf
 import it.codingjam.github.vo.Resource
 
 class ResourceTester(private val list: List<Resource<*>>) {
-    fun empty(): ResourceTester = check(Resource.Empty::class.java)
     fun success(): ResourceTester = check(Resource.Success::class.java)
     fun error(): ResourceTester = check(Resource.Error::class.java)
     fun loading(): ResourceTester = check(Resource.Loading::class.java)

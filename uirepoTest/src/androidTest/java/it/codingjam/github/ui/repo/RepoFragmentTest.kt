@@ -59,14 +59,13 @@ class RepoFragmentTest {
     val viewModel by lazy { mock<RepoViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Empty), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        liveData.postValue(RepoViewState(Resource.Empty))
         liveData.postValue(RepoViewState(Resource.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))

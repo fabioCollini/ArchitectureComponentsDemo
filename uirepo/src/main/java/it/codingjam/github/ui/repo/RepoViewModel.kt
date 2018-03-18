@@ -33,7 +33,7 @@ class RepoViewModel @Inject constructor(
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(RepoViewState(Resource.Empty))
+    val liveData = LiveDataDelegate(RepoViewState(Resource.Loading))
 
     private var state by liveData
 

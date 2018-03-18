@@ -55,14 +55,13 @@ class UserFragmentTest {
     val viewModel by lazy { mock<UserViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(UserViewState(Resource.Empty), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(UserViewState(Resource.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(UserFragment.create("user"))
 
-        liveData.postValue(UserViewState(Resource.Empty))
         liveData.postValue(UserViewState(Resource.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))

@@ -57,7 +57,7 @@ class RepoViewModelTest {
         repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
-            empty().loading().success()
+            loading().loading().success()
         }
     }
 
@@ -67,7 +67,7 @@ class RepoViewModelTest {
         repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
-            empty().loading().error()
+            loading().loading().error()
         }
     }
 
@@ -81,7 +81,7 @@ class RepoViewModelTest {
         repoViewModel.reload()
 
         states.map { it.repoDetail } shouldContain {
-            empty().loading().error().loading().success()
+            loading().loading().error().loading().success()
         }
     }
 }

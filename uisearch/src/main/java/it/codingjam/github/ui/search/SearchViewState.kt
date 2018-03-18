@@ -5,7 +5,7 @@ import it.codingjam.github.vo.Resource
 
 data class SearchViewState(
         val query: String = "",
-        val repos: Resource<List<Repo>> = Resource.Empty,
+        val repos: Resource<List<Repo>> = Resource.Loading,
         val loadingMore: Boolean = false,
         val nextPage: Int? = null) {
 

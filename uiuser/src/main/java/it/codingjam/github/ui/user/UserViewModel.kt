@@ -33,7 +33,7 @@ class UserViewModel @Inject constructor(
         private val login: String
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(UserViewState(Resource.Empty))
+    val liveData = LiveDataDelegate(UserViewState(Resource.Loading))
 
     private var state by liveData
 

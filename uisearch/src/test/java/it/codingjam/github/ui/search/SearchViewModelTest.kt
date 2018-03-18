@@ -66,7 +66,7 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
 
         ResourceTester(states.map { it.repos })
-                .empty().loading().success()
+                .loading().loading().success()
 
         assert((states[2].repos as Resource.Success).data)
                 .containsExactly(REPO_1, REPO_2)
@@ -86,7 +86,7 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .empty().loading().success().success().success()
+                .loading().loading().success().success().success()
 
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
@@ -105,7 +105,7 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .empty().loading().success().success().success()
+                .loading().loading().success().success().success()
 
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)

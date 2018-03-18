@@ -62,7 +62,7 @@ class UserViewModelTest {
 
         assert(states.map { it.userDetail })
                 .containsExactly(
-                        Resource.Empty,
+                        Resource.Loading,
                         Resource.Loading,
                         Resource.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
                 )
@@ -80,7 +80,7 @@ class UserViewModelTest {
 
         assert(states.map { it.userDetail })
                 .containsExactly(
-                        Resource.Empty,
+                        Resource.Loading,
                         Resource.Loading,
                         Resource.Error(ERROR),
                         Resource.Loading,

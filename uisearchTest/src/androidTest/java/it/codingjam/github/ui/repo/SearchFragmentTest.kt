@@ -57,14 +57,13 @@ class SearchFragmentTest {
     val viewModel by lazy { mock<SearchViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Resource.Empty), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Resource.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(SearchFragment())
 
-        liveData.postValue(SearchViewState(repos = Resource.Empty))
         liveData.postValue(SearchViewState(repos = Resource.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
