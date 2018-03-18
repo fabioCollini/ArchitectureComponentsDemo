@@ -40,13 +40,8 @@ class UserViewModel @Inject constructor(
     val uiActions = UiActionsLiveData()
 
     fun load() = coroutines {
-        state = state.copy(userDetail = Lce.Loading)
-
-        state = try {
-            val detail = githubInteractor.loadUserDetail(login)
-            state.copy(userDetail = Lce.Success(detail))
-        } catch (e: Exception) {
-            state.copy(userDetail = Lce.Error(e))
+        Lce.exec({ state = state.copy(userDetail = it) }) {
+            githubInteractor.loadUserDetail(login)
         }
     }
 

@@ -37,7 +37,7 @@ sealed class Lce<out T> : BaseLce {
     }
 
     companion object {
-        suspend fun <T> exec(copy: (Lce<T>) -> Unit, f: suspend () -> T) {
+        inline fun <T> exec(copy: (Lce<T>) -> Unit, f: () -> T) {
             copy(Lce.Loading)
             try {
                 copy(Lce.Success(f()))
