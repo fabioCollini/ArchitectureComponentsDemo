@@ -64,20 +64,17 @@ class SearchViewModel @Inject constructor(
     }
 
     fun loadNextPage() = coroutines {
-        state.repos.doOnData { data ->
+        state.repos.doOnData { (_, nextPage, _, loadingMore) ->
             val query = state.query
-            val nextPage = data.nextPage
-            if (!query.isEmpty() && nextPage != null && !data.loadingMore) {
-                state = state.copy(repos = Lce.Success(data.copy(loadingMore = true)))
+            if (!query.isEmpty() && nextPage != null && !loadingMore) {
+                state = state.copyRepos { copy(loadingMore = true) }
                 try {
                     val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                    state = state.copy(repos = Lce.Success(data.copy(
-                            list = data.list + items,
-                            nextPage = newNextPage,
-                            loadingMore = false
-                    )))
+                    state = state.copyRepos {
+                        copy(list = list + items, nextPage = newNextPage, loadingMore = false)
+                    }
                 } catch (t: Exception) {
-                    state = state.copy(repos = Lce.Success(data.copy(loadingMore = false)))
+                    state = state.copyRepos { copy(loadingMore = false) }
                     uiActions { navigationController.showError(it, t.message) }
                 }
             }
