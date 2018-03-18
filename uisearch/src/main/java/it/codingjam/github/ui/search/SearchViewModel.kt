@@ -48,34 +48,41 @@ class SearchViewModel @Inject constructor(
     fun setQuery(originalInput: String) = coroutines {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (!state.searchInvoked || input != state.query) {
+        if (!state.repos.map { it.searchInvoked }.orElse(false) || input != state.query) {
             reloadData(input)
         }
     }
 
     private suspend fun reloadData(input: String) {
-        state = state.copy(query = input, repos = Lce.Loading, loadingMore = false, searchInvoked = true)
+        state = state.copy(query = input, repos = Lce.Loading)
         state = try {
             val (items, nextPage) = githubInteractor.search(input)
-            state.copy(repos = Lce.Success(PaginatedList(items, nextPage)))
+            state.copy(repos = Lce.Success(ReposViewState(items, nextPage, true)))
         } catch (e: Exception) {
             state.copy(repos = Lce.Error(e))
         }
     }
 
     fun loadNextPage() = coroutines {
-        val query = state.query
-        val nextPage = state.repos.map { it.nextPage }.orElse(null)
-        if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
-            state = state.copy(loadingMore = true)
-            try {
-                val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                state = state.copy(repos = state.repos.map { v -> PaginatedList(v.list + items, newNextPage) }, loadingMore = false)
-            } catch (t: Exception) {
-                state = state.copy(loadingMore = false)
-                uiActions { navigationController.showError(it, t.message) }
-            }
-        }
+        (state.repos as? Lce.Success)
+                ?.let { (data) ->
+                    val query = state.query
+                    val nextPage = data.nextPage
+                    if (!query.isEmpty() && nextPage != null && !data.loadingMore) {
+                        state = state.copy(repos = Lce.Success(data.copy(loadingMore = true)))
+                        try {
+                            val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
+                            state = state.copy(repos = Lce.Success(data.copy(
+                                    list = data.list + items,
+                                    nextPage = newNextPage,
+                                    loadingMore = false
+                            )))
+                        } catch (t: Exception) {
+                            state = state.copy(repos = Lce.Success(data.copy(loadingMore = false)))
+                            uiActions { navigationController.showError(it, t.message) }
+                        }
+                    }
+                }
     }
 
     fun refresh() = coroutines {

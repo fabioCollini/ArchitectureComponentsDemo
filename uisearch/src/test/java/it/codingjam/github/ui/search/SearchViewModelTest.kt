@@ -67,7 +67,7 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .success().loading().success()
 
-        assert(states.map { it.emptyStateVisible() })
+        assert(states.map { it.emptyStateVisible })
                 .containsExactly(false, false, false)
 
         assert((states[2].repos as Lce.Success).data.list)
@@ -82,7 +82,7 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .success().loading().success()
 
-        assert(states.map { it.emptyStateVisible() })
+        assert(states.map { it.emptyStateVisible })
                 .containsExactly(false, false, true)
 
         assert((states[2].repos as Lce.Success).data.list).isEmpty()

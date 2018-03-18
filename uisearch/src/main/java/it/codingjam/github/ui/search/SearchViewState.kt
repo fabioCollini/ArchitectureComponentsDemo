@@ -4,20 +4,21 @@ import it.codingjam.github.core.Repo
 import it.codingjam.github.vo.Lce
 import it.codingjam.github.vo.orElse
 
-data class PaginatedList<T>(
-        val list: List<T>,
-        val nextPage: Int? = null
+data class ReposViewState(
+        val list: List<Repo>,
+        val nextPage: Int? = null,
+        val searchInvoked: Boolean = false,
+        val loadingMore: Boolean = false
 )
 
 data class SearchViewState(
         val query: String = "",
-        val searchInvoked: Boolean = false,
-        val repos: Lce<PaginatedList<Repo>> = Lce.Success(PaginatedList(emptyList())),
-        val loadingMore: Boolean = false) {
+        val repos: Lce<ReposViewState> = Lce.Success(ReposViewState(emptyList()))
+) {
 
-    fun emptyStateVisible(): Boolean {
-        return searchInvoked && repos is Lce.Success && repos.data.list.isEmpty()
-    }
+    val emptyStateVisible: Boolean = repos.map { it.searchInvoked && it.list.isEmpty() }.orElse(false)
 
-    inline val repoList get() = repos.map { it.list }.orElse(emptyList())
+    val repoList: List<Repo> = repos.map { it.list }.orElse(emptyList())
+
+    val loadingMore: Boolean = repos.map { it.loadingMore }.orElse(false)
 }
