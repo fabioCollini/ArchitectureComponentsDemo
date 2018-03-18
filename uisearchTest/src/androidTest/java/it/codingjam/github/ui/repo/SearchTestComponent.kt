@@ -16,6 +16,8 @@ interface SearchTestComponent : TestComponent {
     @Component.Builder
     interface Builder : TestComponentBuilder {
 
+        fun testAppModule(testAppModule: TestAppModule): Builder
+
         fun viewLibModule(viewLibModule: ViewLibModule): Builder
 
         fun build(): SearchTestComponent
