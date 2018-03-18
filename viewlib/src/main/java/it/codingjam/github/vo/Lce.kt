@@ -22,6 +22,12 @@ sealed class Lce<out T> : BaseLce {
 
     abstract fun <R> map(f: (T) -> R): Lce<R>
 
+    inline fun doOnData(f: (T) -> Unit) {
+        if (this is Success) {
+            f(data)
+        }
+    }
+
     data class Success<out T>(val data: T) : Lce<T>() {
         override fun <R> map(f: (T) -> R): Lce<R> = Success(f(data))
     }
