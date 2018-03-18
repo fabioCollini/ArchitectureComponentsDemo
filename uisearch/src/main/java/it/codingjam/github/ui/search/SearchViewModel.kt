@@ -26,6 +26,7 @@ import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.vo.Lce
+import it.codingjam.github.vo.orElse
 import java.util.*
 import javax.inject.Inject
 
@@ -53,10 +54,10 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun reloadData(input: String) {
-        state = state.copy(query = input, repos = Lce.Loading, loadingMore = false, nextPage = null, searchInvoked = true)
+        state = state.copy(query = input, repos = Lce.Loading, loadingMore = false, searchInvoked = true)
         state = try {
             val (items, nextPage) = githubInteractor.search(input)
-            state.copy(repos = Lce.Success(items), nextPage = nextPage)
+            state.copy(repos = Lce.Success(PaginatedList(items, nextPage)))
         } catch (e: Exception) {
             state.copy(repos = Lce.Error(e))
         }
@@ -64,12 +65,12 @@ class SearchViewModel @Inject constructor(
 
     fun loadNextPage() = coroutines {
         val query = state.query
-        val nextPage = state.nextPage
+        val nextPage = state.repos.map { it.nextPage }.orElse(null)
         if (!query.isEmpty() && nextPage != null && !state.loadingMore) {
             state = state.copy(loadingMore = true)
             try {
                 val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                state = state.copy(repos = state.repos.map { v -> v + items }, nextPage = newNextPage, loadingMore = false)
+                state = state.copy(repos = state.repos.map { v -> PaginatedList(v.list + items, newNextPage) }, loadingMore = false)
             } catch (t: Exception) {
                 state = state.copy(loadingMore = false)
                 uiActions { navigationController.showError(it, t.message) }

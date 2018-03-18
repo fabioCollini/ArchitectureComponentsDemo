@@ -21,6 +21,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.support.v4.app.FragmentActivity
 import assertk.assert
 import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.nalulabs.prefs.fake.FakeSharedPreferences
 import com.nhaarman.mockito_kotlin.mock
@@ -66,10 +67,29 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
 
         ResourceTester(states.map { it.repos })
-                .loading().loading().success()
+                .success().loading().success()
 
-        assert((states[2].repos as Lce.Success).data)
+        assert(states.map { it.emptyStateVisible() })
+                .containsExactly(false, false, false)
+
+        assert((states[2].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
+    }
+
+    @Test fun emptyStateVisible() {
+        runBlocking {
+            interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
+        }
+
+        viewModel.setQuery(QUERY)
+
+        ResourceTester(states.map { it.repos })
+                .success().loading().success()
+
+        assert(states.map { it.emptyStateVisible() })
+                .containsExactly(false, false, true)
+
+        assert((states[2].repos as Lce.Success).data.list).isEmpty()
     }
 
     private fun response(repo1: Repo, repo2: Repo, nextPage: Int): RepoSearchResponse {
@@ -86,12 +106,12 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .loading().loading().success().success().success()
+                .success().loading().success().success().success()
 
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assert((states[4].repos as Lce.Success).data)
+        assert((states[4].repos as Lce.Success).data.list)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -105,12 +125,12 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .loading().loading().success().success().success()
+                .success().loading().success().success().success()
 
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assert((states[2].repos as Lce.Success).data)
+        assert((states[2].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)

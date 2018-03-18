@@ -27,7 +27,6 @@ import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.search.databinding.SearchFragmentBinding
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.vo.orElse
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -72,8 +71,7 @@ class SearchFragment : Fragment() {
 
         viewModel.liveData.observe(this) {
             binding.state = it
-            println("observe " + it.repos::class)
-            adapter.replace(it.repos.orElse(emptyList()))
+            adapter.replace(it.repoList)
             binding.executePendingBindings()
         }
         viewModel.uiActions.observe(this) { it(activity!!) }
