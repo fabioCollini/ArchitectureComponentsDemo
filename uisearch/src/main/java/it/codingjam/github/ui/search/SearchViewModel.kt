@@ -45,21 +45,19 @@ class SearchViewModel @Inject constructor(
 
     val uiActions = UiActionsLiveData()
 
-    fun setQuery(originalInput: String) = coroutines {
+    fun setQuery(originalInput: String) {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (!state.repos.map { it.searchInvoked }.orElse(false) || input != state.query) {
-            reloadData(input)
+            state = state.copy(query = input)
+            reloadData()
         }
     }
 
-    private suspend fun reloadData(input: String) {
-        state = state.copy(query = input, repos = Lce.Loading)
-        state = try {
-            val (items, nextPage) = githubInteractor.search(input)
-            state.copy(repos = Lce.Success(ReposViewState(items, nextPage, true)))
-        } catch (e: Exception) {
-            state.copy(repos = Lce.Error(e))
+    private fun reloadData() = coroutines {
+        Lce.exec({ state = state.copy(repos = it) }) {
+            val (items, nextPage) = githubInteractor.search(state.query)
+            ReposViewState(items, nextPage, true)
         }
     }
 
@@ -81,10 +79,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun refresh() = coroutines {
+    fun refresh() {
         val query = state.query
         if (!query.isEmpty()) {
-            reloadData(query)
+            reloadData()
         }
     }
 
