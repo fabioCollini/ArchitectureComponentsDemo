@@ -59,10 +59,8 @@ class SearchViewModelTest {
         viewModel.uiActions.observeForever { it(activity) }
     }
 
-    @Test fun load() {
-        runBlocking {
-            interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
-        }
+    @Test fun load() = runBlocking {
+        interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
         viewModel.setQuery(QUERY)
 
@@ -76,10 +74,8 @@ class SearchViewModelTest {
                 .containsExactly(REPO_1, REPO_2)
     }
 
-    @Test fun emptyStateVisible() {
-        runBlocking {
-            interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
-        }
+    @Test fun emptyStateVisible() = runBlocking {
+        interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
 
         viewModel.setQuery(QUERY)
 
@@ -96,11 +92,9 @@ class SearchViewModelTest {
         return RepoSearchResponse(listOf(repo1, repo2), nextPage)
     }
 
-    @Test fun loadMore() {
-        runBlocking {
-            interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-            interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
-        }
+    @Test fun loadMore() = runBlocking {
+        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+        interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -115,11 +109,9 @@ class SearchViewModelTest {
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
-    @Test fun errorLoadingMore() {
-        runBlocking {
-            interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-            interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
-        }
+    @Test fun errorLoadingMore() = runBlocking {
+        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
+        interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
