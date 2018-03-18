@@ -23,7 +23,7 @@ import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import javax.inject.Inject
 
 class UserViewModel @Inject constructor(
@@ -33,20 +33,20 @@ class UserViewModel @Inject constructor(
         private val login: String
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(UserViewState(Resource.Loading))
+    val liveData = LiveDataDelegate(UserViewState(Lce.Loading))
 
     private var state by liveData
 
     val uiActions = UiActionsLiveData()
 
     fun load() = coroutines {
-        state = state.copy(userDetail = Resource.Loading)
+        state = state.copy(userDetail = Lce.Loading)
 
         state = try {
             val detail = githubInteractor.loadUserDetail(login)
-            state.copy(userDetail = Resource.Success(detail))
+            state.copy(userDetail = Lce.Success(detail))
         } catch (e: Exception) {
-            state.copy(userDetail = Resource.Error(e))
+            state.copy(userDetail = Lce.Error(e))
         }
     }
 

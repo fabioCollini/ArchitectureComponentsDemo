@@ -1,15 +1,16 @@
 package it.codingjam.github.ui.search
 
 import it.codingjam.github.core.Repo
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 
 data class SearchViewState(
         val query: String = "",
-        val repos: Resource<List<Repo>> = Resource.Loading,
+        val searchInvoked: Boolean = false,
+        val repos: Lce<List<Repo>> = Lce.Success(emptyList()),
         val loadingMore: Boolean = false,
         val nextPage: Int? = null) {
 
     fun emptyStateVisible(): Boolean {
-        return repos is Resource.Success && repos.data.isEmpty()
+        return searchInvoked && repos is Lce.Success && repos.data.isEmpty()
     }
 }

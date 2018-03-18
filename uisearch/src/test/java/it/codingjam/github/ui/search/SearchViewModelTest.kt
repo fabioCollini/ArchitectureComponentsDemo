@@ -36,7 +36,7 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.REPO_3
 import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.util.TestCoroutines
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -68,7 +68,7 @@ class SearchViewModelTest {
         ResourceTester(states.map { it.repos })
                 .loading().loading().success()
 
-        assert((states[2].repos as Resource.Success).data)
+        assert((states[2].repos as Lce.Success).data)
                 .containsExactly(REPO_1, REPO_2)
     }
 
@@ -91,7 +91,7 @@ class SearchViewModelTest {
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assert((states[4].repos as Resource.Success).data)
+        assert((states[4].repos as Lce.Success).data)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -110,7 +110,7 @@ class SearchViewModelTest {
         assert(states.map { it.loadingMore })
                 .containsExactly(false, false, false, true, false)
 
-        assert((states[2].repos as Resource.Success).data)
+        assert((states[2].repos as Lce.Success).data)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)

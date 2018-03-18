@@ -38,7 +38,7 @@ import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -59,14 +59,14 @@ class RepoFragmentTest {
     val viewModel by lazy { mock<RepoViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Resource.Loading), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(RepoViewState(Lce.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        liveData.postValue(RepoViewState(Resource.Loading))
+        liveData.postValue(RepoViewState(Lce.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -75,8 +75,8 @@ class RepoFragmentTest {
     @Test fun testValueWhileLoading() {
         fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
 
-        liveData.postValue(RepoViewState(Resource.Loading))
-        liveData.postValue(RepoViewState(Resource.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2)))))
+        liveData.postValue(RepoViewState(Lce.Loading))
+        liveData.postValue(RepoViewState(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2)))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(matches(

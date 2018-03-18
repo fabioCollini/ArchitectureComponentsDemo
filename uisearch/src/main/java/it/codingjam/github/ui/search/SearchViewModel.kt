@@ -25,12 +25,11 @@ import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import java.util.*
 import javax.inject.Inject
 
-class SearchViewModel
-@Inject constructor(
+class SearchViewModel @Inject constructor(
         private val githubInteractor: GithubInteractor,
         private val navigationController: NavigationController,
         private val coroutines: Coroutines,
@@ -48,18 +47,18 @@ class SearchViewModel
     fun setQuery(originalInput: String) = coroutines {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (input != state.query) {
+        if (!state.searchInvoked || input != state.query) {
             reloadData(input)
         }
     }
 
     private suspend fun reloadData(input: String) {
-        state = state.copy(query = input, repos = Resource.Loading, loadingMore = false, nextPage = null)
+        state = state.copy(query = input, repos = Lce.Loading, loadingMore = false, nextPage = null, searchInvoked = true)
         state = try {
             val (items, nextPage) = githubInteractor.search(input)
-            state.copy(repos = Resource.Success(items), nextPage = nextPage)
+            state.copy(repos = Lce.Success(items), nextPage = nextPage)
         } catch (e: Exception) {
-            state.copy(repos = Resource.Error(e))
+            state.copy(repos = Lce.Error(e))
         }
     }
 

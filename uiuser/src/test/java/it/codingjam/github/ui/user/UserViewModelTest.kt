@@ -31,7 +31,7 @@ import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.util.TestCoroutines
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -62,9 +62,9 @@ class UserViewModelTest {
 
         assert(states.map { it.userDetail })
                 .containsExactly(
-                        Resource.Loading,
-                        Resource.Loading,
-                        Resource.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
+                        Lce.Loading,
+                        Lce.Loading,
+                        Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
                 )
     }
 
@@ -80,11 +80,11 @@ class UserViewModelTest {
 
         assert(states.map { it.userDetail })
                 .containsExactly(
-                        Resource.Loading,
-                        Resource.Loading,
-                        Resource.Error(ERROR),
-                        Resource.Loading,
-                        Resource.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
+                        Lce.Loading,
+                        Lce.Loading,
+                        Lce.Error(ERROR),
+                        Lce.Loading,
+                        Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
                 )
     }
 

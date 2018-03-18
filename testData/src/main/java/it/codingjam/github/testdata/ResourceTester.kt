@@ -2,12 +2,12 @@ package it.codingjam.github.testdata
 
 import assertk.assert
 import assertk.assertions.isInstanceOf
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 
-class ResourceTester(private val list: List<Resource<*>>) {
-    fun success(): ResourceTester = check(Resource.Success::class.java)
-    fun error(): ResourceTester = check(Resource.Error::class.java)
-    fun loading(): ResourceTester = check(Resource.Loading::class.java)
+class ResourceTester(private val list: List<Lce<*>>) {
+    fun success(): ResourceTester = check(Lce.Success::class.java)
+    fun error(): ResourceTester = check(Lce.Error::class.java)
+    fun loading(): ResourceTester = check(Lce.Loading::class.java)
 
     private fun check(clazz: Class<*>): ResourceTester {
         assert(list[0]).isInstanceOf(clazz)
@@ -15,4 +15,4 @@ class ResourceTester(private val list: List<Resource<*>>) {
     }
 }
 
-infix fun List<Resource<*>>.shouldContain(f: ResourceTester.() -> Unit) = ResourceTester(this).f()
+infix fun List<Lce<*>>.shouldContain(f: ResourceTester.() -> Unit) = ResourceTester(this).f()

@@ -34,7 +34,7 @@ import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -55,14 +55,14 @@ class UserFragmentTest {
     val viewModel by lazy { mock<UserViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(UserViewState(Resource.Loading), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(UserViewState(Lce.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(UserFragment.create("user"))
 
-        liveData.postValue(UserViewState(Resource.Loading))
+        liveData.postValue(UserViewState(Lce.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -71,8 +71,8 @@ class UserFragmentTest {
     @Test fun testValueWhileLoading() {
         fragmentRule.launchFragment(UserFragment.create("user"))
 
-        liveData.postValue(UserViewState(Resource.Loading))
-        liveData.postValue(UserViewState(Resource.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))))
+        liveData.postValue(UserViewState(Lce.Loading))
+        liveData.postValue(UserViewState(Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.user_name)).check(matches(withText(USER.name)))

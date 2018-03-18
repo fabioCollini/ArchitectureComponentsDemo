@@ -36,7 +36,7 @@ import it.codingjam.github.ui.search.SearchViewState
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -57,14 +57,14 @@ class SearchFragmentTest {
     val viewModel by lazy { mock<SearchViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Resource.Loading), liveData)
+        viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Lce.Loading), liveData)
         viewModel.uiActions willReturn UiActionsLiveData()
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(SearchFragment())
 
-        liveData.postValue(SearchViewState(repos = Resource.Loading))
+        liveData.postValue(SearchViewState(repos = Lce.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -73,8 +73,8 @@ class SearchFragmentTest {
     @Test fun testValueWhileLoading() {
         fragmentRule.launchFragment(SearchFragment())
 
-        liveData.postValue(SearchViewState(repos = Resource.Loading))
-        liveData.postValue(SearchViewState(repos = Resource.Success(listOf(REPO_1, REPO_2))))
+        liveData.postValue(SearchViewState(repos = Lce.Loading))
+        liveData.postValue(SearchViewState(repos = Lce.Success(listOf(REPO_1, REPO_2))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }

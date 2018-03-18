@@ -28,8 +28,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import it.codingjam.github.viewlib.R
-import it.codingjam.github.vo.GenericResource
-import it.codingjam.github.vo.Resource
+import it.codingjam.github.vo.BaseLce
+import it.codingjam.github.vo.Lce
 
 
 @set:BindingAdapter("visibleOrGone")
@@ -109,20 +109,20 @@ fun TextView.dismissKeyboard() {
 }
 
 @BindingAdapter("errorMessage")
-fun bindErrorMessage(t: TextView, resource: GenericResource?) {
+fun bindErrorMessage(t: TextView, resource: BaseLce?) {
     t.text = when {
-        resource !is Resource.Error -> ""
+        resource !is Lce.Error -> ""
         resource.message.isBlank() -> t.resources.getString(R.string.unknown_error)
         else -> resource.message
     }
 }
 
 @BindingAdapter("visibleWhileLoading")
-fun bindVisibleWhileLoading(t: View, resource: GenericResource?) {
-    t.visibility = if (resource is Resource.Loading) VISIBLE else GONE
+fun bindVisibleWhileLoading(t: View, resource: BaseLce?) {
+    t.visibility = if (resource is Lce.Loading) VISIBLE else GONE
 }
 
 @BindingAdapter("visibleOnError")
-fun bindVisibleOnError(t: View, resource: GenericResource?) {
-    t.visibility = if (resource is Resource.Error) VISIBLE else GONE
+fun bindVisibleOnError(t: View, resource: BaseLce?) {
+    t.visibility = if (resource is Lce.Error) VISIBLE else GONE
 }

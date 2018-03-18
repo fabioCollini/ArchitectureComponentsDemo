@@ -16,30 +16,26 @@
 
 package it.codingjam.github.vo
 
-interface GenericResource
+interface BaseLce
 
-sealed class Resource<out T> : GenericResource {
+sealed class Lce<out T> : BaseLce {
 
-    abstract fun <R> map(f: (T) -> R): Resource<R>
+    abstract fun <R> map(f: (T) -> R): Lce<R>
 
-    data class Success<out T>(val data: T) : Resource<T>() {
-        override fun <R> map(f: (T) -> R): Resource<R> = Success(f(data))
+    data class Success<out T>(val data: T) : Lce<T>() {
+        override fun <R> map(f: (T) -> R): Lce<R> = Success(f(data))
     }
 
-    data class Error(val message: String) : Resource<Nothing>() {
+    data class Error(val message: String) : Lce<Nothing>() {
         constructor(t: Throwable) : this(t.message ?: "")
 
-        override fun <R> map(f: (Nothing) -> R): Resource<R> = this
+        override fun <R> map(f: (Nothing) -> R): Lce<R> = this
     }
 
-    object Loading : Resource<Nothing>() {
-        override fun <R> map(f: (Nothing) -> R): Resource<R> = this
-    }
-
-    object Empty : Resource<Nothing>() {
-        override fun <R> map(f: (Nothing) -> R): Resource<R> = this
+    object Loading : Lce<Nothing>() {
+        override fun <R> map(f: (Nothing) -> R): Lce<R> = this
     }
 }
 
-fun <T> Resource<T>.orElse(defaultValue: T): T = (this as? Resource.Success)?.data ?: defaultValue
+fun <T> Lce<T>.orElse(defaultValue: T): T = (this as? Lce.Success)?.data ?: defaultValue
 
