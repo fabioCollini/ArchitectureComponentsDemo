@@ -22,17 +22,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
+import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.repo.databinding.RepoFragmentBinding
+import it.codingjam.github.util.LceContainer
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
 class RepoFragment : Fragment() {
 
-    lateinit var binding: RepoFragmentBinding
+    lateinit var lceContainer: LceContainer<RepoDetail>
 
     @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
 
@@ -50,23 +52,30 @@ class RepoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = DataBoundListAdapter { ContributorViewHolder(it, viewModel) }
-
-        binding.contributorList.adapter = adapter
-        binding.viewModel = viewModel
-
         viewModel.liveData.observe(this) {
-            binding.state = it
-            adapter.replace(it.contributors())
-            binding.executePendingBindings()
+            lceContainer.lce = it.repoDetail
         }
         viewModel.uiActions.observe(this) { it(activity!!) }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = RepoFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        lceContainer = LceContainer(requireContext()) {
+            viewModel.reload()
+        }
+
+        val adapter = DataBoundListAdapter { ContributorViewHolder(it, viewModel) }
+
+        val binding = RepoFragmentBinding.inflate(inflater, lceContainer, true)
+
+        binding.contributorList.adapter = adapter
+
+        lceContainer.setUpdateListener {
+            binding.repo = it.repo
+            adapter.replace(it.contributors)
+            binding.executePendingBindings()
+        }
+
+        return lceContainer
     }
 
     companion object : FragmentCreator<RepoId>(::RepoFragment)

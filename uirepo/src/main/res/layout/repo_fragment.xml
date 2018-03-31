@@ -22,12 +22,8 @@
     <data>
 
         <variable
-            name="state"
-            type="it.codingjam.github.ui.repo.RepoViewState"/>
-
-        <variable
-            name="viewModel"
-            type="it.codingjam.github.ui.repo.RepoViewModel"/>
+            name="repo"
+            type="it.codingjam.github.core.Repo"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -43,10 +39,9 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{@string/repo_full_name(state.repo.owner.login, state.repo.name)}"
+            android:text="@{@string/repo_full_name(repo.owner.login, repo.name)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleOrGone="@{state.repo != null}"
             tools:text="name of the user"/>
 
         <TextView
@@ -57,10 +52,9 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{state.repo.description}"
+            android:text="@{repo.description}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"
-            app:visibleOrGone="@{state.repo != null}"
             tools:text="description of the user"/>
 
         <android.support.v7.widget.RecyclerView
@@ -77,20 +71,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description"
             tools:listitem="@layout/contributor_item"/>
-
-        <include
-            layout="@layout/loading_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:callback="@{() -> viewModel.reload()}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:resource="@{state.repoDetail}"/>
     </android.support.constraint.ConstraintLayout>
 </layout>
