@@ -53,7 +53,7 @@ class RepoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.liveData.observe(this) {
-            lceContainer.lce = it.repoDetail
+            lceContainer.lce = it
         }
         viewModel.uiActions.observe(this) { it(activity!!) }
     }

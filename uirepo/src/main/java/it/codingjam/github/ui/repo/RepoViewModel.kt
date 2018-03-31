@@ -33,14 +33,14 @@ class RepoViewModel @Inject constructor(
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(RepoViewState(Lce.Loading))
+    val liveData = LiveDataDelegate<RepoViewState>(Lce.Loading)
 
     private var state by liveData
 
     val uiActions = UiActionsLiveData()
 
     fun reload() = coroutines {
-        Lce.exec({ state = state.copy(repoDetail = it) }) {
+        Lce.exec({ state = it }) {
             githubInteractor.loadRepo(repoId.owner, repoId.name)
         }
     }
