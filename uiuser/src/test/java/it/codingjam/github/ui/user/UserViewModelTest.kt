@@ -60,7 +60,7 @@ class UserViewModelTest {
 
         userViewModel.load()
 
-        assert(states.map { it.userDetail })
+        assert(states)
                 .containsExactly(
                         Lce.Loading,
                         Lce.Loading,
@@ -78,7 +78,7 @@ class UserViewModelTest {
         userViewModel.load()
         userViewModel.retry()
 
-        assert(states.map { it.userDetail })
+        assert(states)
                 .containsExactly(
                         Lce.Loading,
                         Lce.Loading,
