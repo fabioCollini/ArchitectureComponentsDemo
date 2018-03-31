@@ -10,18 +10,16 @@ data class ReposViewState(
         val nextPage: Int? = null,
         val searchInvoked: Boolean = false,
         val loadingMore: Boolean = false
-)
+) {
+    val emptyStateVisible: Boolean = searchInvoked && list.isEmpty()
+}
 
 data class SearchViewState(
         val query: String = "",
         val repos: Lce<ReposViewState> = Lce.Success(ReposViewState(emptyList()))
 ) {
 
-    val emptyStateVisible: Boolean = repos.map { it.searchInvoked && it.list.isEmpty() }.orElse(false)
-
-    val repoList: List<Repo> = repos.map { it.list }.orElse(emptyList())
-
-    val loadingMore: Boolean = repos.map { it.loadingMore }.orElse(false)
+    val reposState = repos.orElse(null)
 
     inline fun copyRepos(c: ReposViewState.() -> ReposViewState): SearchViewState {
         return deepCopy(

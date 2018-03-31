@@ -38,6 +38,7 @@ import it.codingjam.github.testdata.TestData.REPO_3
 import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.vo.Lce
+import it.codingjam.github.vo.orElse
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -65,12 +66,12 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
 
         ResourceTester(states.map { it.repos })
-                .success().loading().success()
+                .success().success().loading().success()
 
-        assert(states.map { it.emptyStateVisible })
-                .containsExactly(false, false, false)
+        assert(states.map { it.repos.map { it.emptyStateVisible }.orElse(false) })
+                .containsExactly(false, false, false, false)
 
-        assert((states[2].repos as Lce.Success).data.list)
+        assert((states[3].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
     }
 
@@ -80,12 +81,12 @@ class SearchViewModelTest {
         viewModel.setQuery(QUERY)
 
         ResourceTester(states.map { it.repos })
-                .success().loading().success()
+                .success().success().loading().success()
 
-        assert(states.map { it.emptyStateVisible })
-                .containsExactly(false, false, true)
+        assert(states.map { it.repos.map { it.emptyStateVisible }.orElse(false) })
+                .containsExactly(false, false, false, true)
 
-        assert((states[2].repos as Lce.Success).data.list).isEmpty()
+        assert((states[3].repos as Lce.Success).data.list).isEmpty()
     }
 
     private fun response(repo1: Repo, repo2: Repo, nextPage: Int): RepoSearchResponse {
@@ -100,12 +101,12 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .success().loading().success().success().success()
+                .success().success().loading().success().success().success()
 
-        assert(states.map { it.loadingMore })
-                .containsExactly(false, false, false, true, false)
+        assert(states.map { it.repos.map { it.loadingMore }.orElse(false) })
+                .containsExactly(false, false, false, false, true, false)
 
-        assert((states[4].repos as Lce.Success).data.list)
+        assert((states[5].repos as Lce.Success).data.list)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
@@ -117,12 +118,12 @@ class SearchViewModelTest {
         viewModel.loadNextPage()
 
         ResourceTester(states.map { it.repos })
-                .success().loading().success().success().success()
+                .success().success().loading().success().success().success()
 
-        assert(states.map { it.loadingMore })
-                .containsExactly(false, false, false, true, false)
+        assert(states.map { it.repos.map { it.loadingMore }.orElse(false) })
+                .containsExactly(false, false, false, false, true, false)
 
-        assert((states[2].repos as Lce.Success).data.list)
+        assert((states[3].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
 
         verify(navigationController).showError(activity, ERROR)

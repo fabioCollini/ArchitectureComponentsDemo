@@ -56,9 +56,9 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val adapter = DataBoundListAdapter { RepoViewHolder(it, viewModel) }
-        binding.repoList.adapter = adapter
+        binding.results.repoList.adapter = adapter
 
-        binding.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.results.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastPosition = layoutManager
@@ -69,12 +69,15 @@ class SearchFragment : Fragment() {
             }
         })
 
+        binding.lce.setUpdateListener {
+            adapter.replace((it as ReposViewState).list)
+        }
+
         viewModel.liveData.observe(this) {
             binding.state = it
-            adapter.replace(it.repoList)
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this) { it(activity!!) }
+        viewModel.uiActions.observe(this) { it(requireActivity()) }
 
         binding.viewModel = viewModel
     }
