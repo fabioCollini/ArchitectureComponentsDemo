@@ -55,7 +55,7 @@ class RepoFragment : Fragment() {
         viewModel.liveData.observe(this) {
             lceContainer.lce = it
         }
-        viewModel.uiActions.observe(this) { it(activity!!) }
+        viewModel.uiActions.observe(this) { it(requireActivity()) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

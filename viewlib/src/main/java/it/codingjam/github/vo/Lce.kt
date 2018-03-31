@@ -16,9 +16,7 @@
 
 package it.codingjam.github.vo
 
-interface BaseLce
-
-sealed class Lce<out T> : BaseLce {
+sealed class Lce<out T> {
 
     abstract fun <R> map(f: (T) -> R): Lce<R>
 

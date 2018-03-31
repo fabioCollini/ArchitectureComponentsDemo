@@ -22,9 +22,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
+import it.codingjam.github.core.UserDetail
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.user.databinding.UserFragmentBinding
+import it.codingjam.github.util.LceContainer
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
@@ -39,12 +41,26 @@ class UserFragment : Fragment() {
         viewModelFactory(this, viewModelProvider) { it.load() }
     }
 
-    lateinit var binding: UserFragmentBinding
+    private lateinit var lceContainer: LceContainer<UserDetail>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = UserFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        lceContainer = LceContainer(requireContext()) {
+            viewModel.load()
+        }
+
+        val adapter = DataBoundListAdapter { UserRepoViewHolder(it, viewModel) }
+
+        val binding = UserFragmentBinding.inflate(inflater, lceContainer, true)
+
+        binding.repoList.adapter = adapter
+
+        lceContainer.setUpdateListener {
+            binding.user = it.user
+            adapter.replace(it.repos)
+            binding.executePendingBindings()
+        }
+
+        return lceContainer
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,17 +71,10 @@ class UserFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.viewModel = viewModel
-
-        val adapter = DataBoundListAdapter { UserRepoViewHolder(it, viewModel) }
-        binding.repoList.adapter = adapter
-
         viewModel.liveData.observe(this) {
-            binding.state = it
-            binding.executePendingBindings()
-            adapter.replace(it.repos())
+            lceContainer.lce = it
         }
-        viewModel.uiActions.observe(this) { it(activity!!) }
+        viewModel.uiActions.observe(this) { it(requireActivity()) }
     }
 
     companion object : FragmentCreator<String>(::UserFragment)

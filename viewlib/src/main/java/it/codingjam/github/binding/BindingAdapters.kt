@@ -27,9 +27,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import it.codingjam.github.viewlib.R
-import it.codingjam.github.vo.BaseLce
-import it.codingjam.github.vo.Lce
 
 
 @set:BindingAdapter("visibleOrGone")
@@ -106,23 +103,4 @@ fun TextView.dismissKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
-}
-
-@BindingAdapter("errorMessage")
-fun bindErrorMessage(t: TextView, resource: BaseLce?) {
-    t.text = when {
-        resource !is Lce.Error -> ""
-        resource.message.isBlank() -> t.resources.getString(R.string.unknown_error)
-        else -> resource.message
-    }
-}
-
-@BindingAdapter("visibleWhileLoading")
-fun bindVisibleWhileLoading(t: View, resource: BaseLce?) {
-    t.visibility = if (resource is Lce.Loading) VISIBLE else GONE
-}
-
-@BindingAdapter("visibleOnError")
-fun bindVisibleOnError(t: View, resource: BaseLce?) {
-    t.visibility = if (resource is Lce.Error) VISIBLE else GONE
 }

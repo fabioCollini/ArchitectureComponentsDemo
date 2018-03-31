@@ -22,12 +22,8 @@
     <data>
 
         <variable
-            name="state"
-            type="it.codingjam.github.ui.user.UserViewState"/>
-
-        <variable
-            name="viewModel"
-            type="it.codingjam.github.ui.user.UserViewModel"/>
+            name="user"
+            type="it.codingjam.github.core.User"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -41,7 +37,6 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibleOrGone="@{state.user != null}"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="154dp">
 
@@ -51,7 +46,7 @@
                 android:layout_height="@dimen/photo_size"
                 android:contentDescription="@string/a11y_user_photo"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{state.user.avatarUrl}"
+                app:imageUrl="@{user.avatarUrl}"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp"/>
 
@@ -63,7 +58,7 @@
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_margin"
                 android:contentDescription="@string/a11y_user_name"
-                android:text="@{state.user.name ?? state.user.login}"
+                android:text="@{user.name ?? user.login}"
                 app:layout_constraintStart_toEndOf="@+id/avatar"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="albert einstein"/>
@@ -83,20 +78,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header"
             tools:listitem="@layout/repo_item"/>
-
-        <include
-            layout="@layout/loading_state"
-            app:callback="@{() -> viewModel.retry()}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:resource="@{state.userDetail}"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

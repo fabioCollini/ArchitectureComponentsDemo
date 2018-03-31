@@ -40,7 +40,7 @@ class SearchFragment : Fragment() {
         viewModelFactory(this, viewModelProvider)
     }
 
-    lateinit var binding: SearchFragmentBinding
+    private lateinit var binding: SearchFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

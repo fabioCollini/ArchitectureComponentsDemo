@@ -33,14 +33,14 @@ class UserViewModel @Inject constructor(
         private val login: String
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate(UserViewState(Lce.Loading))
+    val liveData = LiveDataDelegate<UserViewState>(Lce.Loading)
 
     private var state by liveData
 
     val uiActions = UiActionsLiveData()
 
     fun load() = coroutines {
-        Lce.exec({ state = state.copy(userDetail = it) }) {
+        Lce.exec({ state = it }) {
             githubInteractor.loadUserDetail(login)
         }
     }
