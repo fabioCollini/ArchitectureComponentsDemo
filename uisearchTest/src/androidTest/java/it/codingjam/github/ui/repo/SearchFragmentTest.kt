@@ -30,6 +30,7 @@ import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
+import it.codingjam.github.ui.search.ReposViewState
 import it.codingjam.github.ui.search.SearchFragment
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
@@ -74,7 +75,7 @@ class SearchFragmentTest {
         fragmentRule.launchFragment(SearchFragment())
 
         liveData.postValue(SearchViewState(repos = Lce.Loading))
-        liveData.postValue(SearchViewState(repos = Lce.Success(listOf(REPO_1, REPO_2))))
+        liveData.postValue(SearchViewState(repos = Lce.Success(ReposViewState(listOf(REPO_1, REPO_2)))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
