@@ -60,7 +60,7 @@ jacoco {
 
 dependencies {
     implementation project(':api')
-    implementation project(':core')
+    implementation project(':coreimpl')
     implementation project(':viewlib')
     implementation project(':uirepo')
     implementation project(':uiuser')

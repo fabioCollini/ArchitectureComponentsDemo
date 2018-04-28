@@ -20,8 +20,12 @@ import dagger.Module
 import dagger.Provides
 import it.codingjam.github.AndroidNavigationController
 import it.codingjam.github.NavigationController
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.GithubInteractorImpl
 import javax.inject.Singleton
 
 @Module class AppModule {
     @Provides @Singleton fun navigationController(androidNavigationController: AndroidNavigationController): NavigationController = androidNavigationController
+
+    @Provides @Singleton fun githubInteractor(impl: GithubInteractorImpl): GithubInteractor = impl
 }

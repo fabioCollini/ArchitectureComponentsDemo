@@ -10,7 +10,7 @@ class GithubInteractorTest {
 
     val githubRepository: GithubRepository = mock()
 
-    val githubInteractor = GithubInteractor(githubRepository)
+    val githubInteractor = GithubInteractorImpl(githubRepository)
 
     @Test fun load() = runBlocking {
         githubRepository.loadUser(LOGIN) willReturn USER
