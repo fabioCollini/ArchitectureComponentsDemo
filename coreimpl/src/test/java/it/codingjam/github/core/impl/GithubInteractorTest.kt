@@ -1,7 +1,11 @@
-package it.codingjam.github.core
+package it.codingjam.github.core.impl
 
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
+import it.codingjam.github.core.Owner
+import it.codingjam.github.core.Repo
+import it.codingjam.github.core.User
+import it.codingjam.github.core.UserDetail
 import it.codingjam.github.test.willReturn
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test

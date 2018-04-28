@@ -16,10 +16,10 @@
 
 package it.codingjam.github.api
 
-import it.codingjam.github.core.GithubRepository
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
 import it.codingjam.github.core.User
+import it.codingjam.github.core.impl.GithubRepository
 import retrofit2.HttpException
 import retrofit2.Response
 import java.util.regex.Pattern

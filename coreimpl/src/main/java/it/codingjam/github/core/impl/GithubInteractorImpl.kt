@@ -1,5 +1,8 @@
-package it.codingjam.github.core
+package it.codingjam.github.core.impl
 
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoDetail
+import it.codingjam.github.core.UserDetail
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import javax.inject.Inject

@@ -19,7 +19,7 @@ package it.codingjam.github.api
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.api.util.RetrofitFactory.createService
-import it.codingjam.github.core.GithubRepository
+import it.codingjam.github.core.impl.GithubRepository
 import okhttp3.HttpUrl
 import javax.inject.Singleton
 

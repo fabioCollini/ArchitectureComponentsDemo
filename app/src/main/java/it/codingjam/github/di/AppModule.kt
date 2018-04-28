@@ -21,7 +21,7 @@ import dagger.Provides
 import it.codingjam.github.AndroidNavigationController
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
-import it.codingjam.github.core.GithubInteractorImpl
+import it.codingjam.github.core.impl.GithubInteractorImpl
 import javax.inject.Singleton
 
 @Module class AppModule {

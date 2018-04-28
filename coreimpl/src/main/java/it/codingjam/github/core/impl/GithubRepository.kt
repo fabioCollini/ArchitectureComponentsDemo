@@ -1,4 +1,9 @@
-package it.codingjam.github.core
+package it.codingjam.github.core.impl
+
+import it.codingjam.github.core.Contributor
+import it.codingjam.github.core.Repo
+import it.codingjam.github.core.RepoSearchResponse
+import it.codingjam.github.core.User
 
 interface GithubRepository {
     suspend fun loadRepos(owner: String): List<Repo>

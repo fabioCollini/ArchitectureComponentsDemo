@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    implementation project(':core')
+    implementation project(':coreimpl')
 
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
