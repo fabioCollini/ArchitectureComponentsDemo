@@ -1,8 +1,8 @@
 package it.codingjam.github.util
 
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 
 interface Coroutines {
@@ -15,7 +15,7 @@ class AndroidCoroutines : Coroutines {
     private val job = Job()
 
     override operator fun invoke(f: suspend () -> Unit) {
-        async(job + UI) { f() }
+        launch(job + CommonPool) { f() }
     }
 
     override fun cancel() {
