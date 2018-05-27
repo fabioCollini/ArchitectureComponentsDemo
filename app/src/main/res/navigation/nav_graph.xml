@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:startDestination="@+id/search">
+    <fragment
+        android:id="@+id/search"
+        android:name="it.codingjam.github.ui.search.SearchFragment">
+
+        <action
+            android:id="@+id/repo"
+            app:destination="@+id/repo"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/repo"
+        android:name="it.codingjam.github.ui.repo.RepoFragment">
+
+        <action
+            android:id="@+id/user"
+            app:destination="@+id/user"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/user"
+        android:name="it.codingjam.github.ui.user.UserFragment">
+
+        <action
+            android:id="@+id/repo"
+            app:destination="@+id/repo"/>
+    </fragment>
+</navigation>
