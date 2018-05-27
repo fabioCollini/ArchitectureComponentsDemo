@@ -52,7 +52,7 @@ class RepoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.liveData.observe(this) {
+        viewModel.state.observe(this) {
             lceContainer.lce = it
         }
         viewModel.uiActions.observe(this) { it(requireActivity()) }

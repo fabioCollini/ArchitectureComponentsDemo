@@ -9,18 +9,20 @@ import java.util.*
 
 typealias UiAction = (FragmentActivity) -> Unit
 
-class UiActionsLiveData {
+class UiActionsLiveData(private val coroutines: Coroutines) {
     private val delegate = MutableLiveData<List<UiAction>>()
 
     private var list: MutableList<UiAction> = ArrayList()
 
-    fun execute(action: UiAction) {
+    fun executeOnUi(action: UiAction) {
         list.add(action)
         delegate.value = list
     }
 
-    operator fun invoke(action: UiAction) {
-        execute(action)
+    suspend operator fun invoke(action: UiAction) {
+        coroutines.onUi {
+            executeOnUi(action)
+        }
     }
 
     fun observe(owner: LifecycleOwner, executor: (UiAction) -> Unit) =

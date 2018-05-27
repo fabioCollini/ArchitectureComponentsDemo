@@ -33,20 +33,18 @@ class RepoViewModel @Inject constructor(
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate<RepoViewState>(Lce.Loading)
+    val state = LiveDataDelegate<RepoViewState>(coroutines, Lce.Loading)
 
-    private var state by liveData
-
-    val uiActions = UiActionsLiveData()
+    val uiActions = UiActionsLiveData(coroutines)
 
     fun reload() = coroutines {
-        Lce.exec({ state = it }) {
+        Lce.exec({ lce -> state.update { lce } }) {
             githubInteractor.loadRepo(repoId.owner, repoId.name)
         }
     }
 
     fun openUserDetail(login: String) =
-            uiActions { navigationController.navigateToUser(it, login) }
+            uiActions.executeOnUi { navigationController.navigateToUser(it, login) }
 
     override fun onCleared() {
         coroutines.cancel()

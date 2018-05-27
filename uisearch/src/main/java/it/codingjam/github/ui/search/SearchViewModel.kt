@@ -39,40 +39,40 @@ class SearchViewModel @Inject constructor(
 
     private var lastSearch by prefs.string("")
 
-    val liveData = LiveDataDelegate(SearchViewState(lastSearch))
+    val state = LiveDataDelegate(coroutines, SearchViewState(lastSearch))
 
-    private var state by liveData
-
-    val uiActions = UiActionsLiveData()
+    val uiActions = UiActionsLiveData(coroutines)
 
     fun setQuery(originalInput: String) {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (!state.repos.map { it.searchInvoked }.orElse(false) || input != state.query) {
-            state = state.copy(query = input)
+        if (!state().repos.map { it.searchInvoked }.orElse(false) || input != state().query) {
+            state.updateOnUi { it.copy(query = input) }
             reloadData()
         }
     }
 
     private fun reloadData() = coroutines {
-        Lce.exec({ state = state.copy(repos = it) }) {
-            val (items, nextPage) = githubInteractor.search(state.query)
+        Lce.exec({ lce -> state.update { it.copy(repos = lce) } }) {
+            val (items, nextPage) = githubInteractor.search(state().query)
             ReposViewState(items, nextPage, true)
         }
     }
 
     fun loadNextPage() = coroutines {
-        state.repos.doOnData { (_, nextPage, _, loadingMore) ->
-            val query = state.query
+        state().repos.doOnData { (_, nextPage, _, loadingMore) ->
+            val query = state().query
             if (!query.isEmpty() && nextPage != null && !loadingMore) {
-                state = state.copyRepos { copy(loadingMore = true) }
+                state.update { it.copyRepos { copy(loadingMore = true) } }
                 try {
                     val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                    state = state.copyRepos {
-                        copy(list = list + items, nextPage = newNextPage, loadingMore = false)
+                    state.update {
+                        it.copyRepos {
+                            copy(list = list + items, nextPage = newNextPage, loadingMore = false)
+                        }
                     }
                 } catch (t: Exception) {
-                    state = state.copyRepos { copy(loadingMore = false) }
+                    state.update { it.copyRepos { copy(loadingMore = false) } }
                     uiActions { navigationController.showError(it, t.message) }
                 }
             }
@@ -80,14 +80,13 @@ class SearchViewModel @Inject constructor(
     }
 
     fun refresh() {
-        val query = state.query
-        if (!query.isEmpty()) {
+        if (!state().query.isEmpty()) {
             reloadData()
         }
     }
 
     fun openRepoDetail(id: RepoId) =
-            uiActions { navigationController.navigateToRepo(it, id) }
+            uiActions.executeOnUi { navigationController.navigateToRepo(it, id) }
 
     override fun onCleared() {
         coroutines.cancel()

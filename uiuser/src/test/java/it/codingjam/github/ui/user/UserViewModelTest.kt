@@ -49,7 +49,7 @@ class UserViewModelTest {
     val states = mutableListOf<UserViewState>()
 
     @Before fun setUp() {
-        userViewModel.liveData.observeForever({ states.add(it) })
+        userViewModel.state.observeForever({ states.add(it) })
         userViewModel.uiActions.observeForever({ it(activity) })
     }
 

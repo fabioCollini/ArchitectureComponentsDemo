@@ -73,7 +73,7 @@ class SearchFragment : Fragment() {
             adapter.replace((it as ReposViewState).list)
         }
 
-        viewModel.liveData.observe(this) {
+        viewModel.state.observe(this) {
             binding.state = it
             binding.executePendingBindings()
         }

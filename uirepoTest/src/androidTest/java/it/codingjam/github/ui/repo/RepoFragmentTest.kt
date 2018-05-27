@@ -35,6 +35,7 @@ import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.ui.common.create
+import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
@@ -59,8 +60,8 @@ class RepoFragmentTest {
     val viewModel by lazy { mock<RepoViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(Lce.Loading, liveData)
-        viewModel.uiActions willReturn UiActionsLiveData()
+        viewModel.state willReturn LiveDataDelegate(AndroidTestCoroutines(), Lce.Loading, liveData)
+        viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
     }
 
     @Test fun testLoading() {

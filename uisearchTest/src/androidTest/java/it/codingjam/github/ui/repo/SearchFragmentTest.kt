@@ -34,6 +34,7 @@ import it.codingjam.github.ui.search.ReposViewState
 import it.codingjam.github.ui.search.SearchFragment
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
+import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
@@ -58,8 +59,8 @@ class SearchFragmentTest {
     val viewModel by lazy { mock<SearchViewModel>() }
 
     @Before fun setUp() {
-        viewModel.liveData willReturn LiveDataDelegate(SearchViewState(repos = Lce.Loading), liveData)
-        viewModel.uiActions willReturn UiActionsLiveData()
+        viewModel.state willReturn LiveDataDelegate(AndroidTestCoroutines(), SearchViewState(repos = Lce.Loading), liveData)
+        viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
     }
 
     @Test fun testLoading() {

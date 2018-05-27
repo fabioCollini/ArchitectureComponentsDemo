@@ -33,14 +33,12 @@ class UserViewModel @Inject constructor(
         private val login: String
 ) : ViewModel() {
 
-    val liveData = LiveDataDelegate<UserViewState>(Lce.Loading)
+    val state = LiveDataDelegate<UserViewState>(coroutines, Lce.Loading)
 
-    private var state by liveData
-
-    val uiActions = UiActionsLiveData()
+    val uiActions = UiActionsLiveData(coroutines)
 
     fun load() = coroutines {
-        Lce.exec({ state = it }) {
+        Lce.exec({ lce -> state.update { lce } }) {
             githubInteractor.loadUserDetail(login)
         }
     }
@@ -48,7 +46,7 @@ class UserViewModel @Inject constructor(
     fun retry() = load()
 
     fun openRepoDetail(id: RepoId) =
-            uiActions { navigationController.navigateToRepo(it, id) }
+            uiActions.executeOnUi { navigationController.navigateToRepo(it, id) }
 
     override fun onCleared() = coroutines.cancel()
 }

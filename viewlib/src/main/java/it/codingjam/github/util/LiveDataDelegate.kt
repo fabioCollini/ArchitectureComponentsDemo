@@ -4,12 +4,11 @@ package it.codingjam.github.util
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
-import kotlin.reflect.KProperty
 
 class LiveDataDelegate<T: Any>(
+        private val coroutines: Coroutines,
         initialState: T,
-        private val liveData: MutableLiveData<T> =
-            MutableLiveData<T>()
+        private val liveData: MutableLiveData<T> = MutableLiveData()
 ): LiveDataObservable<T> {
 
     init {
@@ -22,10 +21,15 @@ class LiveDataDelegate<T: Any>(
     override fun observeForever(observer: (T) -> Unit) =
             liveData.observeForever { observer(it!!) }
 
-    operator fun setValue(ref: Any, p: KProperty<*>, value: T) {
-        liveData.value = value
+    suspend fun update(f: (T) -> T) {
+        coroutines.onUi {
+            updateOnUi(f)
+        }
     }
 
-    operator fun getValue(ref: Any, p: KProperty<*>): T =
-            liveData.value!!
+    fun updateOnUi(f: (T) -> T) {
+        liveData.value = f(this())
+    }
+
+    operator fun invoke() = liveData.value!!
 }
