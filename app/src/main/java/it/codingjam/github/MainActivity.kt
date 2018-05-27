@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -40,6 +41,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setContentView(R.layout.main_activity)
 
         setSupportActionBar(toolbar)
+
+        NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.my_nav_host_fragment))
     }
 
     override fun onSupportNavigateUp()
