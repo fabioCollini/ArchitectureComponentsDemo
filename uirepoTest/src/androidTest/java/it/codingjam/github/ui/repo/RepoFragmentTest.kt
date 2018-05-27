@@ -36,9 +36,9 @@ import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.AndroidTestCoroutines
-import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
+import it.codingjam.github.util.ViewStateHolder
 import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -60,7 +60,7 @@ class RepoFragmentTest {
     val viewModel by lazy { mock<RepoViewModel>() }
 
     @Before fun setUp() {
-        viewModel.state willReturn LiveDataDelegate(AndroidTestCoroutines(), Lce.Loading, liveData)
+        viewModel.state willReturn ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
         viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
     }
 

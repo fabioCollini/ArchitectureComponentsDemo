@@ -32,9 +32,9 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.AndroidTestCoroutines
-import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
+import it.codingjam.github.util.ViewStateHolder
 import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -56,7 +56,7 @@ class UserFragmentTest {
     val viewModel by lazy { mock<UserViewModel>() }
 
     @Before fun setUp() {
-        viewModel.state willReturn LiveDataDelegate(AndroidTestCoroutines(), Lce.Loading, liveData)
+        viewModel.state willReturn ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
         viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
     }
 

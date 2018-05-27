@@ -21,8 +21,8 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewStateHolder
 import it.codingjam.github.vo.Lce
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class RepoViewModel @Inject constructor(
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val state = LiveDataDelegate<RepoViewState>(coroutines, Lce.Loading)
+    val state = ViewStateHolder<RepoViewState>(coroutines, Lce.Loading)
 
     val uiActions = UiActionsLiveData(coroutines)
 

@@ -23,8 +23,8 @@ import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.LiveDataDelegate
 import it.codingjam.github.util.UiActionsLiveData
+import it.codingjam.github.util.ViewStateHolder
 import it.codingjam.github.vo.Lce
 import it.codingjam.github.vo.orElse
 import java.util.*
@@ -39,7 +39,7 @@ class SearchViewModel @Inject constructor(
 
     private var lastSearch by prefs.string("")
 
-    val state = LiveDataDelegate(coroutines, SearchViewState(lastSearch))
+    val state = ViewStateHolder(coroutines, SearchViewState(lastSearch))
 
     val uiActions = UiActionsLiveData(coroutines)
 
