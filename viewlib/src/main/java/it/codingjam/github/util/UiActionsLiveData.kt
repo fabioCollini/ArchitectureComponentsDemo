@@ -4,10 +4,10 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.Fragment
 import java.util.*
 
-typealias UiAction = (FragmentActivity) -> Unit
+typealias UiAction = (Fragment) -> Unit
 
 class UiActionsLiveData(private val coroutines: Coroutines) {
     private val delegate = MutableLiveData<List<UiAction>>()

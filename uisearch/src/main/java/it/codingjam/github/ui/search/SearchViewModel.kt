@@ -73,7 +73,7 @@ class SearchViewModel @Inject constructor(
                     }
                 } catch (t: Exception) {
                     state.update { it.copyRepos { copy(loadingMore = false) } }
-                    uiActions { navigationController.showError(it, t.message) }
+                    uiActions { navigationController.showError(it.requireActivity(), t.message) }
                 }
             }
         }

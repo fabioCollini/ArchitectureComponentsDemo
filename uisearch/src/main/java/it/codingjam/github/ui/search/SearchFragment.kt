@@ -77,7 +77,7 @@ class SearchFragment : Fragment() {
             binding.state = it
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this) { it(requireActivity()) }
+        viewModel.uiActions.observe(this) { it(this) }
 
         binding.viewModel = viewModel
     }

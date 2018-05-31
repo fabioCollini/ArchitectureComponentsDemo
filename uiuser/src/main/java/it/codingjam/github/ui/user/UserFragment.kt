@@ -74,7 +74,7 @@ class UserFragment : Fragment() {
         viewModel.state.observe(this) {
             lceContainer.lce = it
         }
-        viewModel.uiActions.observe(this) { it(requireActivity()) }
+        viewModel.uiActions.observe(this) { it(this) }
     }
 
     companion object : FragmentCreator<String>(::UserFragment)
