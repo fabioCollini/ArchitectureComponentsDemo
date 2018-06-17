@@ -77,5 +77,5 @@ class UserFragment : Fragment() {
         viewModel.uiActions.observe(this) { it(this) }
     }
 
-    companion object : FragmentCreator<String>(::UserFragment, R.id.user)
+    companion object : FragmentCreator<String>(R.navigation.user_nav_graph, R.id.user)
 }

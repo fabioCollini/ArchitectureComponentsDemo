@@ -24,13 +24,12 @@ import android.support.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.UserDetail
-import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.espresso.rule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
-import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
@@ -43,11 +42,11 @@ import org.junit.Test
 
 class UserFragmentTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule()
+    @get:Rule val fragmentRule = UserFragment.rule()
 
-    @get:Rule var daggerMockRule = espressoDaggerMockRule<UserTestComponent>(ViewLibModule())
+    @get:Rule val daggerMockRule = espressoDaggerMockRule<UserTestComponent>(ViewLibModule())
 
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     val liveData = MutableLiveData<UserViewState>()
 
@@ -61,7 +60,7 @@ class UserFragmentTest {
     }
 
     @Test fun testLoading() {
-        fragmentRule.launchFragment(UserFragment.create("user"))
+        fragmentRule.launchFragment("user")
 
         liveData.postValue(Lce.Loading)
 
@@ -70,7 +69,7 @@ class UserFragmentTest {
     }
 
     @Test fun testValueWhileLoading() {
-        fragmentRule.launchFragment(UserFragment.create("user"))
+        fragmentRule.launchFragment("user")
 
         liveData.postValue(Lce.Loading)
         liveData.postValue(Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2))))

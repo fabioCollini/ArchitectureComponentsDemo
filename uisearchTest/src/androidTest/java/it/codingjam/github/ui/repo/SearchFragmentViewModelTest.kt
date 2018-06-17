@@ -43,7 +43,7 @@ import org.junit.Test
 
 class SearchFragmentViewModelTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule()
+    @get:Rule var fragmentRule = FragmentTestRule(R.navigation.repo_nav_graph, R.id.repo)
 
     @get:Rule
     var daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(TestAppModule(), ViewLibModule())

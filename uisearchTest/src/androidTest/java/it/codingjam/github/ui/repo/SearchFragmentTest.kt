@@ -18,6 +18,7 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
+import android.os.Bundle
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -31,7 +32,6 @@ import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.ui.search.ReposViewState
-import it.codingjam.github.ui.search.SearchFragment
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
 import it.codingjam.github.util.AndroidTestCoroutines
@@ -46,11 +46,11 @@ import org.junit.Test
 
 class SearchFragmentTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule()
+    @get:Rule val fragmentRule = FragmentTestRule<Unit>(R.navigation.search_nav_graph, R.id.search) { Bundle() }
 
-    @get:Rule var daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(ViewLibModule())
+    @get:Rule val daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(ViewLibModule())
 
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     val liveData = MutableLiveData<SearchViewState>()
 
@@ -64,7 +64,7 @@ class SearchFragmentTest {
     }
 
     @Test fun testLoading() {
-        fragmentRule.launchFragment(SearchFragment())
+        fragmentRule.launchFragment(Unit)
 
         liveData.postValue(SearchViewState(repos = Lce.Loading))
 
@@ -73,7 +73,7 @@ class SearchFragmentTest {
     }
 
     @Test fun testValueWhileLoading() {
-        fragmentRule.launchFragment(SearchFragment())
+        fragmentRule.launchFragment(Unit)
 
         liveData.postValue(SearchViewState(repos = Lce.Loading))
         liveData.postValue(SearchViewState(repos = Lce.Success(ReposViewState(listOf(REPO_1, REPO_2)))))

@@ -22,6 +22,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
+import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.get
 
 class SingleFragmentActivity : AppCompatActivity() {
 
@@ -33,9 +36,20 @@ class SingleFragmentActivity : AppCompatActivity() {
         setContentView(content)
     }
 
-    fun setFragment(fragment: Fragment) {
+    fun setFragment(graphId: Int, nodeId: Int, args: Bundle) {
+        val navController = NavController(this)
+        navController.navigatorProvider.addNavigator(FragmentNavigator(this, supportFragmentManager, 123))
+        val navGraph = navController.navInflater.inflate(graphId)
+        val node = navGraph[nodeId]
+        val fragmentClass = (node as FragmentNavigator.Destination).fragmentClass
+
+        val fragment = Fragment.instantiate(this, fragmentClass.canonicalName).apply {
+            arguments = args
+        }
+
         supportFragmentManager.beginTransaction()
                 .add(R.id.container, fragment, "TEST")
                 .commit()
+
     }
 }

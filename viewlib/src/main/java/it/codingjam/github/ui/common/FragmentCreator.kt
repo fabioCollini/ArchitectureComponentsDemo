@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 
 const val FRAGMENT_CREATOR_PARAM = "param"
 
 open class FragmentCreator<T>(
-        val factory: () -> Fragment,
-        @IdRes val resId: Int
+        @IdRes val graphId: Int,
+        @IdRes val nodeId: Int
 ) {
     @Suppress("UNCHECKED_CAST")
     val Fragment.param: T
@@ -22,30 +23,18 @@ open class FragmentCreator<T>(
     }
 }
 
-fun <T : Parcelable> FragmentCreator<T>.create(param: T): Fragment {
-    return factory().apply {
-        arguments = Bundle().apply {
-            putParcelable(FRAGMENT_CREATOR_PARAM, param)
-        }
-    }
+fun <T : Any> FragmentCreator<T>.args(param: T): Bundle {
+    return bundleOf(FRAGMENT_CREATOR_PARAM to param)
 }
 
 fun <T : Parcelable> FragmentCreator<T>.navigate(fragment: Fragment, param: T) {
-    fragment.findNavController().navigate(resId, Bundle().apply {
+    fragment.findNavController().navigate(nodeId, Bundle().apply {
         putParcelable(FRAGMENT_CREATOR_PARAM, param)
     })
 }
 
 fun FragmentCreator<String>.navigate(fragment: Fragment, param: String) {
-    fragment.findNavController().navigate(resId, Bundle().apply {
+    fragment.findNavController().navigate(nodeId, Bundle().apply {
         putString(FRAGMENT_CREATOR_PARAM, param)
     })
-}
-
-fun FragmentCreator<String>.create(param: String): Fragment {
-    return factory().apply {
-        arguments = Bundle().apply {
-            putString(FRAGMENT_CREATOR_PARAM, param)
-        }
-    }
 }

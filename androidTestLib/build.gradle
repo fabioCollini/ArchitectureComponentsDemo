@@ -22,6 +22,7 @@ android {
 
 dependencies {
     api project(':testLib')
+    api project(':viewlib')
 
     implementation "com.jakewharton.timber:timber:$timber_version"
 
@@ -54,4 +55,8 @@ dependencies {
     }
     api 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
     api 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
+
+    implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
+    implementation "android.arch.navigation:navigation-testing-ktx:$nav_version"
 }

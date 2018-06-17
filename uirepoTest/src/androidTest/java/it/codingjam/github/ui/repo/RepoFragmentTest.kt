@@ -27,14 +27,13 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.espresso.rule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
-import it.codingjam.github.ui.common.create
 import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
@@ -45,13 +44,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+
 class RepoFragmentTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule()
+    @get:Rule val fragmentRule = RepoFragment.rule()
 
-    @get:Rule var daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
+    @get:Rule val daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
 
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     val liveData = MutableLiveData<Lce<RepoDetail>>()
 
@@ -65,7 +65,7 @@ class RepoFragmentTest {
     }
 
     @Test fun testLoading() {
-        fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
+        fragmentRule.launchFragment(RepoId("a", "b"))
 
         liveData.postValue(Lce.Loading)
 
@@ -74,7 +74,7 @@ class RepoFragmentTest {
     }
 
     @Test fun testValueWhileLoading() {
-        fragmentRule.launchFragment(RepoFragment.create(RepoId("a", "b")))
+        fragmentRule.launchFragment(RepoId("a", "b"))
 
         liveData.postValue(Lce.Loading)
         liveData.postValue(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
