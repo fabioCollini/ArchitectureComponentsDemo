@@ -17,7 +17,7 @@
 package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.Fragment
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
@@ -40,15 +40,15 @@ class RepoViewModelTest {
 
     val navigationController: NavigationController = mock()
 
-    val activity: FragmentActivity = mock()
+    val fragment: Fragment = mock()
 
     val repoViewModel by lazy { RepoViewModel(navigationController, interactor, TestCoroutines(), RepoId("a", "b")) }
 
     val states = mutableListOf<RepoViewState>()
 
     @Before fun setUp() {
-        repoViewModel.state.observeForever({ states.add(it) })
-        repoViewModel.uiActions.observeForever({ it(activity) })
+        repoViewModel.state.observeForever { states.add(it) }
+        repoViewModel.uiActions.observeForever { it(fragment) }
     }
 
     @Test fun fetchData() = runBlocking {

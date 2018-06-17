@@ -18,12 +18,13 @@ package it.codingjam.github.ui.search
 
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.Fragment
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.nalulabs.prefs.fake.FakeSharedPreferences
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
@@ -43,6 +44,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 
 class SearchViewModelTest {
@@ -50,14 +52,14 @@ class SearchViewModelTest {
 
     val interactor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
-    val activity: FragmentActivity = mock()
+    val fragment: Fragment = mock()
     val viewModel by lazy { SearchViewModel(interactor, navigationController, TestCoroutines(), FakeSharedPreferences()) }
 
     val states = mutableListOf<SearchViewState>()
 
     @Before fun setUp() {
         viewModel.state.observeForever { states.add(it) }
-        viewModel.uiActions.observeForever { it(activity) }
+        viewModel.uiActions.observeForever { it(fragment) }
     }
 
     @Test fun load() = runBlocking {
@@ -126,7 +128,7 @@ class SearchViewModelTest {
         assert((states[3].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
 
-        verify(navigationController).showError(activity, ERROR)
+        verify(navigationController).showError(any(), eq(ERROR))
     }
 
     companion object {

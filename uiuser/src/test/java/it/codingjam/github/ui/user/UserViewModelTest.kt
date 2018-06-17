@@ -17,7 +17,7 @@
 package it.codingjam.github.ui.user
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.Fragment
 import assertk.assert
 import assertk.assertions.containsExactly
 import com.nhaarman.mockito_kotlin.mock
@@ -39,18 +39,18 @@ import org.junit.Test
 import org.mockito.Mockito.verify
 
 class UserViewModelTest {
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     val githubInteractor: GithubInteractor = mock()
     val navigationController: NavigationController = mock()
-    val activity: FragmentActivity = mock()
+    val fragment: Fragment = mock()
     val userViewModel by lazy { UserViewModel(githubInteractor, navigationController, TestCoroutines(), LOGIN) }
 
     val states = mutableListOf<UserViewState>()
 
     @Before fun setUp() {
-        userViewModel.state.observeForever({ states.add(it) })
-        userViewModel.uiActions.observeForever({ it(activity) })
+        userViewModel.state.observeForever { states.add(it) }
+        userViewModel.uiActions.observeForever { it(fragment) }
     }
 
     @Test fun load() {
@@ -91,7 +91,7 @@ class UserViewModelTest {
     @Test fun openRepoDetail() {
         userViewModel.openRepoDetail(REPO_ID)
 
-        verify(navigationController).navigateToRepo(activity, REPO_ID)
+        verify(navigationController).navigateToRepo(fragment, REPO_ID)
     }
 
     companion object {
