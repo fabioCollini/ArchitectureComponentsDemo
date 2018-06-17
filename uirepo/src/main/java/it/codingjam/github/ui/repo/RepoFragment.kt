@@ -78,5 +78,5 @@ class RepoFragment : Fragment() {
         return lceContainer
     }
 
-    companion object : FragmentCreator<RepoId>(::RepoFragment)
+    companion object : FragmentCreator<RepoId>(::RepoFragment, R.id.repo)
 }

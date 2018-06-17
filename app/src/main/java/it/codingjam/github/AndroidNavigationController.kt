@@ -14,11 +14,11 @@ import javax.inject.Singleton
 class AndroidNavigationController @Inject constructor() : NavigationController {
 
     override fun navigateToRepo(fragment: Fragment, repoId: RepoId) {
-        RepoFragment.navigate(fragment, R.id.repo, repoId)
+        RepoFragment.navigate(fragment, repoId)
     }
 
     override fun navigateToUser(fragment: Fragment, login: String) {
-        UserFragment.navigate(fragment, R.id.user, login)
+        UserFragment.navigate(fragment, login)
     }
 
     override fun showError(activity: FragmentActivity, error: String?) {

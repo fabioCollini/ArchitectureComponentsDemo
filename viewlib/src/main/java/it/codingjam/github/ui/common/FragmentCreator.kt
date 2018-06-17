@@ -9,7 +9,8 @@ import androidx.navigation.fragment.findNavController
 const val FRAGMENT_CREATOR_PARAM = "param"
 
 open class FragmentCreator<T>(
-        val factory: () -> Fragment
+        val factory: () -> Fragment,
+        @IdRes val resId: Int
 ) {
     @Suppress("UNCHECKED_CAST")
     val Fragment.param: T
@@ -29,13 +30,13 @@ fun <T : Parcelable> FragmentCreator<T>.create(param: T): Fragment {
     }
 }
 
-fun <T : Parcelable> FragmentCreator<T>.navigate(fragment: Fragment, @IdRes resId: Int, param: T) {
+fun <T : Parcelable> FragmentCreator<T>.navigate(fragment: Fragment, param: T) {
     fragment.findNavController().navigate(resId, Bundle().apply {
         putParcelable(FRAGMENT_CREATOR_PARAM, param)
     })
 }
 
-fun FragmentCreator<String>.navigate(fragment: Fragment, @IdRes resId: Int, param: String) {
+fun FragmentCreator<String>.navigate(fragment: Fragment, param: String) {
     fragment.findNavController().navigate(resId, Bundle().apply {
         putString(FRAGMENT_CREATOR_PARAM, param)
     })
