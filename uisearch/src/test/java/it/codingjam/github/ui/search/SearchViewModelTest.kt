@@ -24,8 +24,10 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.nalulabs.prefs.fake.FakeSharedPreferences
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
@@ -44,8 +46,6 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.verify
 
 class SearchViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
@@ -113,6 +113,7 @@ class SearchViewModelTest {
     }
 
     @Test fun errorLoadingMore() = runBlocking {
+        fragment.requireActivity() willReturn mock()
         interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
         interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
 
