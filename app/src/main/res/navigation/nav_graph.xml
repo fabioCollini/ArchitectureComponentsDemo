@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:startDestination="@+id/search">
-    <fragment
-        android:id="@+id/search"
-        android:name="it.codingjam.github.ui.search.SearchFragment" />
+<navigation
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@+id/search">
 
-    <fragment
-        android:id="@+id/repo"
-        android:name="it.codingjam.github.ui.repo.RepoFragment" />
+    <include app:graph="@navigation/search_nav_graph"/>
 
-    <fragment
-        android:id="@+id/user"
-        android:name="it.codingjam.github.ui.user.UserFragment" >
-        <argument
-            android:name="abc"
-            app:type="string"/>
-    </fragment>
+    <include app:graph="@navigation/repo_nav_graph"/>
+
+    <include app:graph="@navigation/user_nav_graph"/>
 </navigation>
