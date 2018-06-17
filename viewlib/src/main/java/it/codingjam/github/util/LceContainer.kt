@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.view.children
+import androidx.core.view.children
 import it.codingjam.github.binding.visibleOrGone
 import it.codingjam.github.viewlib.R
 import it.codingjam.github.vo.Lce

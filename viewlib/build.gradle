@@ -35,7 +35,7 @@ dependencies {
     api "com.android.support:design:$support_version"
     api "android.arch.lifecycle:runtime:$arch_version"
     api "android.arch.lifecycle:extensions:$arch_version"
-    api 'androidx.core:core-ktx:0.2'
+    api 'androidx.core:core-ktx:0.3'
 
     api "com.google.dagger:dagger-android:$dagger_version"
     api "com.google.dagger:dagger-android-support:$dagger_version"
@@ -43,4 +43,9 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "android.arch.lifecycle:compiler:$arch_version"
+
+    def nav_version = "1.0.0-alpha02"
+
+    api "android.arch.navigation:navigation-fragment-ktx:$nav_version"
+    api "android.arch.navigation:navigation-ui-ktx:$nav_version"
 }

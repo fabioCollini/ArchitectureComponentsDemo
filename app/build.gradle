@@ -19,7 +19,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: "androidx.navigation.safeargs"
 
 androidExtensions {
     experimental = true
@@ -80,14 +79,6 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
     androidTestImplementation project(':androidTestLib')
     androidTestImplementation project(':testData')
-
-    def nav_version = "1.0.0-alpha01"
-
-    implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version" // use -ktx for Kotlin
-    implementation "android.arch.navigation:navigation-ui-ktx:$nav_version" // use -ktx for Kotlin
-
-    // optional - Test helpers
-    androidTestImplementation "android.arch.navigation:navigation-testing-ktx:$nav_version" // use -ktx for Kotlin
 }
 
 task fullCoverageReport(type: JacocoReport) {

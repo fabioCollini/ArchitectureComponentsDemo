@@ -4,28 +4,17 @@
             app:startDestination="@+id/search">
     <fragment
         android:id="@+id/search"
-        android:name="it.codingjam.github.ui.search.SearchFragment">
-
-        <action
-            android:id="@+id/repo"
-            app:destination="@+id/repo"/>
-    </fragment>
+        android:name="it.codingjam.github.ui.search.SearchFragment" />
 
     <fragment
         android:id="@+id/repo"
-        android:name="it.codingjam.github.ui.repo.RepoFragment">
-
-        <action
-            android:id="@+id/user"
-            app:destination="@+id/user"/>
-    </fragment>
+        android:name="it.codingjam.github.ui.repo.RepoFragment" />
 
     <fragment
         android:id="@+id/user"
-        android:name="it.codingjam.github.ui.user.UserFragment">
-
-        <action
-            android:id="@+id/repo"
-            app:destination="@+id/repo"/>
+        android:name="it.codingjam.github.ui.user.UserFragment" >
+        <argument
+            android:name="abc"
+            app:type="string"/>
     </fragment>
 </navigation>
