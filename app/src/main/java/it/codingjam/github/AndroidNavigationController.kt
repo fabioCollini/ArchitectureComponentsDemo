@@ -3,21 +3,22 @@ package it.codingjam.github
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
 import it.codingjam.github.core.RepoId
+import it.codingjam.github.ui.common.navigate
+import it.codingjam.github.ui.repo.RepoFragment
+import it.codingjam.github.ui.user.UserFragment
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AndroidNavigationController @Inject constructor(): NavigationController {
+class AndroidNavigationController @Inject constructor() : NavigationController {
 
     override fun navigateToRepo(fragment: Fragment, repoId: RepoId) {
-        fragment.findNavController().navigate(R.id.repo, bundleOf("param" to repoId))
+        RepoFragment.navigate(fragment, R.id.repo, repoId)
     }
 
     override fun navigateToUser(fragment: Fragment, login: String) {
-        fragment.findNavController().navigate(R.id.user, bundleOf("param" to login))
+        UserFragment.navigate(fragment, R.id.user, login)
     }
 
     override fun showError(activity: FragmentActivity, error: String?) {
