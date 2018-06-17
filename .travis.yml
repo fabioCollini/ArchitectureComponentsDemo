@@ -32,4 +32,4 @@ before_script:
     - export "JAVA8_HOME=/usr/lib/jvm/java-8-oracle"
 
 script:
-    - ./gradlew :app:assembleDebug :app:test --stacktrace
+    - ./gradlew :app:assembleDebug testDebugUnitTest --stacktrace
