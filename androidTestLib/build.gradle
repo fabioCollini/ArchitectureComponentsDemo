@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: "kotlin-allopen"
+
+allOpen {
+    annotation("it.codingjam.github.core.AllOpen")
+}
 
 android {
     compileSdkVersion 27
@@ -48,7 +53,6 @@ dependencies {
 
     api("android.arch.core:core-testing:$arch_version", {
     })
-    api 'com.github.tmurakami:dexopener:0.12.1'
     api "org.mockito:mockito-android:$mockito_version"
     api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'

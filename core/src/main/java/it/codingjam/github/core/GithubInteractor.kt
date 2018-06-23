@@ -5,6 +5,7 @@ import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OpenForTesting
 @Singleton
 class GithubInteractor @Inject constructor(private val githubRepository: GithubRepository) {
 

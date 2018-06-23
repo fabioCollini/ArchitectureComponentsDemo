@@ -19,6 +19,7 @@ package it.codingjam.github.ui.repo
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.UiActionsLiveData
@@ -26,6 +27,7 @@ import it.codingjam.github.util.ViewStateHolder
 import it.codingjam.github.vo.Lce
 import javax.inject.Inject
 
+@OpenForTesting
 class RepoViewModel @Inject constructor(
         private val navigationController: NavigationController,
         private val githubInteractor: GithubInteractor,

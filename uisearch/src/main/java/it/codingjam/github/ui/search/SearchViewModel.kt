@@ -21,6 +21,7 @@ import android.content.SharedPreferences
 import com.nalulabs.prefs.string
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.UiActionsLiveData
@@ -30,6 +31,7 @@ import it.codingjam.github.vo.orElse
 import java.util.*
 import javax.inject.Inject
 
+@OpenForTesting
 class SearchViewModel @Inject constructor(
         private val githubInteractor: GithubInteractor,
         private val navigationController: NavigationController,
