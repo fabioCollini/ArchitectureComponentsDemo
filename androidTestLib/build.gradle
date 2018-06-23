@@ -58,7 +58,9 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     api 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
-    api 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
+    api('com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
 
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
