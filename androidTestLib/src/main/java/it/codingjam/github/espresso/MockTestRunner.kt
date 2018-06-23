@@ -2,9 +2,9 @@ package it.codingjam.github.espresso
 
 import android.app.Application
 import android.content.Context
-import com.github.tmurakami.dexopener.DexOpenerAndroidJUnitRunner
+import android.support.test.runner.AndroidJUnitRunner
 
-class MockTestRunner: DexOpenerAndroidJUnitRunner() {
+class MockTestRunner: AndroidJUnitRunner() {
     override fun newApplication(cl: ClassLoader?, className: String?, context: Context?): Application {
         return super.newApplication(cl, TestApplication::class.java.name, context)
     }

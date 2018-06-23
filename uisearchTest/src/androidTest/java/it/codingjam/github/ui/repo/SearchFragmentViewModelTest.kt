@@ -18,6 +18,7 @@ package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.pressKey
 import android.support.test.espresso.action.ViewActions.typeText
@@ -35,7 +36,6 @@ import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.testdata.TestData.REPO_1
-import it.codingjam.github.ui.search.SearchFragment
 import kotlinx.coroutines.experimental.runBlocking
 import org.hamcrest.Matchers.not
 import org.junit.Rule
@@ -43,7 +43,7 @@ import org.junit.Test
 
 class SearchFragmentViewModelTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule(R.navigation.repo_nav_graph, R.id.repo)
+    @get:Rule var fragmentRule = FragmentTestRule<Unit>(R.navigation.search_nav_graph, R.id.search) { Bundle() }
 
     @get:Rule
     var daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(TestAppModule(), ViewLibModule())
@@ -59,7 +59,7 @@ class SearchFragmentViewModelTest {
     }
 
     @Test fun testLoad() {
-        fragmentRule.launchFragment(SearchFragment())
+        fragmentRule.launchFragment(Unit)
 
         onView(withId(R.id.input)).perform(
                 typeText("abc"), pressKey(KeyEvent.KEYCODE_ENTER))
