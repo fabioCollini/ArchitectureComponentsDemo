@@ -48,11 +48,9 @@ dependencies {
 
     api("android.arch.core:core-testing:$arch_version", {
     })
-    api 'com.github.tmurakami:dexopener:0.12.1'
-    api "org.mockito:mockito-android:$mockito_version"
-    api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
+    api 'com.github.tmurakami:dexopener:1.0.2'
+    androidTestApi "io.mockk:mockk-android:1.8.3"
+
     api 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
     api 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
 

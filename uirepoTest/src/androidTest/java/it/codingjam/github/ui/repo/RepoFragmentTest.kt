@@ -23,13 +23,13 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
-import com.nhaarman.mockito_kotlin.mock
+import io.mockk.every
+import io.mockk.mockk
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.espresso.rule
-import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
@@ -57,11 +57,11 @@ class RepoFragmentTest {
 
     val factory = ViewModelFactory { viewModel }
 
-    val viewModel by lazy { mock<RepoViewModel>() }
+    val viewModel by lazy { mockk<RepoViewModel>() }
 
     @Before fun setUp() {
-        viewModel.state willReturn ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
-        viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
+        every { viewModel.state } returns ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
+        every { viewModel.uiActions } returns UiActionsLiveData(AndroidTestCoroutines())
     }
 
     @Test fun testLoading() {

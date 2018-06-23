@@ -16,9 +16,9 @@
 
 package it.codingjam.github.testdata
 
-import com.nhaarman.mockito_kotlin.mock
 import dagger.Module
 import dagger.Provides
+import io.mockk.mockk
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
@@ -26,9 +26,9 @@ import javax.inject.Singleton
 
 @Module
 open class TestAppModule {
-    @Provides @Singleton open fun navigationController() = mock<NavigationController>()
+    @Provides @Singleton open fun navigationController() = mockk<NavigationController>()
 
-    @Provides @Singleton open fun githubRepository() = mock<GithubRepository>()
+    @Provides @Singleton open fun githubRepository() = mockk<GithubRepository>()
 
-    @Provides @Singleton open fun githubInteractor() = mock<GithubInteractor>()
+    @Provides @Singleton open fun githubInteractor() = mockk<GithubInteractor>()
 }

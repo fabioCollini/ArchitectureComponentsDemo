@@ -24,16 +24,13 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.nalulabs.prefs.fake.FakeSharedPreferences
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.eq
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.verify
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
-import it.codingjam.github.test.willReturn
-import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.ResourceTester
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
@@ -42,7 +39,6 @@ import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.vo.Lce
 import it.codingjam.github.vo.orElse
-import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,9 +46,9 @@ import org.junit.Test
 class SearchViewModelTest {
     @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
 
-    val interactor: GithubInteractor = mock()
-    val navigationController: NavigationController = mock()
-    val fragment: Fragment = mock()
+    val interactor: GithubInteractor = mockk()
+    val navigationController: NavigationController = mockk(relaxed = true)
+    val fragment: Fragment = mockk()
     val viewModel by lazy { SearchViewModel(interactor, navigationController, TestCoroutines(), FakeSharedPreferences()) }
 
     val states = mutableListOf<SearchViewState>()
@@ -62,8 +58,8 @@ class SearchViewModelTest {
         viewModel.uiActions.observeForever { it(fragment) }
     }
 
-    @Test fun load() = runBlocking {
-        interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+    @Test fun load() {
+        coEvery { interactor.search(QUERY) } returns RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
         viewModel.setQuery(QUERY)
 
@@ -77,8 +73,8 @@ class SearchViewModelTest {
                 .containsExactly(REPO_1, REPO_2)
     }
 
-    @Test fun emptyStateVisible() = runBlocking {
-        interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
+    @Test fun emptyStateVisible() {
+        coEvery { interactor.search(QUERY) } returns RepoSearchResponse(emptyList(), null)
 
         viewModel.setQuery(QUERY)
 
@@ -95,9 +91,9 @@ class SearchViewModelTest {
         return RepoSearchResponse(listOf(repo1, repo2), nextPage)
     }
 
-    @Test fun loadMore() = runBlocking {
-        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-        interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
+    @Test fun loadMore() {
+        coEvery { interactor.search(QUERY) } returns response(REPO_1, REPO_2, 2)
+        coEvery { interactor.searchNextPage(QUERY, 2) } returns response(REPO_3, REPO_4, 3)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -112,10 +108,10 @@ class SearchViewModelTest {
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
-    @Test fun errorLoadingMore() = runBlocking {
-        fragment.requireActivity() willReturn mock()
-        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-        interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
+    @Test fun errorLoadingMore() {
+        coEvery { fragment.requireActivity() } returns mockk()
+        coEvery { interactor.search(QUERY) } returns response(REPO_1, REPO_2, 2)
+        coEvery { interactor.searchNextPage(QUERY, 2) } throws RuntimeException(ERROR)
 
         viewModel.setQuery(QUERY)
         viewModel.loadNextPage()
@@ -129,7 +125,7 @@ class SearchViewModelTest {
         assert((states[3].repos as Lce.Success).data.list)
                 .containsExactly(REPO_1, REPO_2)
 
-        verify(navigationController).showError(any(), eq(ERROR))
+        verify { navigationController.showError(any(), eq(ERROR)) }
     }
 
     companion object {

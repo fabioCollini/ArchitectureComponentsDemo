@@ -3,11 +3,8 @@ apply plugin: 'kotlin'
 
 dependencies {
     api "junit:junit:$junit_version"
-    api "org.mockito:mockito-core:$mockito_version"
-    api 'com.willowtreeapps.assertk:assertk:0.9'
-    api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
+    api "io.mockk:mockk:1.8.3"
+    api 'com.willowtreeapps.assertk:assertk:0.10'
     api ("android.arch.core:core-testing:$arch_version", {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
