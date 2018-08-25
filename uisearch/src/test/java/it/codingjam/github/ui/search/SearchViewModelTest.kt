@@ -42,7 +42,7 @@ import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.vo.Lce
 import it.codingjam.github.vo.orElse
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

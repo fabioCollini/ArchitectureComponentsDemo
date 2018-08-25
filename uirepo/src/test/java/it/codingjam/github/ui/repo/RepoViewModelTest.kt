@@ -27,7 +27,7 @@ import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.shouldContain
 import it.codingjam.github.util.TestCoroutines
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
