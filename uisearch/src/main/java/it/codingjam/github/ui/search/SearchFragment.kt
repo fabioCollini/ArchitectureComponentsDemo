@@ -24,8 +24,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
+import it.codingjam.github.NavigationController
+import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.search.databinding.SearchFragmentBinding
+import it.codingjam.github.util.ErrorSignal
+import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
@@ -35,6 +39,8 @@ class SearchFragment : Fragment() {
     @Inject lateinit var viewModelProvider: Provider<SearchViewModel>
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject lateinit var navigationController: NavigationController
 
     private val viewModel by lazy {
         viewModelFactory(this, viewModelProvider)
@@ -77,7 +83,12 @@ class SearchFragment : Fragment() {
             binding.state = it
             binding.executePendingBindings()
         }
-        viewModel.uiActions.observe(this) { it(this) }
+        viewModel.state.observeSignals(this) {
+            when (it) {
+                is ErrorSignal -> navigationController.showError(requireActivity(), it.message)
+                is NavigationSignal<*> -> navigationController.navigateToRepo(this, it.params as RepoId)
+            }
+        }
 
         binding.viewModel = viewModel
     }

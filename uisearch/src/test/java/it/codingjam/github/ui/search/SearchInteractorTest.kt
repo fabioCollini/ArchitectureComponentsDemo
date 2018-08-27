@@ -17,36 +17,45 @@
 package it.codingjam.github.ui.search
 
 
-class SearchViewModelTest {
-//    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
-//
-//    val interactor: GithubInteractor = mock()
-//    val navigationController: NavigationController = mock()
-//    val fragment: Fragment = mock()
-//    val viewModel by lazy { SearchViewModel(interactor, TestCoroutines()) }
-//
-//    val states = mutableListOf<SearchViewState>()
-//
-//    @Before fun setUp() {
-//        viewModel.state.observeForever { states.add(it) }
-//        viewModel.uiActions.observeForever { it(fragment) }
-//    }
-//
-//    @Test fun load() = runBlocking {
-//        interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
-//
-//        viewModel.setQuery(QUERY)
-//
-//        ResourceTester(states.map { it.repos })
-//                .success().success().loading().success()
-//
-//        assert(states.map { it.repos.map { it.emptyStateVisible }.orElse(false) })
-//                .containsExactly(false, false, false, false)
-//
-//        assert((states[3].repos as Lce.Success).data.list)
-//                .containsExactly(REPO_1, REPO_2)
-//    }
-//
+import assertk.assert
+import assertk.assertions.containsExactly
+import com.nalulabs.prefs.fake.FakeSharedPreferences
+import com.nhaarman.mockito_kotlin.mock
+import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.RepoSearchResponse
+import it.codingjam.github.test.willReturn
+import it.codingjam.github.testdata.ResourceTester
+import it.codingjam.github.testdata.TestData.REPO_1
+import it.codingjam.github.testdata.TestData.REPO_2
+import it.codingjam.github.util.StateAction
+import it.codingjam.github.util.UiSignal
+import it.codingjam.github.vo.Lce
+import it.codingjam.github.vo.orElse
+import kotlinx.coroutines.channels.toList
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
+
+class SearchInteractorTest {
+    val interactor: GithubInteractor = mock()
+    val searchInteractor = SearchInteractor(interactor, FakeSharedPreferences())
+
+    @Test
+    fun load() = runBlocking {
+        interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+
+        val states = searchInteractor.setQuery(QUERY, SearchViewState()).toList()
+                .map { (it as Pair<StateAction<SearchViewState>, UiSignal>).first(SearchViewState()) }
+
+        ResourceTester(states.map { it.repos })
+                .success().success().loading().success()
+
+        assert(states.map { it.repos.map { it.emptyStateVisible }.orElse(false) })
+                .containsExactly(false, false, false, false)
+
+        assert((states[3].repos as Lce.Success).data.list)
+                .containsExactly(REPO_1, REPO_2)
+    }
+
 //    @Test fun emptyStateVisible() = runBlocking {
 //        interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
 //
@@ -101,9 +110,9 @@ class SearchViewModelTest {
 //
 //        verify(navigationController).showError(any(), eq(ERROR))
 //    }
-//
-//    companion object {
-//        private const val QUERY = "query"
-//        private const val ERROR = "error"
-//    }
+
+    companion object {
+        private const val QUERY = "query"
+        private const val ERROR = "error"
+    }
 }

@@ -17,80 +17,29 @@
 package it.codingjam.github.ui.search
 
 import android.arch.lifecycle.ViewModel
-import android.content.SharedPreferences
-import com.nalulabs.prefs.string
-import it.codingjam.github.NavigationController
-import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.ViewStateHolder
-import it.codingjam.github.vo.Lce
-import it.codingjam.github.vo.orElse
-import java.util.*
+import it.codingjam.github.util.ViewStateHolder2
 import javax.inject.Inject
 
 @OpenForTesting
 class SearchViewModel @Inject constructor(
-        private val githubInteractor: GithubInteractor,
-        private val navigationController: NavigationController,
-        private val coroutines: Coroutines,
-        prefs: SharedPreferences
+        private val searchInteractor: SearchInteractor,
+        private val coroutines: Coroutines
 ) : ViewModel() {
 
-    private var lastSearch by prefs.string("")
+    val state = ViewStateHolder2(coroutines, SearchViewState(searchInteractor.lastSearch))
 
-    val state = ViewStateHolder(coroutines, SearchViewState(lastSearch))
+    fun setQuery(originalInput: String) =
+            state.updateChannel(searchInteractor.setQuery(originalInput, state()))
 
-    val uiActions = UiActionsLiveData(coroutines)
+    fun loadNextPage() = state.updateChannel(searchInteractor.loadNextPage(state()))
 
-    fun setQuery(originalInput: String) {
-        lastSearch = originalInput
-        val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (!state().repos.map { it.searchInvoked }.orElse(false) || input != state().query) {
-            state.updateOnUi { it.copy(query = input) }
-            reloadData()
-        }
-    }
-
-    private fun reloadData() = coroutines {
-        Lce.exec({ lce -> state.update { it.copy(repos = lce) } }) {
-            val (items, nextPage) = githubInteractor.search(state().query)
-            ReposViewState(items, nextPage, true)
-        }
-    }
-
-    fun loadNextPage() = coroutines {
-        state().repos.doOnData { (_, nextPage, _, loadingMore) ->
-            val query = state().query
-            if (!query.isEmpty() && nextPage != null && !loadingMore) {
-                state.update { it.copyRepos { copy(loadingMore = true) } }
-                try {
-                    val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                    state.update {
-                        it.copyRepos {
-                            copy(list = list + items, nextPage = newNextPage, loadingMore = false)
-                        }
-                    }
-                } catch (t: Exception) {
-                    state.update { it.copyRepos { copy(loadingMore = false) } }
-                    uiActions { navigationController.showError(it.requireActivity(), t.message) }
-                }
-            }
-        }
-    }
-
-    fun refresh() {
-        if (!state().query.isEmpty()) {
-            reloadData()
-        }
-    }
+    fun refresh() = state.updateChannelCreator(searchInteractor::refresh)
 
     fun openRepoDetail(id: RepoId) =
-            uiActions.executeOnUi { navigationController.navigateToRepo(it, id) }
+            state.executeOnUi(searchInteractor.openRepoDetail(id))
 
-    override fun onCleared() {
-        coroutines.cancel()
-    }
+    override fun onCleared() = coroutines.cancel()
 }
