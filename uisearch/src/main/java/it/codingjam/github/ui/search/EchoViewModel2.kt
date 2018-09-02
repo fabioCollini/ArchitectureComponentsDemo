@@ -2,7 +2,6 @@ package it.codingjam.github.ui.search
 
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.StateAction
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.util.convert
 import javax.inject.Inject
@@ -30,9 +29,7 @@ class MultiEchoViewModel @Inject constructor(
 //        state.sub<EchoViewState> { newSub, state -> state.copy(value1 = newSub) }
 //                .plusAssign(echoInteractor.incr(state().value1))
 
-        state.dispatchState(StateAction {
-            copy(value1 = echoInteractor.incr(value1))
-        })
+        state.dispatchState(state().copy(value1 = echoInteractor.incr(state().value1)))
     }
 
     fun incrAsyncSingle() {

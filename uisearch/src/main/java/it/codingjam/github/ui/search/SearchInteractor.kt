@@ -3,6 +3,7 @@ package it.codingjam.github.ui.search
 import android.content.SharedPreferences
 import com.nalulabs.prefs.string
 import it.codingjam.github.core.GithubInteractor
+import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
 import it.codingjam.github.vo.Lce
@@ -14,14 +15,16 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OpenForTesting
 @Singleton
 class SearchInteractor @Inject constructor(
         private val githubInteractor: GithubInteractor,
         prefs: SharedPreferences
 ) {
 
-    var lastSearch by prefs.string("")
-        private set
+    private var lastSearch by prefs.string("")
+
+    fun initialState() = SearchViewState(lastSearch)
 
     fun setQuery(originalInput: String, state: SearchViewState) = produce {
         lastSearch = originalInput

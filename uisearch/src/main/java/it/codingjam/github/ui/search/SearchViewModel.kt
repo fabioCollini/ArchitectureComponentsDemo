@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
         private val coroutines: Coroutines
 ) : ViewModel() {
 
-    val state = ViewStateStore(coroutines, SearchViewState(searchInteractor.lastSearch))
+    val state = ViewStateStore(coroutines, searchInteractor.initialState())
 
     fun setQuery(originalInput: String) {
         state.dispatchActions(searchInteractor.setQuery(originalInput, state()))

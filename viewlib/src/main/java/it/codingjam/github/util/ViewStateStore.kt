@@ -4,6 +4,7 @@ package it.codingjam.github.util
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.support.annotation.MainThread
 import kotlinx.coroutines.experimental.channels.*
 import kotlinx.coroutines.experimental.runBlocking
 import java.util.*
@@ -45,6 +46,12 @@ class ViewStateStore<T : Any>(
                 list = ArrayList()
             })
 
+    @MainThread
+    fun dispatchState(state: T) {
+        liveData.value = state
+    }
+
+    @MainThread
     fun dispatchState(action: StateAction<T>) {
         liveData.value = action(invoke())
     }
@@ -92,6 +99,8 @@ class ViewStateStore<T : Any>(
     }
 
     operator fun invoke() = liveData.value!!
+
+    fun cancel() = coroutines.cancel()
 }
 
 
