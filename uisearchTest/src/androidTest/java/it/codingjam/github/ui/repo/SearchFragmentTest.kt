@@ -23,7 +23,6 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.espresso.FragmentTestRule
@@ -38,7 +37,6 @@ import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -53,26 +51,19 @@ class SearchFragmentTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    val coroutines = AndroidTestCoroutines()
-
-    lateinit var store: ViewStateStore<SearchViewState>
-
     val factory = ViewModelFactory { viewModel }
 
-    val viewModel by lazy { mock<SearchViewModel>() }
-
-    @Before
-    fun setUp() {
-        store = ViewStateStore(coroutines, SearchViewState())
-
-        whenever(viewModel.state).thenReturn(store)
+    val viewModel by lazy {
+        mock<SearchViewModel> {
+            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), SearchViewState()))
+        }
     }
 
     @Test
     fun testLoading() {
         fragmentRule.launchFragment(Unit)
 
-        store.dispatchState(SearchViewState(repos = Lce.Loading))
+        viewModel.state.dispatchState(SearchViewState(repos = Lce.Loading))
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -82,9 +73,9 @@ class SearchFragmentTest {
     fun testValueWhileLoading() {
         fragmentRule.launchFragment(Unit)
 
-        store.dispatchState(SearchViewState(repos = Lce.Loading))
+        viewModel.state.dispatchState(SearchViewState(repos = Lce.Loading))
 
-        store.dispatchState(SearchViewState(repos = Lce.Success(ReposViewState(listOf(REPO_1, REPO_2)))))
+        viewModel.state.dispatchState(SearchViewState(repos = Lce.Success(ReposViewState(listOf(REPO_1, REPO_2)))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
     }
