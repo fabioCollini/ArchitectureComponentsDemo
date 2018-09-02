@@ -3,12 +3,12 @@ package it.codingjam.github.ui.search
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.channels.toList
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.channels.produce
+import kotlinx.coroutines.experimental.channels.toList
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 
 typealias Action<T> = (T) -> T
@@ -81,18 +81,18 @@ class ReduxTest {
         assert(newState).isEqualTo("abcd")
     }
 
-    @Test
-    fun asyncExampleVM() {
-        val vm = MyViewModel()
-
-        val store = Store("abc")
-
-        runBlocking {
-            store.execute2(vm::asyncAction)
-
-            assert(store.state).isEqualTo("done")
-        }
-    }
+//    @Test
+//    fun asyncExampleVM() {
+//        val vm = MyViewModel()
+//
+//        val store = Store("abc")
+//
+//        runBlocking {
+//            store.execute2(vm::asyncAction)
+//
+//            assert(store.state).isEqualTo("done")
+//        }
+//    }
 
     @Test
     fun asyncExampleVMNoStore() {

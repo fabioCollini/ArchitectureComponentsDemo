@@ -2,7 +2,7 @@ package it.codingjam.github.ui.search
 
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.ViewStateHolder2
+import it.codingjam.github.util.ViewStateStore
 import javax.inject.Inject
 
 data class EchoViewState(
@@ -14,24 +14,26 @@ class EchoViewModel @Inject constructor(
         private val echoInteractor: EchoInteractor
 ) : ViewModel() {
 
-    val state = ViewStateHolder2(coroutines, EchoViewState())
+    val state = ViewStateStore(coroutines, EchoViewState())
 
     fun incr() {
-        state.updateSynchronousStateAction(echoInteractor::incr)
+//        state.dispatchState(echoInteractor::incr)
     }
 
     fun incrAsync() {
-        state.updateChannelCreator(echoInteractor::incrAsync)
-//        state.update(echoInteractor.incrAsync(state()))
+//        state += echoInteractor::incrAsync
+        state.dispatchActions(echoInteractor.incrAsync(state()))
     }
 
     fun incrAsyncSingle() {
 //        state.update(echoInteractor::incrAsyncSingle)
-        state.updateChannel(echoInteractor.incrAsync(state()))
+        state.dispatchActions(echoInteractor.incrAsync(state()))
     }
 
     fun incrAsyncSingle2() {
-        state.updateStateAction(echoInteractor::incrAsyncSingle)
+        state.dispatchStateAsync {
+            echoInteractor.incrAsyncSingle(state())
+        }
 //        state.update(echoInteractor.incrAsync(state()))
     }
 }

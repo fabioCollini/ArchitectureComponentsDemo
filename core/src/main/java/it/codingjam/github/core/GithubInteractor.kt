@@ -1,7 +1,7 @@
 package it.codingjam.github.core
 
-import kotlinx.coroutines.CommonPool
-import kotlinx.coroutines.async
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
 import javax.inject.Singleton
 

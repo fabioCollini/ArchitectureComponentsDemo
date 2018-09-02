@@ -20,7 +20,7 @@ import assertk.assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import it.codingjam.github.api.util.RetrofitFactory
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio

@@ -31,8 +31,8 @@ android {
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0-eap13"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0-eap13"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0"
 
     api "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
@@ -45,4 +45,10 @@ dependencies {
     testImplementation project(':testLib')
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions{
+        freeCompilerArgs = ["-Xskip-metadata-version-check"]
+    }
 }

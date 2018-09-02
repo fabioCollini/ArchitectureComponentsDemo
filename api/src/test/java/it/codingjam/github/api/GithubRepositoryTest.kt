@@ -7,8 +7,7 @@ import com.nhaarman.mockito_kotlin.mock
 import it.codingjam.github.core.Owner
 import it.codingjam.github.core.Repo
 import it.codingjam.github.test.willReturn
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.Headers
 import org.junit.Test
 import retrofit2.Response

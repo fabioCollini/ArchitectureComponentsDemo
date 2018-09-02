@@ -1,8 +1,8 @@
 package it.codingjam.github.util
 
 import android.os.AsyncTask
-import kotlinx.coroutines.*
-import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.UI
 
 interface Coroutines {
     operator fun invoke(f: suspend CoroutineScope.() -> Unit)

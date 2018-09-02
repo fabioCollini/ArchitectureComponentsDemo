@@ -32,7 +32,7 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.util.TestCoroutines
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -20,7 +20,7 @@ import android.arch.lifecycle.ViewModel
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.ViewStateHolder2
+import it.codingjam.github.util.ViewStateStore
 import javax.inject.Inject
 
 @OpenForTesting
@@ -29,17 +29,23 @@ class SearchViewModel @Inject constructor(
         private val coroutines: Coroutines
 ) : ViewModel() {
 
-    val state = ViewStateHolder2(coroutines, SearchViewState(searchInteractor.lastSearch))
+    val state = ViewStateStore(coroutines, SearchViewState(searchInteractor.lastSearch))
 
-    fun setQuery(originalInput: String) =
-            state.updateChannel(searchInteractor.setQuery(originalInput, state()))
+    fun setQuery(originalInput: String) {
+        state.dispatchActions(searchInteractor.setQuery(originalInput, state()))
+    }
 
-    fun loadNextPage() = state.updateChannel(searchInteractor.loadNextPage(state()))
+    fun loadNextPage() {
+        state.dispatchActions(searchInteractor.loadNextPage(state()))
+    }
 
-    fun refresh() = state.updateChannelCreator(searchInteractor::refresh)
+    fun refresh() {
+        state.dispatchActions(searchInteractor.refresh(state()))
+    }
 
-    fun openRepoDetail(id: RepoId) =
-            state.executeOnUi(searchInteractor.openRepoDetail(id))
+    fun openRepoDetail(id: RepoId) {
+        state.dispatchSignal(searchInteractor.openRepoDetail(id))
+    }
 
     override fun onCleared() = coroutines.cancel()
 }

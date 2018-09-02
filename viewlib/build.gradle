@@ -52,3 +52,9 @@ dependencies {
     api "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     api "android.arch.navigation:navigation-ui-ktx:$nav_version"
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions{
+        freeCompilerArgs = ["-Xskip-metadata-version-check"]
+    }
+}

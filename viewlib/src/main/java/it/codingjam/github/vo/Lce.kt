@@ -18,6 +18,8 @@ package it.codingjam.github.vo
 
 sealed class Lce<out T> {
 
+    open val data: T? = null
+
     abstract fun <R> map(f: (T) -> R): Lce<R>
 
     inline fun doOnData(f: (T) -> Unit) {
@@ -26,7 +28,7 @@ sealed class Lce<out T> {
         }
     }
 
-    data class Success<out T>(val data: T) : Lce<T>() {
+    data class Success<out T>(override val data: T) : Lce<T>() {
         override fun <R> map(f: (T) -> R): Lce<R> = Success(f(data))
     }
 
@@ -54,3 +56,10 @@ sealed class Lce<out T> {
 
 fun <T> Lce<T>.orElse(defaultValue: T): T = (this as? Lce.Success)?.data ?: defaultValue
 
+val Lce<*>.debug: String
+    get() =
+        when (this) {
+            is Lce.Success -> "S"
+            is Lce.Loading -> "L"
+            is Lce.Error -> "E"
+        }

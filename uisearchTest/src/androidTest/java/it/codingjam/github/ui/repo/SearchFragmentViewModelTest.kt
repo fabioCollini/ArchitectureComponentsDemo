@@ -36,7 +36,7 @@ import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.testdata.TestData.REPO_1
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.runBlocking
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test

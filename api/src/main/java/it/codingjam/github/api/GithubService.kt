@@ -20,7 +20,7 @@ import it.codingjam.github.api.util.EnvelopePayload
 import it.codingjam.github.core.Contributor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.User
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
