@@ -21,24 +21,24 @@ import it.codingjam.github.vo.debug
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 
-class SearchInteractorTest {
+class SearchUseCaseTest {
     val interactor: GithubInteractor = mock()
-    val searchInteractor = SearchInteractor(interactor, FakeSharedPreferences())
+    val useCase = SearchUseCase(interactor, FakeSharedPreferences())
 
     @Test
     fun load() = runBlocking {
         interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
-        val states = states(SearchViewState()) { searchInteractor.setQuery(QUERY, it) }
+        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
 
         assert(states).hasSize(2)
 
-        assert(states.map { it.repos.debug }).containsExactly("L", "S")
+        assert(states.map { it.debug }).containsExactly("L", "S")
 
-        assert(states.map { it.repos.data?.emptyStateVisible ?: false })
+        assert(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, false)
 
-        assert(states.last().repos.data?.list).isNotNull {
+        assert(states.last().data?.list).isNotNull {
             it.containsExactly(REPO_1, REPO_2)
         }
     }
@@ -47,14 +47,14 @@ class SearchInteractorTest {
     fun emptyStateVisible() = runBlocking {
         interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
 
-        val states = states(SearchViewState()) { searchInteractor.setQuery(QUERY, it) }
+        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
 
-        assert(states.map { it.repos.debug }).containsExactly("L", "S")
+        assert(states.map { it.debug }).containsExactly("L", "S")
 
-        assert(states.map { it.repos.data?.emptyStateVisible ?: false })
+        assert(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, true)
 
-        assert(states.last().repos.data?.list).isNotNull {
+        assert(states.last().data?.list).isNotNull {
             it.isEmpty()
         }
     }
@@ -68,9 +68,9 @@ class SearchInteractorTest {
         interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
         interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
 
-        val lastState = states(SearchViewState()) { searchInteractor.setQuery(QUERY, it) }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
 
-        val states = states(lastState) { searchInteractor.loadNextPage(it) }
+        val states = states(lastState) { useCase.loadNextPage(it) }
 
         assert(states.map { it.repos.debug }).containsExactly("S", "S")
 
@@ -86,9 +86,9 @@ class SearchInteractorTest {
         interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
         interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
 
-        val lastState = states(SearchViewState()) { searchInteractor.setQuery(QUERY, it) }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
 
-        val states = states(lastState) { searchInteractor.loadNextPage(it) }
+        val states = states(lastState) { useCase.loadNextPage(it) }
 
         assert(states.map { it.repos.debug }).containsExactly("S", "S")
 
@@ -99,7 +99,7 @@ class SearchInteractorTest {
             it.containsExactly(REPO_1, REPO_2)
         }
 
-        val signals = signals(lastState) { searchInteractor.loadNextPage(it) }
+        val signals = signals(lastState) { useCase.loadNextPage(it) }
 
         assert(signals.last()).isInstanceOf(ErrorSignal::class) {
             it.prop(ErrorSignal::message).isEqualTo(ERROR)

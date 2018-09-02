@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @OpenForTesting
 @Singleton
-class SearchInteractor @Inject constructor(
+class SearchUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor,
         prefs: SharedPreferences
 ) {

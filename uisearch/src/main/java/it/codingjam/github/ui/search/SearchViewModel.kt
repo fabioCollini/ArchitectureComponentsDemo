@@ -25,26 +25,26 @@ import javax.inject.Inject
 
 @OpenForTesting
 class SearchViewModel @Inject constructor(
-        private val searchInteractor: SearchInteractor,
+        private val searchUseCase: SearchUseCase,
         private val coroutines: Coroutines
 ) : ViewModel() {
 
-    val state = ViewStateStore(coroutines, searchInteractor.initialState())
+    val state = ViewStateStore(coroutines, searchUseCase.initialState())
 
     fun setQuery(originalInput: String) {
-        state.dispatchActions(searchInteractor.setQuery(originalInput, state()))
+        state.dispatchActions(searchUseCase.setQuery(originalInput, state()))
     }
 
     fun loadNextPage() {
-        state.dispatchActions(searchInteractor.loadNextPage(state()))
+        state.dispatchActions(searchUseCase.loadNextPage(state()))
     }
 
     fun refresh() {
-        state.dispatchActions(searchInteractor.refresh(state()))
+        state.dispatchActions(searchUseCase.refresh(state()))
     }
 
     fun openRepoDetail(id: RepoId) {
-        state.dispatchSignal(searchInteractor.openRepoDetail(id))
+        state.dispatchSignal(searchUseCase.openRepoDetail(id))
     }
 
     override fun onCleared() = coroutines.cancel()
