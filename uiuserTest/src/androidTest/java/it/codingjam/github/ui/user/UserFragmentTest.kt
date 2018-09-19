@@ -18,6 +18,7 @@ package it.codingjam.github.ui.user
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
+import android.os.Debug
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
@@ -60,15 +61,18 @@ class UserFragmentTest {
     }
 
     @Test fun testLoading() {
+        Debug.startMethodTracing()
         fragmentRule.launchFragment("user")
 
         liveData.postValue(Lce.Loading)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
+        Debug.stopMethodTracing()
     }
 
     @Test fun testValueWhileLoading() {
+        Debug.startMethodTracing()
         fragmentRule.launchFragment("user")
 
         liveData.postValue(Lce.Loading)
@@ -76,5 +80,6 @@ class UserFragmentTest {
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.user_name)).check(matches(withText(USER.name)))
+        Debug.stopMethodTracing()
     }
 }
