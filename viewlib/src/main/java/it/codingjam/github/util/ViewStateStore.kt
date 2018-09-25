@@ -165,3 +165,17 @@ inline fun <reified S : Any> signals(
 fun <T> produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveChannel<Action<T>> =
     GlobalScope.produce(block = f)
 
+suspend fun <S, R> ReceiveChannel<Action<R>>.consumeAndSend(scope: ProducerScope<Action<S>>, copy: S.(StateAction<R>) -> S) {
+    consumeEach { originalAction ->
+        scope.send(originalAction.map(copy))
+    }
+}
+
+fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
+    return if (this is Signal) {
+        this
+    } else {
+        val stateAction = this as StateAction<R>
+        StateAction { copy(stateAction) }
+    }
+}

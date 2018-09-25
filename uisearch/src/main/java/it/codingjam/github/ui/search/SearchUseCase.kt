@@ -7,7 +7,10 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.experimental.channels.*
+import it.codingjam.github.vo.lce
+import kotlinx.coroutines.experimental.channels.ProducerScope
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.map
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -72,27 +75,10 @@ class SearchUseCase @Inject constructor(
     }
 
     private suspend fun ProducerScope<Action<SearchViewState>>.reloadData(query: String) {
-//        exec({ lce -> copy(repos = lce, query = query) }) {
-//            val (items, nextPage) = githubInteractor.search(query)
-//            ReposViewState(items, nextPage, true)
-//        }
-//        sub<SearchViewState, Lce<ReposViewState>>({ copy(repos = it(repos)) }) {
-//            exec2 {
-//                val (items, nextPage) = githubInteractor.search(query)
-//                ReposViewState(items, nextPage, true)
-//            }
-//        }
-//        produceActions<Lce<ReposViewState>> {
-//            exec2 {
-//                val (items, nextPage) = githubInteractor.search(query)
-//                ReposViewState(items, nextPage, true)
-//            }
-//        }.subb(this) { copy(repos = it(repos)) }
-
         lce {
             val (items, nextPage) = githubInteractor.search(query)
             ReposViewState(items, nextPage, true)
-        }.map(this) { copy(repos = it(repos), query = query) }
+        }.consumeAndSend(this) { copy(repos = it(repos), query = query) }
     }
 
     fun refresh(state: SearchViewState) = produceActions {
@@ -102,70 +88,4 @@ class SearchUseCase @Inject constructor(
     }
 
     fun openRepoDetail(id: RepoId) = NavigationSignal("repo", id)
-}
-
-suspend inline fun <S, R> ProducerScope<Action<S>>.exec(crossinline copy: S.(Lce<R>) -> S, f: () -> R) {
-    send { copy(this, Lce.Loading) }
-    try {
-        val result = f()
-        send { copy(this, Lce.Success(result)) }
-    } catch (e: Exception) {
-        send { copy(this, Lce.Error(e)) }
-    }
-}
-
-suspend inline fun <S> ProducerScope<Action<Lce<S>>>.exec2(f: () -> S) {
-    send { Lce.Loading }
-    try {
-        val result = f()
-        send { Lce.Success(result) }
-    } catch (e: Exception) {
-        send { Lce.Error(e) }
-    }
-}
-
-inline fun <S> lce(crossinline f: suspend () -> S): ReceiveChannel<Action<Lce<S>>> {
-    return produceActions {
-        send { Lce.Loading }
-        try {
-            val result = f()
-            send { Lce.Success(result) }
-        } catch (e: Exception) {
-            send { Lce.Error(e) }
-        }
-    }
-}
-
-fun <S, R> ProducerScope<Action<S>>.sub(copy: S.(StateAction<R>) -> S, f: suspend ProducerScope<Action<R>>.() -> Unit) {
-    produce(block = f).map { originalAction ->
-        send(if (originalAction is Signal) {
-            originalAction
-        } else {
-            val stateAction = originalAction as StateAction<R>
-            StateAction { copy(stateAction) }
-        })
-    }
-}
-
-suspend fun <S, R> ReceiveChannel<Action<R>>.map(scope: ProducerScope<Action<S>>, copy: S.(StateAction<R>) -> S) {
-    consumeEach { originalAction ->
-        scope.send(originalAction.map(copy))
-    }
-//    map { originalAction ->
-//        scope.send(if (originalAction is Signal) {
-//            originalAction
-//        } else {
-//            val stateAction = originalAction as StateAction<R>
-//            StateAction { copy(stateAction) }
-//        })
-//    }
-}
-
-fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
-    return if (this is Signal) {
-        this
-    } else {
-        val stateAction = this as StateAction<R>
-        StateAction { copy(stateAction) }
-    }
 }

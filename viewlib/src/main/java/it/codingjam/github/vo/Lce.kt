@@ -16,6 +16,11 @@
 
 package it.codingjam.github.vo
 
+import it.codingjam.github.util.Action
+import it.codingjam.github.util.produceActions
+import it.codingjam.github.util.send
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+
 sealed class Lce<out T> {
 
     open val data: T? = null
@@ -63,3 +68,15 @@ val Lce<*>.debug: String
             is Lce.Loading -> "L"
             is Lce.Error -> "E"
         }
+
+inline fun <S> lce(crossinline f: suspend () -> S): ReceiveChannel<Action<Lce<S>>> {
+    return produceActions {
+        send { Lce.Loading }
+        try {
+            val result = f()
+            send { Lce.Success(result) }
+        } catch (e: Exception) {
+            send { Lce.Error(e) }
+        }
+    }
+}
