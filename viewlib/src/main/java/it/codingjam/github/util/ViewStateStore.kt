@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.*
 import kotlinx.coroutines.experimental.runBlocking
 import java.util.*
@@ -51,11 +52,6 @@ class ViewStateStore<T : Any>(
         liveData.value = state
     }
 
-    @MainThread
-    fun dispatchState(action: StateAction<T>) {
-        liveData.value = action(invoke())
-    }
-
     fun dispatchSignal(action: Signal) {
         list.add(action)
         delegate.value = list
@@ -70,27 +66,27 @@ class ViewStateStore<T : Any>(
         }
     }
 
-    fun dispatchStateAsync(f: suspend () -> StateAction<T>) {
+    fun dispatchAction(f: suspend () -> Action<T>) {
         coroutines {
             val action = f()
             coroutines.onUi {
-                dispatchState(action)
+                dispatch(action)
             }
         }
     }
 
-    fun dispatchSignalAsync(f: suspend () -> Signal) {
-        coroutines {
-            val signal = f()
-            coroutines.onUi {
-                dispatch(signal)
-            }
-        }
-    }
+//    fun dispatchSignal(f: suspend () -> Signal) {
+//        coroutines {
+//            val signal = f()
+//            coroutines.onUi {
+//                dispatch(signal)
+//            }
+//        }
+//    }
 
-    fun dispatchActions(f: ReceiveChannel<Action<T>>) {
+    fun dispatchActions(channel: ReceiveChannel<Action<T>>) {
         coroutines {
-            f.consumeEach { action ->
+            channel.consumeEach { action ->
                 coroutines.onUi {
                     dispatch(action)
                 }
@@ -149,21 +145,23 @@ suspend inline fun <T : Any> ReceiveChannel<Action<T>>.states(initialState: T): 
     }
 }
 
-inline fun <reified S : Any> states(
+suspend inline fun <reified S : Any> states(
         initialState: S,
-        crossinline f: (S) -> ReceiveChannel<Action<S>>
-): List<S> = runBlocking {
-    f(initialState)
-            .states(initialState)
-            .filterIsInstance<S>()
-}
+        crossinline f: suspend (S) -> ReceiveChannel<Action<S>>
+): List<S> =
+        f(initialState)
+                .states(initialState)
+                .filterIsInstance<S>()
 
 inline fun <reified S : Any> signals(
         initialState: S,
-        crossinline f: (S) -> ReceiveChannel<Action<S>>
+        crossinline f: suspend (S) -> ReceiveChannel<Action<S>>
 ): List<Signal> = runBlocking {
     f(initialState)
             .states(initialState)
             .filterIsInstance<Signal>()
 }
+
+fun <T> produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveChannel<Action<T>> =
+    GlobalScope.produce(block = f)
 
