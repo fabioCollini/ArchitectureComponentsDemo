@@ -6,11 +6,7 @@ import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
-import it.codingjam.github.vo.Lce
 import it.codingjam.github.vo.lce
-import kotlinx.coroutines.experimental.channels.ProducerScope
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.map
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,60 +26,36 @@ class SearchUseCase @Inject constructor(
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (state.repos.data?.searchInvoked != true || input != state.query) {
-            reloadData(input)
+            sendAll(reloadData(input))
         }
     }
 
-    fun loadNextPage(state: SearchViewState) = produceActions<SearchViewState> {
+    fun loadNextPage(state: SearchViewState) = produceActions<ReposViewState> {
         state.repos.doOnData { (_, nextPage, _, loadingMore) ->
             val query = state.query
             if (!query.isEmpty() && nextPage != null && !loadingMore) {
-                send { copyRepos { copy(loadingMore = true) } }
+                send { copy(loadingMore = true) }
                 try {
                     val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
                     send {
-                        copyRepos {
-                            copy(list = list + items, nextPage = newNextPage, loadingMore = false)
-                        }
+                        copy(list = list + items, nextPage = newNextPage, loadingMore = false)
                     }
                 } catch (t: Exception) {
-                    send { copyRepos { copy(loadingMore = false) } }
+                    send { copy(loadingMore = false) }
                     send(ErrorSignal(t))
                 }
             }
         }
-    }
+    }.map<SearchViewState> { action -> copy(repos = repos.map { action(it) }) }
 
-    fun loadNextPage2(state: SearchViewState): ReceiveChannel<Action<SearchViewState>> {
-        return produceActions<ReposViewState> {
-            state.repos.doOnData { (_, nextPage, _, loadingMore) ->
-                val query = state.query
-                if (!query.isEmpty() && nextPage != null && !loadingMore) {
-                    send { copy(loadingMore = true) }
-                    try {
-                        val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                        send {
-                            copy(list = list + items, nextPage = newNextPage, loadingMore = false)
-                        }
-                    } catch (t: Exception) {
-                        send { copy(loadingMore = false) }
-                        send(ErrorSignal(t))
-                    }
-                }
-            }
-        }.map { action -> action.map<ReposViewState, SearchViewState> { copy(repos = Lce.Success(it(repos.data!!))) } }
-    }
-
-    private suspend fun ProducerScope<Action<SearchViewState>>.reloadData(query: String) {
-        lce {
-            val (items, nextPage) = githubInteractor.search(query)
-            ReposViewState(items, nextPage, true)
-        }.consumeAndSend(this) { copy(repos = it(repos), query = query) }
-    }
+    private suspend fun reloadData(query: String) = lce {
+        val (items, nextPage) = githubInteractor.search(query)
+        ReposViewState(items, nextPage, true)
+    }.map<SearchViewState> { copy(repos = it(repos), query = query) }
 
     fun refresh(state: SearchViewState) = produceActions {
         if (!state.query.isEmpty()) {
-            reloadData(state.query)
+            sendAll(reloadData(state.query))
         }
     }
 

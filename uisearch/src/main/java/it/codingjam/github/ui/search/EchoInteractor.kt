@@ -1,9 +1,8 @@
 package it.codingjam.github.ui.search
 
-import it.codingjam.github.util.Action
 import it.codingjam.github.util.StateAction
+import it.codingjam.github.util.produceActions
 import it.codingjam.github.util.send
-import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,7 +12,7 @@ class EchoInteractor @Inject constructor() {
 
     fun incr(state: EchoViewState) = state.copy(value = state.value + 1)
 
-    fun incrAsync(state: EchoViewState) = produce<Action<EchoViewState>> {
+    fun incrAsync(state: EchoViewState) = produceActions<EchoViewState> {
         send {
             copy(value = "Loading...")
         }

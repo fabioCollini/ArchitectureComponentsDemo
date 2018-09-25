@@ -31,7 +31,7 @@ class EchoViewModel @Inject constructor(
     }
 
     fun incrAsyncSingle2() {
-        state.dispatchStateAsync {
+        state.dispatchAction {
             echoInteractor.incrAsyncSingle(state())
         }
 //        state.update(echoInteractor.incrAsync(state()))

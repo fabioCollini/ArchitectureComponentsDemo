@@ -3,7 +3,7 @@ package it.codingjam.github.ui.search
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.ViewStateStore
-import it.codingjam.github.util.convert
+import it.codingjam.github.util.map
 import javax.inject.Inject
 
 data class MultiEchoViewState(
@@ -39,13 +39,13 @@ class MultiEchoViewModel @Inject constructor(
 //            echoInteractor.incrAsyncSingle(state().value1)
 //        }
 
-        state.dispatchStateAsync {
+        state.dispatchAction {
             echoInteractor.incrAsyncSingle(state().value1)
-                    .convert { copy(value1 = it(value1)) }
+                    .map { copy(value1 = it(value1)) }
         }
-        state.dispatchStateAsync {
+        state.dispatchAction {
             echoInteractor.incrAsyncSingle(state().value1)
-                    .convert { copy(value1 = it(value1)) }
+                    .map { copy(value1 = it(value1)) }
         }
 
 //            val v: ((EchoViewState) -> EchoViewState) = echoInteractor.incrAsyncSingle(state().value1)

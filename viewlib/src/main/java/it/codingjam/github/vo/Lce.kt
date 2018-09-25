@@ -16,10 +16,9 @@
 
 package it.codingjam.github.vo
 
-import it.codingjam.github.util.Action
+import it.codingjam.github.util.ReceiveActionChannel
 import it.codingjam.github.util.produceActions
 import it.codingjam.github.util.send
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 
 sealed class Lce<out T> {
 
@@ -69,7 +68,7 @@ val Lce<*>.debug: String
             is Lce.Error -> "E"
         }
 
-inline fun <S> lce(crossinline f: suspend () -> S): ReceiveChannel<Action<Lce<S>>> {
+inline fun <S> lce(crossinline f: suspend () -> S): ReceiveActionChannel<Lce<S>> {
     return produceActions {
         send { Lce.Loading }
         try {

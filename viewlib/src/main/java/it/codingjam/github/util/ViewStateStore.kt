@@ -84,9 +84,9 @@ class ViewStateStore<T : Any>(
 //        }
 //    }
 
-    fun dispatchActions(channel: ReceiveChannel<Action<T>>) {
+    fun dispatchActions(channel: ReceiveActionChannel<T>) {
         coroutines {
-            channel.consumeEach { action ->
+            channel.channel.consumeEach { action ->
                 coroutines.onUi {
                     dispatch(action)
                 }
@@ -99,44 +99,10 @@ class ViewStateStore<T : Any>(
     fun cancel() = coroutines.cancel()
 }
 
-
-class StateUpdater<S>(private val scope: ProducerScope<Action<S>>) {
-    suspend fun send(action: S.() -> S) = scope.send(StateAction(action))
-
-    suspend fun sendSignal(signal: Signal) = scope.send(signal)
-}
-
-fun <S> execute(block: suspend StateUpdater<S>.() -> Unit): ReceiveChannel<Action<S>> {
-    return produce {
-        StateUpdater(this).block()
-    }
-}
-
 suspend fun <S> ProducerScope<Action<S>>.send(action: S.() -> S) = send(StateAction(action))
 
-fun <P, R> ReceiveChannel<Action<P>>.convert(f: R.(StateAction<P>) -> R): ReceiveChannel<Action<R>> {
-    return map { originalAction ->
-        convert(originalAction, f)
-    }
-}
-
-fun <P, R> convert(originalAction: Action<P>, f: R.(StateAction<P>) -> R): Action<R> {
-    return if (originalAction is Signal) {
-        originalAction
-    } else {
-        val stateAction = originalAction as StateAction<P>
-        StateAction<R> { f(stateAction) }
-    }
-}
-
-inline fun <P, R> StateAction<P>.convert(crossinline f: R.(StateAction<P>) -> R): StateAction<R> {
-    return StateAction {
-        f(this@convert)
-    }
-}
-
-suspend inline fun <T : Any> ReceiveChannel<Action<T>>.states(initialState: T): List<Any> {
-    return fold(emptyList()) { states, action ->
+suspend inline fun <T : Any> ReceiveActionChannel<T>.states(initialState: T): List<Any> {
+    return channel.fold(emptyList()) { states, action ->
         val element: Any = if (action is StateAction)
             action(states.lastOrNull() as T? ?: initialState)
         else
@@ -147,7 +113,7 @@ suspend inline fun <T : Any> ReceiveChannel<Action<T>>.states(initialState: T): 
 
 suspend inline fun <reified S : Any> states(
         initialState: S,
-        crossinline f: suspend (S) -> ReceiveChannel<Action<S>>
+        crossinline f: suspend (S) -> ReceiveActionChannel<S>
 ): List<S> =
         f(initialState)
                 .states(initialState)
@@ -155,21 +121,26 @@ suspend inline fun <reified S : Any> states(
 
 inline fun <reified S : Any> signals(
         initialState: S,
-        crossinline f: suspend (S) -> ReceiveChannel<Action<S>>
+        crossinline f: suspend (S) -> ReceiveActionChannel<S>
 ): List<Signal> = runBlocking {
     f(initialState)
             .states(initialState)
             .filterIsInstance<Signal>()
 }
 
-fun <T> produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveChannel<Action<T>> =
-    GlobalScope.produce(block = f)
+class ReceiveActionChannel<T>(val channel: ReceiveChannel<Action<T>>) {
+    fun <R> map(copy: R.(StateAction<T>) -> R) =
+            ReceiveActionChannel(channel.map { action: Action<T> -> action.map(copy) })
+}
 
-suspend fun <S, R> ReceiveChannel<Action<R>>.consumeAndSend(scope: ProducerScope<Action<S>>, copy: S.(StateAction<R>) -> S) {
-    consumeEach { originalAction ->
-        scope.send(originalAction.map(copy))
+suspend fun <T> ProducerScope<Action<T>>.sendAll(channel: ReceiveActionChannel<T>) {
+    channel.channel.consumeEach { originalAction ->
+        send(originalAction)
     }
 }
+
+fun <T> produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveActionChannel<T> =
+        ReceiveActionChannel(GlobalScope.produce(block = f))
 
 fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
     return if (this is Signal) {
