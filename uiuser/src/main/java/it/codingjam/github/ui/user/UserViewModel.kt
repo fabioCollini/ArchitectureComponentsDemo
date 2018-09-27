@@ -20,7 +20,6 @@ import android.arch.lifecycle.ViewModel
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
-import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import javax.inject.Inject
@@ -28,11 +27,10 @@ import javax.inject.Inject
 @OpenForTesting
 class UserViewModel @Inject constructor(
         private val userUseCase: UserUseCase,
-        coroutines: Coroutines,
         private val login: String
 ) : ViewModel() {
 
-    val state = ViewStateStore<Lce<UserDetail>>(coroutines, Lce.Loading)
+    val state = ViewStateStore<Lce<UserDetail>>(Lce.Loading)
 
     fun load() = state.dispatchActions(userUseCase.load(login))
 

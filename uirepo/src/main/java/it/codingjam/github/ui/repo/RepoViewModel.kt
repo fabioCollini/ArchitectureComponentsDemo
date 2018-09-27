@@ -19,7 +19,6 @@ package it.codingjam.github.ui.repo
 import android.arch.lifecycle.ViewModel
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import javax.inject.Inject
@@ -27,11 +26,10 @@ import javax.inject.Inject
 @OpenForTesting
 class RepoViewModel @Inject constructor(
         private val useCase: RepoUseCase,
-        coroutines: Coroutines,
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val state = ViewStateStore<RepoViewState>(coroutines, Lce.Loading)
+    val state = ViewStateStore<RepoViewState>(Lce.Loading)
 
     fun reload() = state.dispatchActions(useCase.reload(repoId))
 

@@ -32,7 +32,6 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.ui.search.ReposViewState
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
-import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
@@ -55,7 +54,7 @@ class SearchFragmentTest {
 
     val viewModel by lazy {
         mock<SearchViewModel> {
-            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), SearchViewState()))
+            on(it.state).thenReturn(ViewStateStore.test(SearchViewState()))
         }
     }
 

@@ -29,7 +29,6 @@ import it.codingjam.github.espresso.rule
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
-import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
@@ -49,7 +48,7 @@ class UserFragmentTest {
 
     val viewModel by lazy {
         mock<UserViewModel> {
-            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), Lce.Loading))
+            on(it.state).thenReturn(ViewStateStore.test(Lce.Loading))
         }
     }
 

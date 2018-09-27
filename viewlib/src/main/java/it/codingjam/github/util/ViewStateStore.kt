@@ -4,11 +4,13 @@ package it.codingjam.github.util
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.os.AsyncTask
 import android.support.annotation.MainThread
-import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.channels.*
-import kotlinx.coroutines.experimental.runBlocking
 import java.util.*
+import kotlin.coroutines.experimental.CoroutineContext
 
 interface Action<out T>
 
@@ -25,13 +27,16 @@ data class ErrorSignal(val error: Throwable?, val message: String) : Signal {
 data class NavigationSignal<P>(val destination: Any, val params: P) : Signal
 
 class ViewStateStore<T : Any>(
-        private val coroutines: Coroutines,
         initialState: T,
-        private val liveData: MutableLiveData<T> = MutableLiveData()
-) {
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : CoroutineScope {
 
-    init {
-        liveData.value = initialState
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext = job + dispatcher
+
+    private val liveData = MutableLiveData<T>().apply {
+        value = initialState
     }
 
     private val delegate = MutableLiveData<List<Signal>>()
@@ -67,27 +72,18 @@ class ViewStateStore<T : Any>(
     }
 
     fun dispatchAction(f: suspend () -> Action<T>) {
-        coroutines {
+        launch {
             val action = f()
-            coroutines.onUi {
+            withContext(Dispatchers.Main) {
                 dispatch(action)
             }
         }
     }
 
-//    fun dispatchSignal(f: suspend () -> Signal) {
-//        coroutines {
-//            val signal = f()
-//            coroutines.onUi {
-//                dispatch(signal)
-//            }
-//        }
-//    }
-
     fun dispatchActions(channel: ReceiveActionChannel<T>) {
-        coroutines {
+        launch {
             channel.channel.consumeEach { action ->
-                coroutines.onUi {
+                withContext(Dispatchers.Main) {
                     dispatch(action)
                 }
             }
@@ -96,7 +92,13 @@ class ViewStateStore<T : Any>(
 
     operator fun invoke() = liveData.value!!
 
-    fun cancel() = coroutines.cancel()
+    fun cancel() {
+        job.cancel()
+    }
+
+    companion object {
+        fun <T : Any> test(initialState: T) = ViewStateStore(initialState, AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher())
+    }
 }
 
 suspend fun <S> ProducerScope<Action<S>>.send(action: S.() -> S) = send(StateAction(action))

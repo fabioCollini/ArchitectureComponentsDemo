@@ -22,16 +22,16 @@ import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.core.OpenForTesting
-import it.codingjam.github.util.AndroidCoroutines
-import it.codingjam.github.util.Coroutines
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Singleton
 
 @OpenForTesting
-@Module class ViewLibModule {
-    @Provides @Singleton fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+@Module
+class ViewLibModule {
+    @Provides
+    @Singleton
+    fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
-    @Provides fun coroutines(): Coroutines = AndroidCoroutines()
-
-    @Provides fun viewModelFactory() = ViewModelFactory()
+    @Provides
+    fun viewModelFactory() = ViewModelFactory()
 }

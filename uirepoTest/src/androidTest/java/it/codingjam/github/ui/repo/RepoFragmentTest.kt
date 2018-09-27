@@ -32,7 +32,6 @@ import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
-import it.codingjam.github.util.AndroidTestCoroutines
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
@@ -43,21 +42,25 @@ import org.junit.Test
 
 class RepoFragmentTest {
 
-    @get:Rule val fragmentRule = RepoFragment.rule()
+    @get:Rule
+    val fragmentRule = RepoFragment.rule()
 
-    @get:Rule val daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
+    @get:Rule
+    val daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     val factory = ViewModelFactory { viewModel }
 
     val viewModel by lazy {
         mock<RepoViewModel> {
-            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), Lce.Loading))
+            on(it.state).thenReturn(ViewStateStore.test(Lce.Loading))
         }
     }
 
-    @Test fun testLoading() {
+    @Test
+    fun testLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
         viewModel.state.dispatchState(Lce.Loading)
@@ -66,7 +69,8 @@ class RepoFragmentTest {
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
     }
 
-    @Test fun testValueWhileLoading() {
+    @Test
+    fun testValueWhileLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
         viewModel.state.dispatchState(Lce.Loading)
