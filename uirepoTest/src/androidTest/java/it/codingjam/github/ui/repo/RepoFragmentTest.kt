@@ -17,7 +17,6 @@
 package it.codingjam.github.ui.repo
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.StringRes
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
@@ -29,18 +28,15 @@ import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.espresso.rule
-import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.util.AndroidTestCoroutines
-import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.util.ViewStateHolder
+import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -53,21 +49,18 @@ class RepoFragmentTest {
 
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    val liveData = MutableLiveData<Lce<RepoDetail>>()
-
     val factory = ViewModelFactory { viewModel }
 
-    val viewModel by lazy { mock<RepoViewModel>() }
-
-    @Before fun setUp() {
-        viewModel.state willReturn ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
-        viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
+    val viewModel by lazy {
+        mock<RepoViewModel> {
+            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), Lce.Loading))
+        }
     }
 
     @Test fun testLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
-        liveData.postValue(Lce.Loading)
+        viewModel.state.dispatchState(Lce.Loading)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -76,8 +69,8 @@ class RepoFragmentTest {
     @Test fun testValueWhileLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
-        liveData.postValue(Lce.Loading)
-        liveData.postValue(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
+        viewModel.state.dispatchState(Lce.Loading)
+        viewModel.state.dispatchState(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(matches(

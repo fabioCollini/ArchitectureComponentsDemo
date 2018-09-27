@@ -26,7 +26,7 @@ import javax.inject.Inject
 @OpenForTesting
 class SearchViewModel @Inject constructor(
         private val searchUseCase: SearchUseCase,
-        private val coroutines: Coroutines
+        coroutines: Coroutines
 ) : ViewModel() {
 
     val state = ViewStateStore(coroutines, searchUseCase.initialState())

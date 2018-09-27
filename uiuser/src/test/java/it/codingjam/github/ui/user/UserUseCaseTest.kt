@@ -16,12 +16,10 @@
 
 package it.codingjam.github.ui.user
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.support.v4.app.Fragment
 import assertk.assert
 import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
-import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
@@ -30,57 +28,39 @@ import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
-import it.codingjam.github.util.TestCoroutines
+import it.codingjam.github.util.states
 import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.experimental.runBlocking
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.verify
 
-class UserViewModelTest {
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+class UserUseCaseTest {
 
     val githubInteractor: GithubInteractor = mock()
-    val navigationController: NavigationController = mock()
-    val fragment: Fragment = mock()
-    val userViewModel by lazy { UserViewModel(githubInteractor, navigationController, TestCoroutines(), LOGIN) }
+    val userUseCase = UserUseCase(githubInteractor)
 
-    val states = mutableListOf<UserViewState>()
+    @Test
+    fun load() = runBlocking {
+        githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
 
-    @Before fun setUp() {
-        userViewModel.state.observeForever { states.add(it) }
-        userViewModel.uiActions.observeForever { it(fragment) }
-    }
-
-    @Test fun load() {
-        runBlocking {
-            githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
-        }
-
-        userViewModel.load()
+        val states = userUseCase.load(LOGIN).states(Lce.Loading)
 
         assert(states)
                 .containsExactly(
-                        Lce.Loading,
                         Lce.Loading,
                         Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
                 )
     }
 
-    @Test fun retry() {
-        runBlocking {
-            githubInteractor.loadUserDetail(LOGIN)
-                    .willThrow(RuntimeException(ERROR))
-                    .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
-        }
+    @Test
+    fun retry() = runBlocking {
+        githubInteractor.loadUserDetail(LOGIN)
+                .willThrow(RuntimeException(ERROR))
+                .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
-        userViewModel.load()
-        userViewModel.retry()
+        val states = userUseCase.load(LOGIN).states(Lce.Loading) + userUseCase.retry(LOGIN).states(Lce.Loading)
 
         assert(states)
                 .containsExactly(
-                        Lce.Loading,
                         Lce.Loading,
                         Lce.Error(ERROR),
                         Lce.Loading,
@@ -88,10 +68,12 @@ class UserViewModelTest {
                 )
     }
 
-    @Test fun openRepoDetail() {
-        userViewModel.openRepoDetail(REPO_ID)
+    @Test
+    fun openRepoDetail() {
+        val (_, params) = userUseCase.openRepoDetail(REPO_ID)
+        assert(params).isEqualTo(REPO_ID)
 
-        verify(navigationController).navigateToRepo(fragment, REPO_ID)
+//        verify(navigationController).navigateToRepo(fragment, REPO_ID)
     }
 
     companion object {

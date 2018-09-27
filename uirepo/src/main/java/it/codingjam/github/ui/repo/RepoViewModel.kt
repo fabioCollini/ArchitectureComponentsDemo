@@ -17,38 +17,25 @@
 package it.codingjam.github.ui.repo
 
 import android.arch.lifecycle.ViewModel
-import it.codingjam.github.NavigationController
-import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.UiActionsLiveData
-import it.codingjam.github.util.ViewStateHolder
+import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import javax.inject.Inject
 
 @OpenForTesting
 class RepoViewModel @Inject constructor(
-        private val navigationController: NavigationController,
-        private val githubInteractor: GithubInteractor,
-        private val coroutines: Coroutines,
+        private val useCase: RepoUseCase,
+        coroutines: Coroutines,
         private val repoId: RepoId
 ) : ViewModel() {
 
-    val state = ViewStateHolder<RepoViewState>(coroutines, Lce.Loading)
+    val state = ViewStateStore<RepoViewState>(coroutines, Lce.Loading)
 
-    val uiActions = UiActionsLiveData(coroutines)
+    fun reload() = state.dispatchActions(useCase.reload(repoId))
 
-    fun reload() = coroutines {
-        Lce.exec({ lce -> state.update { lce } }) {
-            githubInteractor.loadRepo(repoId.owner, repoId.name)
-        }
-    }
+    fun openUserDetail(login: String) = state.dispatchSignal(useCase.openUserDetail(login))
 
-    fun openUserDetail(login: String) =
-            uiActions.executeOnUi { navigationController.navigateToUser(it, login) }
-
-    override fun onCleared() {
-        coroutines.cancel()
-    }
+    override fun onCleared() = state.cancel()
 }

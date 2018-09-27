@@ -17,7 +17,6 @@
 package it.codingjam.github.ui.user
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
 import android.os.Debug
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
@@ -27,17 +26,14 @@ import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.espresso.rule
-import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.util.AndroidTestCoroutines
-import it.codingjam.github.util.UiActionsLiveData
 import it.codingjam.github.util.ViewModelFactory
-import it.codingjam.github.util.ViewStateHolder
+import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,22 +45,19 @@ class UserFragmentTest {
 
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    val liveData = MutableLiveData<UserViewState>()
-
     val factory = ViewModelFactory { viewModel }
 
-    val viewModel by lazy { mock<UserViewModel>() }
-
-    @Before fun setUp() {
-        viewModel.state willReturn ViewStateHolder(AndroidTestCoroutines(), Lce.Loading, liveData)
-        viewModel.uiActions willReturn UiActionsLiveData(AndroidTestCoroutines())
+    val viewModel by lazy {
+        mock<UserViewModel> {
+            on(it.state).thenReturn(ViewStateStore(AndroidTestCoroutines(), Lce.Loading))
+        }
     }
 
     @Test fun testLoading() {
         Debug.startMethodTracing()
         fragmentRule.launchFragment("user")
 
-        liveData.postValue(Lce.Loading)
+        viewModel.state.dispatchState(Lce.Loading)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -72,14 +65,12 @@ class UserFragmentTest {
     }
 
     @Test fun testValueWhileLoading() {
-        Debug.startMethodTracing()
         fragmentRule.launchFragment("user")
 
-        liveData.postValue(Lce.Loading)
-        liveData.postValue(Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2))))
+        viewModel.state.dispatchState(Lce.Loading)
+        viewModel.state.dispatchState(Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.user_name)).check(matches(withText(USER.name)))
-        Debug.stopMethodTracing()
     }
 }

@@ -22,12 +22,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.AndroidSupportInjection
+import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.repo.databinding.RepoFragmentBinding
+import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.LceContainer
+import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
@@ -39,6 +42,8 @@ class RepoFragment : Fragment() {
     @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject lateinit var navigationController: NavigationController
 
     private val viewModel by lazy {
         viewModelFactory(this, viewModelProvider) { it.reload() }
@@ -55,7 +60,12 @@ class RepoFragment : Fragment() {
         viewModel.state.observe(this) {
             lceContainer.lce = it
         }
-        viewModel.uiActions.observe(this) { it(this) }
+        viewModel.state.observeSignals(this) {
+            when (it) {
+                is ErrorSignal -> navigationController.showError(requireActivity(), it.message)
+                is NavigationSignal<*> -> navigationController.navigateToUser(this, it.params as String)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package it.codingjam.github.ui.user
+package it.codingjam.github.ui.repo
 
-import android.arch.lifecycle.ViewModel
+import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.core.UserDetail
-import it.codingjam.github.util.Coroutines
-import it.codingjam.github.util.ViewStateStore
-import it.codingjam.github.vo.Lce
+import it.codingjam.github.util.NavigationSignal
+import it.codingjam.github.vo.lce
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 @OpenForTesting
-class UserViewModel @Inject constructor(
-        private val userUseCase: UserUseCase,
-        coroutines: Coroutines,
-        private val login: String
-) : ViewModel() {
+class RepoUseCase @Inject constructor(
+        private val githubInteractor: GithubInteractor
+) {
 
-    val state = ViewStateStore<Lce<UserDetail>>(coroutines, Lce.Loading)
+    fun reload(repoId: RepoId) = lce {
+        githubInteractor.loadRepo(repoId.owner, repoId.name)
+    }
 
-    fun load() = state.dispatchActions(userUseCase.load(login))
-
-    fun retry() = load()
-
-    fun openRepoDetail(id: RepoId) = state.dispatchSignal(userUseCase.openRepoDetail(id))
-
-    override fun onCleared() = state.cancel()
+    fun openUserDetail(login: String) = NavigationSignal("user", login)
 }

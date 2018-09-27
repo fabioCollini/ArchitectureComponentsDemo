@@ -16,72 +16,57 @@
 
 package it.codingjam.github.ui.repo
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.support.v4.app.Fragment
 import com.nhaarman.mockito_kotlin.mock
-import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.test.willReturn
 import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.shouldContain
-import it.codingjam.github.util.TestCoroutines
+import it.codingjam.github.util.states
+import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.experimental.runBlocking
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-class RepoViewModelTest {
-
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+class RepoUseCaseTest {
 
     val interactor: GithubInteractor = mock()
 
-    val navigationController: NavigationController = mock()
+    val useCase = RepoUseCase(interactor)
 
-    val fragment: Fragment = mock()
-
-    val repoViewModel by lazy { RepoViewModel(navigationController, interactor, TestCoroutines(), RepoId("a", "b")) }
-
-    val states = mutableListOf<RepoViewState>()
-
-    @Before fun setUp() {
-        repoViewModel.state.observeForever { states.add(it) }
-        repoViewModel.uiActions.observeForever { it(fragment) }
-    }
-
-    @Test fun fetchData() = runBlocking {
+    @Test
+    fun fetchData() = runBlocking {
         interactor.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
 
-        repoViewModel.reload()
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
-            loading().loading().success()
+            loading().success()
         }
     }
 
-    @Test fun errorFetchingData() = runBlocking {
+    @Test
+    fun errorFetchingData() = runBlocking {
         interactor.loadRepo("a", "b") willThrow RuntimeException()
 
-        repoViewModel.reload()
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
-            loading().loading().error()
+            loading().error()
         }
     }
 
-    @Test fun retry() = runBlocking {
+    @Test
+    fun retry() = runBlocking {
         interactor.loadRepo("a", "b")
                 .willThrow(RuntimeException())
                 .willReturn(TestData.REPO_DETAIL)
 
-        repoViewModel.reload()
-
-        repoViewModel.reload()
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) } +
+                states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
-            loading().loading().error().loading().success()
+            loading().error().loading().success()
         }
     }
 }

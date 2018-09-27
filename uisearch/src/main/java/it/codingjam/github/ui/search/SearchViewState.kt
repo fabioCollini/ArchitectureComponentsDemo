@@ -1,9 +1,7 @@
 package it.codingjam.github.ui.search
 
 import it.codingjam.github.core.Repo
-import it.codingjam.github.core.utils.deepCopy
 import it.codingjam.github.vo.Lce
-import it.codingjam.github.vo.orElse
 
 data class ReposViewState(
         val list: List<Repo>,
@@ -19,12 +17,5 @@ data class SearchViewState(
         val repos: Lce<ReposViewState> = Lce.Success(ReposViewState(emptyList()))
 ) {
 
-    val reposState = repos.orElse(null)
-
-    inline fun copyRepos(c: ReposViewState.() -> ReposViewState): SearchViewState {
-        return deepCopy(
-                { (repos as Lce.Success).data }, { copy(repos = Lce.Success(it)) },
-                { this.c() }
-        )
-    }
+    val reposState = repos.data
 }
