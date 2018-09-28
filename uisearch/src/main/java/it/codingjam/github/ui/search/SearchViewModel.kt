@@ -20,14 +20,16 @@ import android.arch.lifecycle.ViewModel
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStore
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting
 class SearchViewModel @Inject constructor(
-        private val searchUseCase: SearchUseCase
+        private val searchUseCase: SearchUseCase,
+        dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val state = ViewStateStore(searchUseCase.initialState())
+    val state = ViewStateStore(searchUseCase.initialState(), dispatcher)
 
     fun setQuery(originalInput: String) = state.dispatchActions(searchUseCase.setQuery(originalInput, state()))
 

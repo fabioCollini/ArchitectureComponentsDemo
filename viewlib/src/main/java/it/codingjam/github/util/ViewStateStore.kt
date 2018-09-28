@@ -28,7 +28,7 @@ data class NavigationSignal<P>(val destination: Any, val params: P) : Signal
 
 class ViewStateStore<T : Any>(
         initialState: T,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
+        dispatcher: CoroutineDispatcher
 ) : CoroutineScope {
 
     private val job = Job()
@@ -97,7 +97,11 @@ class ViewStateStore<T : Any>(
     }
 
     companion object {
-        fun <T : Any> test(initialState: T) = ViewStateStore(initialState, AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher())
+        val TEST_DISPATCHER = AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher()
+
+        fun <T : Any> test(initialState: T): ViewStateStore<T> {
+            return ViewStateStore(initialState, TEST_DISPATCHER)
+        }
     }
 }
 

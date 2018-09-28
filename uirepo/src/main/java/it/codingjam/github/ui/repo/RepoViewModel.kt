@@ -21,15 +21,17 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting
 class RepoViewModel @Inject constructor(
         private val useCase: RepoUseCase,
-        private val repoId: RepoId
+        private val repoId: RepoId,
+        dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val state = ViewStateStore<RepoViewState>(Lce.Loading)
+    val state = ViewStateStore<RepoViewState>(Lce.Loading, dispatcher)
 
     fun reload() = state.dispatchActions(useCase.reload(repoId))
 

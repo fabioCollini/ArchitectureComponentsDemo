@@ -22,15 +22,17 @@ import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting
 class UserViewModel @Inject constructor(
         private val userUseCase: UserUseCase,
-        private val login: String
+        private val login: String,
+        dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val state = ViewStateStore<Lce<UserDetail>>(Lce.Loading)
+    val state = ViewStateStore<Lce<UserDetail>>(Lce.Loading, dispatcher)
 
     fun load() = state.dispatchActions(userUseCase.load(login))
 
