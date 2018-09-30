@@ -7,9 +7,7 @@ I converted it to kotlin and modified some architectural aspects to test ViewMod
 
 ## Main concepts
  * each ViewModel manages an immutable ViewState (implemented using a Kotlin data object)
- * a ViewModel can invoke actions on the ui (for example a SnackBar visualization or a navigation to another activity) 
- using a [UiActionsLiveData](https://github.com/fabioCollini/ArchitectureComponentsDemo/blob/master/viewlib/src/main/java/it/codingjam/github/util/UiActionsLiveData.kt).
- ViewModels don't maintain a reference to the Activity, using the UiActionsLiveData it just schedules action on the ui
+ * a post will be available soon to explain the details of how the ViewModels and the UseCases manage the ViewStates
  * multi module project, thanks to Dagger Android the ui is splitted in multiple modules
  * Fragment args are managed using a [companion object base class](https://github.com/fabioCollini/ArchitectureComponentsDemo/blob/master/viewlib/src/main/java/it/codingjam/github/ui/common/FragmentCreator.kt)
  * JVM tests are written using Mockito and [AssertK](https://github.com/willowtreeapps/assertk)
