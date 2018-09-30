@@ -44,7 +44,7 @@ ext.mockito_version = "2.21.0"
 ext.constraint_layout_version = "1.1.2"
 ext.glide_version = "3.7.0"
 ext.timber_version = "4.7.0"
-ext.nav_version = "1.0.0-alpha05"
+ext.nav_version = "1.0.0-alpha06"
 
 allprojects {
     repositories {

@@ -2,7 +2,7 @@ package it.codingjam.github.core
 
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
-import it.codingjam.github.test.willReturn
+import com.nhaarman.mockito_kotlin.whenever
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 
@@ -13,8 +13,8 @@ class GithubInteractorTest {
     val githubInteractor = GithubInteractor(githubRepository)
 
     @Test fun load() = runBlocking {
-        githubRepository.loadUser(LOGIN) willReturn USER
-        githubRepository.loadRepos(LOGIN) willReturn listOf(REPO_1, REPO_2)
+        whenever(githubRepository.loadUser(LOGIN)).thenReturn(USER)
+        whenever(githubRepository.loadRepos(LOGIN)).thenReturn(listOf(REPO_1, REPO_2))
 
         val detail = githubInteractor.loadUserDetail(LOGIN)
         assertk.assert(detail).isEqualTo(UserDetail(USER, listOf(REPO_1, REPO_2)))

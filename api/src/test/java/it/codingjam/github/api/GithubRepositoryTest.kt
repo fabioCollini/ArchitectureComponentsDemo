@@ -4,9 +4,9 @@ import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import it.codingjam.github.core.Owner
 import it.codingjam.github.core.Repo
-import it.codingjam.github.test.willReturn
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import okhttp3.Headers
@@ -19,13 +19,14 @@ class GithubRepositoryTest {
 
     val repository = GithubRepositoryImpl(githubService)
 
-    @Test fun search() = runBlocking {
+    @Test
+    fun search() = runBlocking {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +
                 " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         val headers = mapOf("link" to header)
 
-        githubService.searchRepos(QUERY) willReturn
-                async { Response.success(listOf(REPO_1, REPO_2), Headers.of(headers)) }
+        whenever(githubService.searchRepos(QUERY)).thenReturn(
+                async { Response.success(listOf(REPO_1, REPO_2), Headers.of(headers)) })
 
         val (items, nextPage) = repository.search(QUERY)
 

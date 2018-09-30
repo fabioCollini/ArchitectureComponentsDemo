@@ -17,10 +17,9 @@
 package it.codingjam.github.ui.repo
 
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.test.willReturn
-import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.shouldContain
 import it.codingjam.github.util.states
@@ -36,7 +35,7 @@ class RepoUseCaseTest {
 
     @Test
     fun fetchData() = runBlocking {
-        interactor.loadRepo("a", "b") willReturn TestData.REPO_DETAIL
+        whenever(interactor.loadRepo("a", "b")).thenReturn(TestData.REPO_DETAIL)
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(this, RepoId("a", "b")) }
 
@@ -47,7 +46,7 @@ class RepoUseCaseTest {
 
     @Test
     fun errorFetchingData() = runBlocking {
-        interactor.loadRepo("a", "b") willThrow RuntimeException()
+        whenever(interactor.loadRepo("a", "b")).thenThrow(RuntimeException())
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(this, RepoId("a", "b")) }
 
@@ -58,9 +57,9 @@ class RepoUseCaseTest {
 
     @Test
     fun retry() = runBlocking {
-        interactor.loadRepo("a", "b")
-                .willThrow(RuntimeException())
-                .willReturn(TestData.REPO_DETAIL)
+        whenever(interactor.loadRepo("a", "b"))
+                .thenThrow(RuntimeException())
+                .thenReturn(TestData.REPO_DETAIL)
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(this, RepoId("a", "b")) } +
                 states<RepoViewState>(Lce.Loading) { useCase.reload(this, RepoId("a", "b")) }

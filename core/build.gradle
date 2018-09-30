@@ -42,8 +42,6 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
 
-    testImplementation project(':testLib')
-
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

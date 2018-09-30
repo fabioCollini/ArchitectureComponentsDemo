@@ -20,11 +20,10 @@ import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
-import it.codingjam.github.test.willReturn
-import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
@@ -40,7 +39,7 @@ class UserUseCaseTest {
 
     @Test
     fun load() = runBlocking {
-        githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
+        whenever(githubInteractor.loadUserDetail(LOGIN)).thenReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
         val states = userUseCase.load(this, LOGIN).states(Lce.Loading)
 
@@ -53,9 +52,9 @@ class UserUseCaseTest {
 
     @Test
     fun retry() = runBlocking {
-        githubInteractor.loadUserDetail(LOGIN)
-                .willThrow(RuntimeException(ERROR))
-                .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
+        whenever(githubInteractor.loadUserDetail(LOGIN))
+                .thenThrow(RuntimeException(ERROR))
+                .thenReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
         val states = userUseCase.load(this, LOGIN).states(Lce.Loading) +
                 userUseCase.load(this, LOGIN).states(Lce.Loading)

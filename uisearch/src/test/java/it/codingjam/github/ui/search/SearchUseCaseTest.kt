@@ -5,11 +5,10 @@ import assertk.assert
 import assertk.assertions.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
-import it.codingjam.github.test.willReturn
-import it.codingjam.github.test.willThrow
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.REPO_3
@@ -27,7 +26,7 @@ class SearchUseCaseTest {
 
     @Test
     fun load() = runBlocking {
-        interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+        whenever(interactor.search(QUERY)).thenReturn(RepoSearchResponse(listOf(REPO_1, REPO_2), 2))
 
         val states = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.map { it.repos }
 
@@ -45,7 +44,7 @@ class SearchUseCaseTest {
 
     @Test
     fun emptyStateVisible() = runBlocking {
-        interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
+        whenever(interactor.search(QUERY)).thenReturn(RepoSearchResponse(emptyList(), null))
 
         val states = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.map { it.repos }
 
@@ -65,8 +64,8 @@ class SearchUseCaseTest {
 
     @Test
     fun loadMore() = runBlocking {
-        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-        interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
+        whenever(interactor.search(QUERY)).thenReturn(response(REPO_1, REPO_2, 2))
+        whenever(interactor.searchNextPage(QUERY, 2)).thenReturn(response(REPO_3, REPO_4, 3))
 
         val lastState = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.last()
 
@@ -83,8 +82,8 @@ class SearchUseCaseTest {
 
     @Test
     fun errorLoadingMore() = runBlocking {
-        interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
-        interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
+        whenever(interactor.search(QUERY)).thenReturn(response(REPO_1, REPO_2, 2))
+        whenever(interactor.searchNextPage(QUERY, 2)).thenThrow(RuntimeException(ERROR))
 
         val lastState = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.last()
 
