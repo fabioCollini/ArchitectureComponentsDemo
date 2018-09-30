@@ -42,7 +42,7 @@ class UserUseCaseTest {
     fun load() = runBlocking {
         githubInteractor.loadUserDetail(LOGIN) willReturn UserDetail(USER, listOf(REPO_1, REPO_2))
 
-        val states = userUseCase.load(LOGIN).states(Lce.Loading)
+        val states = userUseCase.load(this, LOGIN).states(Lce.Loading)
 
         assert(states)
                 .containsExactly(
@@ -57,7 +57,8 @@ class UserUseCaseTest {
                 .willThrow(RuntimeException(ERROR))
                 .willReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
-        val states = userUseCase.load(LOGIN).states(Lce.Loading) + userUseCase.retry(LOGIN).states(Lce.Loading)
+        val states = userUseCase.load(this, LOGIN).states(Lce.Loading) +
+                userUseCase.load(this, LOGIN).states(Lce.Loading)
 
         assert(states)
                 .containsExactly(

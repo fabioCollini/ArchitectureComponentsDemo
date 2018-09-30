@@ -90,6 +90,17 @@ class ViewStateStore<T : Any>(
         }
     }
 
+    fun dispatchActions(f: suspend CoroutineScope.(T) -> ReceiveActionChannel<T>) {
+        launch {
+            val channel = f(invoke()).channel
+            channel.consumeEach { action ->
+                withContext(Dispatchers.Main) {
+                    dispatch(action)
+                }
+            }
+        }
+    }
+
     operator fun invoke() = liveData.value!!
 
     fun cancel() {
@@ -117,22 +128,21 @@ suspend inline fun <T : Any> ReceiveActionChannel<T>.states(initialState: T): Li
     }
 }
 
-suspend inline fun <reified S : Any> states(
+suspend inline fun <reified S : Any> CoroutineScope.states(
         initialState: S,
-        crossinline f: suspend (S) -> ReceiveActionChannel<S>
+        crossinline f: suspend CoroutineScope.(S) -> ReceiveActionChannel<S>
 ): List<S> =
         f(initialState)
                 .states(initialState)
                 .filterIsInstance<S>()
 
-inline fun <reified S : Any> signals(
+suspend inline fun <reified S : Any> CoroutineScope.signals(
         initialState: S,
-        crossinline f: suspend (S) -> ReceiveActionChannel<S>
-): List<Signal> = runBlocking {
+        crossinline f: suspend CoroutineScope.(S) -> ReceiveActionChannel<S>
+): List<Signal> =
     f(initialState)
             .states(initialState)
             .filterIsInstance<Signal>()
-}
 
 class ReceiveActionChannel<T>(val channel: ReceiveChannel<Action<T>>) {
     fun <R> map(copy: R.(StateAction<T>) -> R) =
@@ -145,8 +155,8 @@ suspend fun <T> ProducerScope<Action<T>>.sendAll(channel: ReceiveActionChannel<T
     }
 }
 
-fun <T> produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveActionChannel<T> =
-        ReceiveActionChannel(GlobalScope.produce(block = f))
+fun <T> CoroutineScope.produceActions(f: suspend ProducerScope<Action<T>>.() -> Unit): ReceiveActionChannel<T> =
+        ReceiveActionChannel(produce(block = f))
 
 fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
     return if (this is Signal) {

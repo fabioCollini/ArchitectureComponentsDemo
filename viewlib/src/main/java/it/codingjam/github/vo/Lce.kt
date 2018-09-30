@@ -19,6 +19,7 @@ package it.codingjam.github.vo
 import it.codingjam.github.util.ReceiveActionChannel
 import it.codingjam.github.util.produceActions
 import it.codingjam.github.util.send
+import kotlinx.coroutines.experimental.CoroutineScope
 
 sealed class Lce<out T> {
 
@@ -45,20 +46,7 @@ sealed class Lce<out T> {
     object Loading : Lce<Nothing>() {
         override fun <R> map(f: (Nothing) -> R): Lce<R> = this
     }
-
-    companion object {
-        inline fun <T> exec(copy: (Lce<T>) -> Unit, f: () -> T) {
-            copy(Lce.Loading)
-            try {
-                copy(Lce.Success(f()))
-            } catch (e: Exception) {
-                copy(Lce.Error(e))
-            }
-        }
-    }
 }
-
-fun <T> Lce<T>.orElse(defaultValue: T): T = (this as? Lce.Success)?.data ?: defaultValue
 
 val Lce<*>.debug: String
     get() =
@@ -68,7 +56,7 @@ val Lce<*>.debug: String
             is Lce.Error -> "E"
         }
 
-inline fun <S> lce(crossinline f: suspend () -> S): ReceiveActionChannel<Lce<S>> {
+inline fun <S> CoroutineScope.lce(crossinline f: suspend () -> S): ReceiveActionChannel<Lce<S>> {
     return produceActions {
         send { Lce.Loading }
         try {

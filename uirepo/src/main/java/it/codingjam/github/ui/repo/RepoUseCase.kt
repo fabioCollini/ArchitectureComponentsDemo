@@ -21,6 +21,7 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.vo.lce
+import kotlinx.coroutines.experimental.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,7 +31,7 @@ class RepoUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor
 ) {
 
-    fun reload(repoId: RepoId) = lce {
+    fun reload(scope: CoroutineScope, repoId: RepoId) = scope.lce {
         githubInteractor.loadRepo(repoId.owner, repoId.name)
     }
 

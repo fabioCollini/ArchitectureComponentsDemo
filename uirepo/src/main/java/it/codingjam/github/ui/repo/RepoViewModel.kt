@@ -33,7 +33,7 @@ class RepoViewModel @Inject constructor(
 
     val state = ViewStateStore<RepoViewState>(Lce.Loading, dispatcher)
 
-    fun reload() = state.dispatchActions(useCase.reload(repoId))
+    fun reload() = state.dispatchActions { useCase.reload(this, repoId) }
 
     fun openUserDetail(login: String) = state.dispatchSignal(useCase.openUserDetail(login))
 

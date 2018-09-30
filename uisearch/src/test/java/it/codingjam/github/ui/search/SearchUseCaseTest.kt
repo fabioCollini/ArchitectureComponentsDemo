@@ -29,7 +29,7 @@ class SearchUseCaseTest {
     fun load() = runBlocking {
         interactor.search(QUERY) willReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
-        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
+        val states = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.map { it.repos }
 
         assert(states).hasSize(2)
 
@@ -47,7 +47,7 @@ class SearchUseCaseTest {
     fun emptyStateVisible() = runBlocking {
         interactor.search(QUERY) willReturn RepoSearchResponse(emptyList(), null)
 
-        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
+        val states = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.map { it.repos }
 
         assert(states.map { it.debug }).containsExactly("L", "S")
 
@@ -68,9 +68,9 @@ class SearchUseCaseTest {
         interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
         interactor.searchNextPage(QUERY, 2) willReturn response(REPO_3, REPO_4, 3)
 
-        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.last()
 
-        val states = states(lastState) { useCase.loadNextPage(it) }
+        val states = states(lastState) { useCase.loadNextPage(this, it) }
 
         assert(states.map { it.repos.debug }).containsExactly("S", "S")
 
@@ -86,9 +86,9 @@ class SearchUseCaseTest {
         interactor.search(QUERY) willReturn response(REPO_1, REPO_2, 2)
         interactor.searchNextPage(QUERY, 2) willThrow RuntimeException(ERROR)
 
-        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(this, QUERY, it) }.last()
 
-        val states = states(lastState) { useCase.loadNextPage(it) }
+        val states = states(lastState) { useCase.loadNextPage(this, it) }
 
         assert(states.map { it.repos.debug }).containsExactly("S", "S")
 
@@ -99,7 +99,7 @@ class SearchUseCaseTest {
             it.containsExactly(REPO_1, REPO_2)
         }
 
-        val signals = signals(lastState) { useCase.loadNextPage(it) }
+        val signals = signals(lastState) { useCase.loadNextPage(this, it) }
 
         assert(signals.last()).isInstanceOf(ErrorSignal::class) {
             it.prop(ErrorSignal::message).isEqualTo(ERROR)

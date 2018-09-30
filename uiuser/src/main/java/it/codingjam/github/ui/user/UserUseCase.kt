@@ -5,6 +5,7 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.vo.lce
+import kotlinx.coroutines.experimental.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,11 +14,9 @@ import javax.inject.Singleton
 class UserUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor
 ) {
-    fun load(login: String) = lce {
+    fun load(scope: CoroutineScope, login: String) = scope.lce {
         githubInteractor.loadUserDetail(login)
     }
-
-    fun retry(login: String) = load(login)
 
     fun openRepoDetail(id: RepoId) = NavigationSignal("repo", id)
 }

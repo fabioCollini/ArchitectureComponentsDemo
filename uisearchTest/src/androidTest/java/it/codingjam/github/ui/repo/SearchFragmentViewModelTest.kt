@@ -33,7 +33,6 @@ import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoSearchResponse
 import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
-import it.codingjam.github.test.willReturn
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.testdata.TestData.REPO_1
 import kotlinx.coroutines.experimental.runBlocking
@@ -43,22 +42,25 @@ import org.junit.Test
 
 class SearchFragmentViewModelTest {
 
-    @get:Rule var fragmentRule = FragmentTestRule<Unit>(R.navigation.search_nav_graph, R.id.search) { Bundle() }
+    @get:Rule
+    var fragmentRule = FragmentTestRule<Unit>(R.navigation.search_nav_graph, R.id.search) { Bundle() }
 
     @get:Rule
     var daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(TestAppModule(), ViewLibModule())
 
-    @get:Rule var instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     val prefs: SharedPreferences = FakeSharedPreferences()
 
     val githubInteractor = mock<GithubInteractor> {
         runBlocking {
-            it.search("abc") willReturn RepoSearchResponse(listOf(REPO_1), 1)
+            on(it.search("abc")).thenReturn(RepoSearchResponse(listOf(REPO_1), 1))
         }
     }
 
-    @Test fun testLoad() {
+    @Test
+    fun testLoad() {
         fragmentRule.launchFragment(Unit)
 
         onView(withId(R.id.input)).perform(

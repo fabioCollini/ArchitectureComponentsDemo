@@ -34,7 +34,7 @@ class UserViewModel @Inject constructor(
 
     val state = ViewStateStore<Lce<UserDetail>>(Lce.Loading, dispatcher)
 
-    fun load() = state.dispatchActions(userUseCase.load(login))
+    fun load() = state.dispatchActions { userUseCase.load(this, login) }
 
     fun retry() = load()
 
