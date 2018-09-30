@@ -30,6 +30,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
 
+    testImplementation project(':testData')
     testImplementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
     testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
 }
