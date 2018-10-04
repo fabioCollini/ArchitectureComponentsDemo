@@ -31,11 +31,11 @@ class SearchViewModel @Inject constructor(
 
     val state = ViewStateStore(searchUseCase.initialState(), dispatcher)
 
-    fun setQuery(originalInput: String) = state.dispatchActions { searchUseCase.setQuery(this, originalInput, it) }
+    fun setQuery(originalInput: String) = state.dispatchActions { searchUseCase.run { setQuery(originalInput, it) } }
 
-    fun loadNextPage() = state.dispatchActions { searchUseCase.loadNextPage(this, it) }
+    fun loadNextPage() = state.dispatchActions { searchUseCase.run { loadNextPage(it) } }
 
-    fun refresh() = state.dispatchActions { searchUseCase.refresh(this, it) }
+    fun refresh() = state.dispatchActions { searchUseCase.run { refresh(it) } }
 
     fun openRepoDetail(id: RepoId) = state.dispatchSignal(searchUseCase.openRepoDetail(id))
 

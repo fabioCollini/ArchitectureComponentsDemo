@@ -31,7 +31,7 @@ class RepoUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor
 ) {
 
-    fun reload(scope: CoroutineScope, repoId: RepoId) = scope.lce {
+    fun CoroutineScope.reload(repoId: RepoId) = lce {
         githubInteractor.loadRepo(repoId.owner, repoId.name)
     }
 

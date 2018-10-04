@@ -14,7 +14,7 @@ import javax.inject.Singleton
 class UserUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor
 ) {
-    fun load(scope: CoroutineScope, login: String) = scope.lce {
+    fun CoroutineScope.load(login: String) = lce {
         githubInteractor.loadUserDetail(login)
     }
 

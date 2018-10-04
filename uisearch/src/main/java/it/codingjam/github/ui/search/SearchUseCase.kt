@@ -23,15 +23,15 @@ class SearchUseCase @Inject constructor(
 
     fun initialState() = SearchViewState(lastSearch)
 
-    fun setQuery(scope: CoroutineScope, originalInput: String, state: SearchViewState) = scope.produceActions {
+    fun CoroutineScope.setQuery(originalInput: String, state: SearchViewState) = produceActions {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (state.repos.data?.searchInvoked != true || input != state.query) {
-            sendAll(reloadData(scope, input))
+            sendAll(reloadData(input))
         }
     }
 
-    fun loadNextPage(scope: CoroutineScope, state: SearchViewState) = scope.produceActions<ReposViewState> {
+    fun CoroutineScope.loadNextPage(state: SearchViewState) = produceActions<ReposViewState> {
         state.repos.doOnData { (_, nextPage, _, loadingMore) ->
             val query = state.query
             if (!query.isEmpty() && nextPage != null && !loadingMore) {
@@ -49,14 +49,14 @@ class SearchUseCase @Inject constructor(
         }
     }.map<SearchViewState> { action -> copy(repos = repos.map { action(it) }) }
 
-    private suspend fun reloadData(scope: CoroutineScope, query: String) = scope.lce {
+    private suspend fun CoroutineScope.reloadData(query: String) = lce {
         val (items, nextPage) = githubInteractor.search(query)
         ReposViewState(items, nextPage, true)
     }.map<SearchViewState> { copy(repos = it(repos), query = query) }
 
-    fun refresh(scope: CoroutineScope, state: SearchViewState) = scope.produceActions {
+    fun CoroutineScope.refresh(state: SearchViewState) = produceActions {
         if (!state.query.isEmpty()) {
-            sendAll(reloadData(scope, state.query))
+            sendAll(reloadData(state.query))
         }
     }
 

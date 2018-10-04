@@ -80,16 +80,6 @@ class ViewStateStore<T : Any>(
         }
     }
 
-    fun dispatchActions(channel: ReceiveActionChannel<T>) {
-        launch {
-            channel.channel.consumeEach { action ->
-                withContext(Dispatchers.Main) {
-                    dispatch(action)
-                }
-            }
-        }
-    }
-
     fun dispatchActions(f: suspend CoroutineScope.(T) -> ReceiveActionChannel<T>) {
         launch {
             val channel = f(invoke()).channel
