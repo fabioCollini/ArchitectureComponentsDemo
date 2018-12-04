@@ -1,11 +1,11 @@
 package it.codingjam.github.util
 
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import android.os.AsyncTask
-import android.support.annotation.MainThread
+import androidx.annotation.MainThread
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import java.util.*

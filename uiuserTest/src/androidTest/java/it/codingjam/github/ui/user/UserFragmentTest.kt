@@ -16,11 +16,11 @@
 
 package it.codingjam.github.ui.user
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.os.Debug
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.*
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.UserDetail

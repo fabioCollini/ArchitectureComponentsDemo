@@ -2,7 +2,7 @@ package it.codingjam.github.espresso
 
 
 import android.os.Bundle
-import android.support.test.rule.ActivityTestRule
+import androidx.test.rule.ActivityTestRule
 import it.codingjam.github.ui.common.FragmentCreator
 import it.codingjam.github.ui.common.args
 

@@ -17,9 +17,6 @@
 package it.codingjam.github.ui.search
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +31,7 @@ import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchFragment : Fragment() {
+class SearchFragment : androidx.fragment.app.Fragment() {
 
     @Inject lateinit var viewModelProvider: Provider<SearchViewModel>
 
@@ -64,9 +61,9 @@ class SearchFragment : Fragment() {
         val adapter = DataBoundListAdapter { RepoViewHolder(it, viewModel) }
         binding.results.repoList.adapter = adapter
 
-        binding.results.repoList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        binding.results.repoList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
                 val lastPosition = layoutManager
                         .findLastVisibleItemPosition()
                 if (lastPosition == adapter.itemCount - 1) {

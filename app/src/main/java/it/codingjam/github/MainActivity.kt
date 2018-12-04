@@ -17,8 +17,7 @@
 package it.codingjam.github
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import dagger.android.AndroidInjection
@@ -29,10 +28,9 @@ import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
 
-
 class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
-    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -48,5 +46,5 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onSupportNavigateUp()
             = findNavController(R.id.my_nav_host_fragment).navigateUp()
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = fragmentDispatchingAndroidInjector
 }

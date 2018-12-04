@@ -16,13 +16,12 @@
 
 package it.codingjam.github.ui.common
 
-import android.databinding.ViewDataBinding
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 
 class DataBoundListAdapter<T : Any, V : ViewDataBinding>(
         private var factory: (ViewGroup) -> DataBoundViewHolder<T, V>
-) : RecyclerView.Adapter<DataBoundViewHolder<T, V>>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<DataBoundViewHolder<T, V>>() {
 
     private var items: List<T> = emptyList()
 

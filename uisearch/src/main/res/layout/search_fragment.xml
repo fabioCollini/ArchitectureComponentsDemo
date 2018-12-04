@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 app:onKeyDown="@{viewModel::setQuery}"
                 app:onSearch="@{viewModel::setQuery}"
                 tools:text="google"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <it.codingjam.github.util.LceContainer
             android:id="@+id/lce"

@@ -8,11 +8,11 @@ allOpen {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -36,22 +36,20 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    api "com.android.support:appcompat-v7:$support_version"
-    api "com.android.support:recyclerview-v7:$support_version"
-    api "com.android.support:support-v4:$support_version"
-    api "com.android.support:design:$support_version"
+    api "androidx.legacy:legacy-support-v4:$support_version"
+    api "com.google.android.material:material:$support_version"
 
-    api("com.android.support.test.espresso:espresso-core:$espresso_version", {
+    api "androidx.test:rules:1.1.0"
+    api("androidx.test.espresso:espresso-core:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    api("com.android.support.test.espresso:espresso-contrib:$espresso_version", {
+    api("androidx.test.espresso:espresso-contrib:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
 
-    api("android.arch.core:core-testing:$arch_version", {
-    })
+    api "androidx.arch.core:core-testing:$arch_version"
     api "org.mockito:mockito-android:$mockito_version"
     api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
         exclude group: 'org.jetbrains.kotlin'
@@ -63,5 +61,4 @@ dependencies {
 
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
-    implementation "android.arch.navigation:navigation-testing-ktx:$nav_version"
 }

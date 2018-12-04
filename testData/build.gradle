@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -29,7 +29,7 @@ dependencies {
     api('com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
-    api ("android.arch.core:core-testing:$arch_version", {
+    api ("androidx.arch.core:core-testing:$arch_version", {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'

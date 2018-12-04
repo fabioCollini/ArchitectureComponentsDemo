@@ -16,7 +16,7 @@
 
 package it.codingjam.github.ui.repo
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStore

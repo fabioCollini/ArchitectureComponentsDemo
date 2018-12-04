@@ -16,13 +16,11 @@
 
 package it.codingjam.github
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import it.codingjam.github.core.RepoId
 
 interface NavigationController {
-    fun navigateToRepo(fragment: Fragment, repoId: RepoId)
-    fun navigateToUser(fragment: Fragment, login: String)
-    fun showError(activity: FragmentActivity, error: String?)
+    fun navigateToRepo(fragment: androidx.fragment.app.Fragment, repoId: RepoId)
+    fun navigateToUser(fragment: androidx.fragment.app.Fragment, login: String)
+    fun showError(activity: androidx.fragment.app.FragmentActivity, error: String?)
 }
 

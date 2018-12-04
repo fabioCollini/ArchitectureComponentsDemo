@@ -17,7 +17,6 @@
 package it.codingjam.github.ui.repo
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,7 @@ import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RepoFragment : Fragment() {
+class RepoFragment : androidx.fragment.app.Fragment() {
 
     lateinit var lceContainer: LceContainer<RepoDetail>
 

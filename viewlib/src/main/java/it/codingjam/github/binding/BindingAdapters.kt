@@ -17,7 +17,6 @@
 package it.codingjam.github.binding
 
 import android.content.Context
-import android.databinding.BindingAdapter
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.*
@@ -26,6 +25,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 
 

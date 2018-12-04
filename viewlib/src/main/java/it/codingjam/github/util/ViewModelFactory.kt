@@ -1,10 +1,8 @@
 package it.codingjam.github.util
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import javax.inject.Provider
 
 class ViewModelFactory(val testProvider: (() -> ViewModel)? = null) {
@@ -21,13 +19,13 @@ class ViewModelFactory(val testProvider: (() -> ViewModel)? = null) {
     }
 
     inline operator fun <reified VM : ViewModel> invoke(
-            fragment: Fragment, provider: Provider<VM>, crossinline init: (VM) -> Unit = {}
+            fragment: androidx.fragment.app.Fragment, provider: Provider<VM>, crossinline init: (VM) -> Unit = {}
     ): VM {
         return ViewModelProviders.of(fragment, factory(provider, init)).get(VM::class.java)
     }
 
     inline operator fun <reified VM : ViewModel> invoke(
-            activity: FragmentActivity, provider: Provider<VM>, crossinline init: (VM) -> Unit = {}
+            activity: androidx.fragment.app.FragmentActivity, provider: Provider<VM>, crossinline init: (VM) -> Unit = {}
     ): VM {
         return ViewModelProviders.of(activity, factory(provider, init)).get(VM::class.java)
     }

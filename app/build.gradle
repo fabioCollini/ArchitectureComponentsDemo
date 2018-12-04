@@ -25,11 +25,11 @@ androidExtensions {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "it.codingjam.github"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'it.codingjam.github.espresso.MockTestRunner'
@@ -81,7 +81,7 @@ dependencies {
 
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    kapt "android.arch.lifecycle:compiler:$arch_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$arch_version"
 
     testImplementation project(':testData')
     testImplementation "org.mockito:mockito-inline:$mockito_version"

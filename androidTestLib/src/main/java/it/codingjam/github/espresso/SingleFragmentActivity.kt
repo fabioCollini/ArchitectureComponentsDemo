@@ -17,11 +17,10 @@
 package it.codingjam.github.espresso
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.get
@@ -43,7 +42,7 @@ class SingleFragmentActivity : AppCompatActivity() {
         val node = navGraph[nodeId]
         val fragmentClass = (node as FragmentNavigator.Destination).fragmentClass
 
-        val fragment = Fragment.instantiate(this, fragmentClass.canonicalName).apply {
+        val fragment = androidx.fragment.app.Fragment.instantiate(this, fragmentClass.canonicalName).apply {
             arguments = args
         }
 

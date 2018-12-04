@@ -17,7 +17,6 @@
 package it.codingjam.github.ui.user
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,7 @@ import it.codingjam.github.util.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserFragment : Fragment() {
+class UserFragment : androidx.fragment.app.Fragment() {
 
     @Inject lateinit var viewModelProvider: Provider<UserViewModel>
 
