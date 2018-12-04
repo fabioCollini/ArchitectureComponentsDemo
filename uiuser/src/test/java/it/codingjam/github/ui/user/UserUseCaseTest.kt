@@ -19,8 +19,8 @@ package it.codingjam.github.ui.user
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
@@ -29,7 +29,7 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
 import it.codingjam.github.util.states
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class UserUseCaseTest {

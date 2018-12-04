@@ -19,7 +19,7 @@ package it.codingjam.github.vo
 import it.codingjam.github.util.ReceiveActionChannel
 import it.codingjam.github.util.produceActions
 import it.codingjam.github.util.send
-import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.CoroutineScope
 
 sealed class Lce<out T> {
 

@@ -22,7 +22,7 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId

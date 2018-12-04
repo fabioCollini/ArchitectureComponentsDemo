@@ -16,14 +16,14 @@
 
 package it.codingjam.github.testdata
 
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
 import it.codingjam.github.util.ViewStateStore
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module

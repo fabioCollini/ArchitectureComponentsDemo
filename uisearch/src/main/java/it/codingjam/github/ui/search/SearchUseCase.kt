@@ -7,7 +7,7 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
 import it.codingjam.github.vo.lce
-import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +23,7 @@ class SearchUseCase @Inject constructor(
 
     fun initialState() = SearchViewState(lastSearch)
 
-    fun CoroutineScope.setQuery(originalInput: String, state: SearchViewState) = produceActions {
+    fun CoroutineScope.setQuery(originalInput: String, state: SearchViewState) = produceActions<SearchViewState> {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
         if (state.repos.data?.searchInvoked != true || input != state.query) {
@@ -54,7 +54,7 @@ class SearchUseCase @Inject constructor(
         ReposViewState(items, nextPage, true)
     }.map<SearchViewState> { copy(repos = it(repos), query = query) }
 
-    fun CoroutineScope.refresh(state: SearchViewState) = produceActions {
+    fun CoroutineScope.refresh(state: SearchViewState) = produceActions<SearchViewState> {
         if (!state.query.isEmpty()) {
             sendAll(reloadData(state.query))
         }

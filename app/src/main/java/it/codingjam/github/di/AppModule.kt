@@ -20,9 +20,8 @@ import dagger.Module
 import dagger.Provides
 import it.codingjam.github.AndroidNavigationController
 import it.codingjam.github.NavigationController
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.IO
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module class AppModule {

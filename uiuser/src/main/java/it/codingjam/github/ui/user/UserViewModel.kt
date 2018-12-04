@@ -22,7 +22,7 @@ import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting

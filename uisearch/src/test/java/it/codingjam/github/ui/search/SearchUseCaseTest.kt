@@ -4,8 +4,8 @@ package it.codingjam.github.ui.search
 import assertk.assert
 import assertk.assertions.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
@@ -17,7 +17,7 @@ import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.signals
 import it.codingjam.github.util.states
 import it.codingjam.github.vo.debug
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class SearchUseCaseTest {

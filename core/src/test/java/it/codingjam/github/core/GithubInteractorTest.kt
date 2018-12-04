@@ -1,9 +1,9 @@
 package it.codingjam.github.core
 
 import assertk.assertions.isEqualTo
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
-import kotlinx.coroutines.experimental.runBlocking
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class GithubInteractorTest {

@@ -3,12 +3,12 @@ package it.codingjam.github.api
 import assertk.assert
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.Owner
 import it.codingjam.github.core.Repo
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import okhttp3.Headers
 import org.junit.Test
 import retrofit2.Response

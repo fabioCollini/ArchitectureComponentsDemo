@@ -22,7 +22,7 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.espresso.FragmentTestRule

@@ -26,7 +26,7 @@ dependencies {
     api "junit:junit:$junit_version"
     api "org.mockito:mockito-core:$mockito_version"
     api 'com.willowtreeapps.assertk:assertk-jvm:0.12'
-    api('com.nhaarman:mockito-kotlin-kt1.1:1.5.0') {
+    api('com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
     api ("android.arch.core:core-testing:$arch_version", {

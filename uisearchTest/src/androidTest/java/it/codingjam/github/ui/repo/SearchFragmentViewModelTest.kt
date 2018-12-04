@@ -26,7 +26,7 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.view.KeyEvent
 import com.nalulabs.prefs.fake.FakeSharedPreferences
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.GithubInteractor
@@ -35,7 +35,7 @@ import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.testdata.TestData.REPO_1
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test

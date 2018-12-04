@@ -16,15 +16,15 @@
 
 package it.codingjam.github.ui.repo
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.shouldContain
 import it.codingjam.github.util.states
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class RepoUseCaseTest {
