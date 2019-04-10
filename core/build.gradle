@@ -31,8 +31,8 @@ android {
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
 
     api "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
