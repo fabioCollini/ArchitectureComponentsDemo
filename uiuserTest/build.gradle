@@ -33,6 +33,7 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/main.kotlin_module'
+        exclude 'META-INF/atomicfu.kotlin_module'
     }
 }
 

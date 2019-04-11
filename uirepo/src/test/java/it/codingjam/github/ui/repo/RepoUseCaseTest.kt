@@ -37,7 +37,7 @@ class RepoUseCaseTest {
     fun fetchData() = runBlocking {
         whenever(interactor.loadRepo("a", "b")).thenReturn(TestData.REPO_DETAIL)
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.run { reload(RepoId("a", "b")) } }
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
             loading().success()
@@ -48,7 +48,7 @@ class RepoUseCaseTest {
     fun errorFetchingData() = runBlocking {
         whenever(interactor.loadRepo("a", "b")).thenThrow(RuntimeException())
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.run { reload(RepoId("a", "b")) } }
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
             loading().error()
@@ -61,8 +61,8 @@ class RepoUseCaseTest {
                 .thenThrow(RuntimeException())
                 .thenReturn(TestData.REPO_DETAIL)
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.run { reload(RepoId("a", "b")) } } +
-                states<RepoViewState>(Lce.Loading) { useCase.run { reload(RepoId("a", "b")) } }
+        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) } +
+                states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
         states.map { it } shouldContain {
             loading().error().loading().success()

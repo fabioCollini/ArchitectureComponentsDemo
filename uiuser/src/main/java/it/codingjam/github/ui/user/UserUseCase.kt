@@ -5,7 +5,6 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.vo.lce
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +13,7 @@ import javax.inject.Singleton
 class UserUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor
 ) {
-    fun CoroutineScope.load(login: String) = lce {
+    fun load(login: String) = lce {
         githubInteractor.loadUserDetail(login)
     }
 

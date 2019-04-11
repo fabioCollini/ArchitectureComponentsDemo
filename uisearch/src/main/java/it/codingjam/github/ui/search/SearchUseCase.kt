@@ -7,7 +7,9 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.*
 import it.codingjam.github.vo.lce
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,41 +25,43 @@ class SearchUseCase @Inject constructor(
 
     fun initialState() = SearchViewState(lastSearch)
 
-    fun CoroutineScope.setQuery(originalInput: String, state: SearchViewState) = produceActions<SearchViewState> {
+    fun setQuery(originalInput: String, state: SearchViewState): Flow<Action<SearchViewState>> {
         lastSearch = originalInput
         val input = originalInput.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (state.repos.data?.searchInvoked != true || input != state.query) {
-            sendAll(reloadData(input))
-        }
+        return if (state.repos.data?.searchInvoked != true || input != state.query) {
+            reloadData(input)
+        } else
+            emptyFlow()
     }
 
-    fun CoroutineScope.loadNextPage(state: SearchViewState) = produceActions<ReposViewState> {
+    fun loadNextPage(state: SearchViewState): Flow<Action<SearchViewState>> = flow<Action<ReposViewState>> {
         state.repos.doOnData { (_, nextPage, _, loadingMore) ->
             val query = state.query
             if (!query.isEmpty() && nextPage != null && !loadingMore) {
-                send { copy(loadingMore = true) }
+                emitAction { copy(loadingMore = true) }
                 try {
                     val (items, newNextPage) = githubInteractor.searchNextPage(query, nextPage)
-                    send {
+                    emitAction {
                         copy(list = list + items, nextPage = newNextPage, loadingMore = false)
                     }
                 } catch (t: Exception) {
-                    send { copy(loadingMore = false) }
-                    send(ErrorSignal(t))
+                    emitAction { copy(loadingMore = false) }
+                    emit(ErrorSignal(t))
                 }
             }
         }
-    }.map<SearchViewState> { action -> copy(repos = repos.map { action(it) }) }
+    }.mapActions { stateAction -> copy(repos = repos.map { stateAction(it) }) }
 
-    private suspend fun CoroutineScope.reloadData(query: String) = lce {
+    private fun reloadData(query: String): Flow<Action<SearchViewState>> = lce {
         val (items, nextPage) = githubInteractor.search(query)
         ReposViewState(items, nextPage, true)
-    }.map<SearchViewState> { copy(repos = it(repos), query = query) }
+    }.mapActions { stateAction -> copy(repos = stateAction(repos), query = query) }
 
-    fun CoroutineScope.refresh(state: SearchViewState) = produceActions<SearchViewState> {
-        if (!state.query.isEmpty()) {
-            sendAll(reloadData(state.query))
-        }
+    fun refresh(state: SearchViewState): Flow<Action<SearchViewState>> {
+        return if (!state.query.isEmpty()) {
+            reloadData(state.query)
+        } else
+            emptyFlow()
     }
 
     fun openRepoDetail(id: RepoId) = NavigationSignal("repo", id)

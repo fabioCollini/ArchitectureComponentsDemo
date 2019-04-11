@@ -69,7 +69,7 @@ class SearchUseCaseTest {
 
         val lastState = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.last()
 
-        val states = states(lastState) { useCase.run { loadNextPage(it) } }
+        val states = states(lastState) { useCase.loadNextPage(it) }
 
         assert(states.map { it.repos.debug }).containsExactly("S", "S")
 
@@ -98,7 +98,7 @@ class SearchUseCaseTest {
             it.containsExactly(REPO_1, REPO_2)
         }
 
-        val signals = signals(lastState) { useCase.run { loadNextPage(it) } }
+        val signals = signals(lastState) { useCase.loadNextPage(it) }
 
         assert(signals.last()).isInstanceOf(ErrorSignal::class) {
             it.prop(ErrorSignal::message).isEqualTo(ERROR)

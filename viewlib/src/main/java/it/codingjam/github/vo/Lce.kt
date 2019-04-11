@@ -16,10 +16,10 @@
 
 package it.codingjam.github.vo
 
-import it.codingjam.github.util.ReceiveActionChannel
-import it.codingjam.github.util.produceActions
-import it.codingjam.github.util.send
-import kotlinx.coroutines.CoroutineScope
+import it.codingjam.github.util.Action
+import it.codingjam.github.util.emitAction
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 sealed class Lce<out T> {
 
@@ -56,14 +56,14 @@ val Lce<*>.debug: String
             is Lce.Error -> "E"
         }
 
-inline fun <S> CoroutineScope.lce(crossinline f: suspend () -> S): ReceiveActionChannel<Lce<S>> {
-    return produceActions {
-        send { Lce.Loading }
+inline fun <S> lce(crossinline f: suspend () -> S): Flow<Action<Lce<S>>> {
+    return flow {
+        emitAction { Lce.Loading }
         try {
             val result = f()
-            send { Lce.Success(result) }
+            emitAction { Lce.Success(result) }
         } catch (e: Exception) {
-            send { Lce.Error(e) }
+            emitAction { Lce.Error(e) }
         }
     }
 }
