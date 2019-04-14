@@ -1,9 +1,10 @@
 package it.codingjam.github.ui.search
 
 
-import assertk.assert
+import assertk.assertThat
 import assertk.assertions.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
@@ -21,41 +22,39 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class SearchUseCaseTest {
-    val interactor: GithubInteractor = mock()
-    val useCase = SearchUseCase(interactor, FakeSharedPreferences())
+    private val interactor: GithubInteractor = mock()
+    private val useCase = SearchUseCase(interactor, FakeSharedPreferences())
 
     @Test
     fun load() = runBlocking {
-        whenever(interactor.search(QUERY)).thenReturn(RepoSearchResponse(listOf(REPO_1, REPO_2), 2))
+        whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
         val states = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.map { it.repos }
 
-        assert(states).hasSize(2)
+        assertThat(states).hasSize(2)
 
-        assert(states.map { it.debug }).containsExactly("L", "S")
+        assertThat(states.map { it.debug }).containsExactly("L", "S")
 
-        assert(states.map { it.data?.emptyStateVisible ?: false })
+        assertThat(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, false)
 
-        assert(states.last().data?.list).isNotNull {
-            it.containsExactly(REPO_1, REPO_2)
-        }
+        assertThat(states.last().data?.list)
+                .isNotNull()
+                .containsExactly(REPO_1, REPO_2)
     }
 
     @Test
     fun emptyStateVisible() = runBlocking {
-        whenever(interactor.search(QUERY)).thenReturn(RepoSearchResponse(emptyList(), null))
+        whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(emptyList(), null)
 
         val states = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.map { it.repos }
 
-        assert(states.map { it.debug }).containsExactly("L", "S")
+        assertThat(states.map { it.debug }).containsExactly("L", "S")
 
-        assert(states.map { it.data?.emptyStateVisible ?: false })
+        assertThat(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, true)
 
-        assert(states.last().data?.list).isNotNull {
-            it.isEmpty()
-        }
+        assertThat(states.last().data?.list).isNotNull().isEmpty()
     }
 
     private fun response(repo1: Repo, repo2: Repo, nextPage: Int): RepoSearchResponse {
@@ -64,45 +63,43 @@ class SearchUseCaseTest {
 
     @Test
     fun loadMore() = runBlocking {
-        whenever(interactor.search(QUERY)).thenReturn(response(REPO_1, REPO_2, 2))
-        whenever(interactor.searchNextPage(QUERY, 2)).thenReturn(response(REPO_3, REPO_4, 3))
+        whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
+        whenever(interactor.searchNextPage(QUERY, 2)) doReturn response(REPO_3, REPO_4, 3)
 
         val lastState = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.last()
 
         val states = states(lastState) { useCase.loadNextPage(it) }
 
-        assert(states.map { it.repos.debug }).containsExactly("S", "S")
+        assertThat(states.map { it.repos.debug }).containsExactly("S", "S")
 
-        assert(states.map { it.repos.data?.loadingMore ?: false })
+        assertThat(states.map { it.repos.data?.loadingMore ?: false })
                 .containsExactly(true, false)
 
-        assert(states.last().repos.data!!.list)
+        assertThat(states.last().repos.data!!.list)
                 .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
     }
 
     @Test
     fun errorLoadingMore() = runBlocking {
-        whenever(interactor.search(QUERY)).thenReturn(response(REPO_1, REPO_2, 2))
+        whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
         whenever(interactor.searchNextPage(QUERY, 2)).thenThrow(RuntimeException(ERROR))
 
         val lastState = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.last()
 
         val states = states(lastState) { useCase.run { loadNextPage(it) } }
 
-        assert(states.map { it.repos.debug }).containsExactly("S", "S")
+        assertThat(states.map { it.repos.debug }).containsExactly("S", "S")
 
-        assert(states.map { it.repos.data?.loadingMore ?: false })
+        assertThat(states.map { it.repos.data?.loadingMore ?: false })
                 .containsExactly(true, false)
 
-        assert(states.last().repos.data?.list).isNotNull {
-            it.containsExactly(REPO_1, REPO_2)
-        }
+        assertThat(states.last().repos.data?.list).isNotNull().containsExactly(REPO_1, REPO_2)
 
         val signals = signals(lastState) { useCase.loadNextPage(it) }
 
-        assert(signals.last()).isInstanceOf(ErrorSignal::class) {
-            it.prop(ErrorSignal::message).isEqualTo(ERROR)
-        }
+        assertThat(signals.last())
+                .isInstanceOf(ErrorSignal::class)
+                .prop(ErrorSignal::message).isEqualTo(ERROR)
     }
 
     companion object {
