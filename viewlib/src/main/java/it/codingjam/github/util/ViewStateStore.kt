@@ -94,13 +94,13 @@ class ViewStateStore<T : Any>(
 suspend fun <S> FlowCollector<in Action<S>>.emitAction(action: S.() -> S) = emit(StateAction(action))
 
 suspend inline fun <T : Any> Flow<Action<T>>.states(initialState: T): List<Any> {
-    return fold(emptyList()) { states, action ->
-        val element: Any = if (action is StateAction)
-            action(states.lastOrNull() as T? ?: initialState)
-        else
-            action
-        states + element
-    }
+    return fold(initialState to emptyList<Any>()) { (prevState, states), action ->
+        if (action is StateAction) {
+            val curState = action(prevState)
+            curState to states + curState
+        } else
+            prevState to states + action
+    }.second
 }
 
 suspend inline fun <reified S : Any> states(

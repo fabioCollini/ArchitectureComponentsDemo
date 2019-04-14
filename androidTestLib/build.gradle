@@ -51,7 +51,7 @@ dependencies {
 
     api "androidx.arch.core:core-testing:2.0.1"
     api "org.mockito:mockito-android:$mockito_version"
-    api('com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0') {
+    api('com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0') {
         exclude group: 'org.jetbrains.kotlin'
     }
     api 'com.github.fabioCollini.daggermock:daggermock:0.8.4'

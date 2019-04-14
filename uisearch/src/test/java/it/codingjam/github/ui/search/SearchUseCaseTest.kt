@@ -29,7 +29,7 @@ class SearchUseCaseTest {
     fun load() = runBlocking {
         whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
-        val states = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.map { it.repos }
+        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
 
         assertThat(states).hasSize(2)
 
@@ -47,7 +47,7 @@ class SearchUseCaseTest {
     fun emptyStateVisible() = runBlocking {
         whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(emptyList(), null)
 
-        val states = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.map { it.repos }
+        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
 
         assertThat(states.map { it.debug }).containsExactly("L", "S")
 
@@ -66,7 +66,7 @@ class SearchUseCaseTest {
         whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
         whenever(interactor.searchNextPage(QUERY, 2)) doReturn response(REPO_3, REPO_4, 3)
 
-        val lastState = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
 
         val states = states(lastState) { useCase.loadNextPage(it) }
 
@@ -84,9 +84,9 @@ class SearchUseCaseTest {
         whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
         whenever(interactor.searchNextPage(QUERY, 2)).thenThrow(RuntimeException(ERROR))
 
-        val lastState = states(SearchViewState()) { useCase.run { setQuery(QUERY, it) } }.last()
+        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
 
-        val states = states(lastState) { useCase.run { loadNextPage(it) } }
+        val states = states(lastState) { useCase.loadNextPage(it) }
 
         assertThat(states.map { it.repos.debug }).containsExactly("S", "S")
 
