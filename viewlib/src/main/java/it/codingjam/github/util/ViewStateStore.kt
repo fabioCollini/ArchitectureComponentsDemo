@@ -69,6 +69,7 @@ class ViewStateStore<T : Any>(
     }
 
     fun dispatchAction(f: suspend () -> Action<T>) {
+//        dispatchActions(flow { emit(f()) })
         scope.launch {
             val action = withContext(dispatcher) {
                 f()
@@ -77,9 +78,9 @@ class ViewStateStore<T : Any>(
         }
     }
 
-    fun dispatchActions(f: (T) -> Flow<Action<T>>) {
+    fun dispatchActions(flow: Flow<Action<T>>) {
         scope.launch {
-            f(invoke())
+            flow
                     .flowOn(dispatcher)
                     .collect { action ->
                         dispatch(action)
