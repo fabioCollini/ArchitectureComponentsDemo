@@ -16,7 +16,7 @@
 
 package it.codingjam.github.api
 
-import assertk.assert
+import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import it.codingjam.github.api.util.RetrofitFactory
@@ -35,65 +35,71 @@ class GithubServiceTest {
 
     val mockWebServer = MockWebServer()
 
-    @Before fun createService() {
+    @Before
+    fun createService() {
         service = RetrofitFactory.createService(false, mockWebServer.url("/"))
     }
 
-    @After fun stopService() {
+    @After
+    fun stopService() {
         mockWebServer.shutdown()
     }
 
-    @Test fun getUser() = runBlocking {
+    @Test
+    fun getUser() = runBlocking {
         enqueueResponse("user-yigit.json")
         val yigit = service.getUser("yigit").await()
 
         val request = mockWebServer.takeRequest()
-        assert(request.path).isEqualTo("/users/yigit")
+        assertThat(request.path).isEqualTo("/users/yigit")
 
-        assert(yigit).isNotNull()
-        assert(yigit.avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
-        assert(yigit.company).isEqualTo("Google")
-        assert(yigit.blog).isEqualTo("birbit.com")
+        assertThat(yigit).isNotNull()
+        assertThat(yigit.avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
+        assertThat(yigit.company).isEqualTo("Google")
+        assertThat(yigit.blog).isEqualTo("birbit.com")
     }
 
-    @Test fun repos() = runBlocking {
+    @Test
+    fun repos() = runBlocking {
         enqueueResponse("repos-yigit.json")
         val repos = service.getRepos("yigit").await()
 
         val request = mockWebServer.takeRequest()
-        assert(request.path).isEqualTo("/users/yigit/repos")
+        assertThat(request.path).isEqualTo("/users/yigit/repos")
 
-        assert(repos.size).isEqualTo(2)
+        assertThat(repos.size).isEqualTo(2)
 
         val (_, _, fullName, _, owner) = repos[0]
-        assert(fullName).isEqualTo("yigit/AckMate")
+        assertThat(fullName).isEqualTo("yigit/AckMate")
 
-        assert(owner).isNotNull()
-        assert(owner.login).isEqualTo("yigit")
-        assert(owner.url).isEqualTo("https://api.github.com/users/yigit")
+        assertThat(owner).isNotNull()
+        assertThat(owner.login).isEqualTo("yigit")
+        assertThat(owner.url).isEqualTo("https://api.github.com/users/yigit")
 
-        assert(repos[1].fullName).isEqualTo("yigit/android-architecture")
+        assertThat(repos[1].fullName).isEqualTo("yigit/android-architecture")
     }
 
-    @Test fun getContributors() = runBlocking {
+    @Test
+    fun getContributors() = runBlocking {
         enqueueResponse("contributors.json")
         val contributors = service.getContributors("foo", "bar").await()
-        assert(contributors.size).isEqualTo(3)
+        assertThat(contributors.size).isEqualTo(3)
         val (login, contributions, avatarUrl) = contributors[0]
-        assert(login).isEqualTo("yigit")
-        assert(avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
-        assert(contributions).isEqualTo(291)
-        assert(contributors[1].login).isEqualTo("guavabot")
-        assert(contributors[2].login).isEqualTo("coltin")
+        assertThat(login).isEqualTo("yigit")
+        assertThat(avatarUrl).isEqualTo("https://avatars3.githubusercontent.com/u/89202?v=3")
+        assertThat(contributions).isEqualTo(291)
+        assertThat(contributors[1].login).isEqualTo("guavabot")
+        assertThat(contributors[2].login).isEqualTo("coltin")
     }
 
-    @Test fun search() = runBlocking {
+    @Test
+    fun search() = runBlocking {
         val header = "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," + " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         enqueueResponse("search.json", mapOf("link" to header))
         val response = service.searchRepos("foo").await()
 
-        assert(response).isNotNull()
-        assert(response.body()?.size).isEqualTo(30)
+        assertThat(response).isNotNull()
+        assertThat(response.body()?.size).isEqualTo(30)
     }
 
     private fun enqueueResponse(fileName: String, headers: Map<String, String> = emptyMap()) {

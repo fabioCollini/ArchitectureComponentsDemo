@@ -16,9 +16,10 @@
 
 package it.codingjam.github.ui.user
 
-import assertk.assert
+import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
@@ -34,16 +35,16 @@ import org.junit.Test
 
 class UserUseCaseTest {
 
-    val githubInteractor: GithubInteractor = mock()
-    val userUseCase = UserUseCase(githubInteractor)
+    private val githubInteractor: GithubInteractor = mock()
+    private val userUseCase = UserUseCase(githubInteractor)
 
     @Test
     fun load() = runBlocking {
-        whenever(githubInteractor.loadUserDetail(LOGIN)).thenReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
+        whenever(githubInteractor.loadUserDetail(LOGIN)) doReturn UserDetail(USER, listOf(REPO_1, REPO_2))
 
-        val states = userUseCase.run { load(LOGIN).states(Lce.Loading) }
+        val states = userUseCase.load(LOGIN).states(Lce.Loading)
 
-        assert(states)
+        assertThat(states)
                 .containsExactly(
                         Lce.Loading,
                         Lce.Success(UserDetail(USER, listOf(REPO_1, REPO_2)))
@@ -56,10 +57,10 @@ class UserUseCaseTest {
                 .thenThrow(RuntimeException(ERROR))
                 .thenReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
-        val states = userUseCase.run { load(LOGIN).states(Lce.Loading) } +
-                userUseCase.run { load(LOGIN).states(Lce.Loading) }
+        val states = userUseCase.load(LOGIN).states(Lce.Loading) +
+                userUseCase.load(LOGIN).states(Lce.Loading)
 
-        assert(states)
+        assertThat(states)
                 .containsExactly(
                         Lce.Loading,
                         Lce.Error(ERROR),
@@ -71,14 +72,12 @@ class UserUseCaseTest {
     @Test
     fun openRepoDetail() {
         val (_, params) = userUseCase.openRepoDetail(REPO_ID)
-        assert(params).isEqualTo(REPO_ID)
-
-//        verify(navigationController).navigateToRepo(fragment, REPO_ID)
+        assertThat(params).isEqualTo(REPO_ID)
     }
 
     companion object {
-        private val LOGIN = "login"
-        private val ERROR = "error"
+        private const val LOGIN = "login"
+        private const val ERROR = "error"
         private val REPO_ID = RepoId("owner", "name")
     }
 }

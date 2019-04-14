@@ -1,6 +1,6 @@
 package it.codingjam.github.api
 
-import assertk.assert
+import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockitokotlin2.mock
@@ -30,8 +30,8 @@ class GithubRepositoryTest {
 
         val (items, nextPage) = repository.search(QUERY)
 
-        assert(items).containsExactly(REPO_1, REPO_2)
-        assert(nextPage).isEqualTo(2)
+        assertThat(items).containsExactly(REPO_1, REPO_2)
+        assertThat(nextPage).isEqualTo(2)
     }
 
     companion object {

@@ -16,14 +16,18 @@
 
 package it.codingjam.github.ui.repo
 
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.testdata.TestData
-import it.codingjam.github.testdata.shouldContain
 import it.codingjam.github.util.states
 import it.codingjam.github.vo.Lce
+import it.codingjam.github.vo.debug
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -35,24 +39,20 @@ class RepoUseCaseTest {
 
     @Test
     fun fetchData() = runBlocking {
-        whenever(interactor.loadRepo("a", "b")).thenReturn(TestData.REPO_DETAIL)
+        whenever(interactor.loadRepo("a", "b")) doReturn TestData.REPO_DETAIL
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
-        states.map { it } shouldContain {
-            loading().success()
-        }
+        assertThat(states.map { it.debug }).containsExactly("L", "S")
     }
 
     @Test
     fun errorFetchingData() = runBlocking {
-        whenever(interactor.loadRepo("a", "b")).thenThrow(RuntimeException())
+        whenever(interactor.loadRepo("a", "b")) doThrow RuntimeException()
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
-        states.map { it } shouldContain {
-            loading().error()
-        }
+        assertThat(states.map { it.debug }).containsExactly("L", "E")
     }
 
     @Test
@@ -64,8 +64,6 @@ class RepoUseCaseTest {
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) } +
                 states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
-        states.map { it } shouldContain {
-            loading().error().loading().success()
-        }
+        assertThat(states.map { it.debug }).containsExactly("L", "E", "L", "S")
     }
 }

@@ -1,5 +1,6 @@
 package it.codingjam.github.core
 
+import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -17,7 +18,7 @@ class GithubInteractorTest {
         whenever(githubRepository.loadRepos(LOGIN)).thenReturn(listOf(REPO_1, REPO_2))
 
         val detail = githubInteractor.loadUserDetail(LOGIN)
-        assertk.assert(detail).isEqualTo(UserDetail(USER, listOf(REPO_1, REPO_2)))
+        assertThat(detail).isEqualTo(UserDetail(USER, listOf(REPO_1, REPO_2)))
     }
 
     companion object {
