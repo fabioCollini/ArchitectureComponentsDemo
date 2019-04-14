@@ -22,11 +22,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.testdata.TEST_DISPATCHER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.ui.search.ReposViewState
@@ -35,6 +37,8 @@ import it.codingjam.github.ui.search.SearchViewState
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -54,7 +58,7 @@ class SearchFragmentTest {
 
     val viewModel by lazy {
         mock<SearchViewModel> {
-            on(it.state).thenReturn(ViewStateStore.test(SearchViewState()))
+            on(it.state) doReturn ViewStateStore(SearchViewState(), CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
         }
     }
 

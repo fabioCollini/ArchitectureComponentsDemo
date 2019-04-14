@@ -26,6 +26,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.R
 import it.codingjam.github.ViewLibModule
@@ -55,7 +56,10 @@ class SearchFragmentViewModelTest {
 
     val githubInteractor = mock<GithubInteractor> {
         runBlocking {
-            on(it.search("abc")).thenReturn(RepoSearchResponse(listOf(REPO_1), 1))
+            on(it.search("abc")) doAnswer {
+                Thread.sleep(1000)
+                RepoSearchResponse(listOf(REPO_1), 1)
+            }
         }
     }
 

@@ -16,14 +16,15 @@
 
 package it.codingjam.github.testdata
 
+import android.os.AsyncTask
 import com.nhaarman.mockitokotlin2.mock
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
-import it.codingjam.github.util.ViewStateStore
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -34,5 +35,7 @@ open class TestAppModule {
 
     @Provides @Singleton open fun githubInteractor() = mock<GithubInteractor>()
 
-    @Provides @Singleton fun dispatcher(): CoroutineDispatcher = ViewStateStore.TEST_DISPATCHER
+    @Provides @Singleton fun dispatcher(): CoroutineDispatcher = TEST_DISPATCHER
 }
+
+val TEST_DISPATCHER = AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher()

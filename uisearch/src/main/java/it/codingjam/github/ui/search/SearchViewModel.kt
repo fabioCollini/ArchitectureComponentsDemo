@@ -17,6 +17,7 @@
 package it.codingjam.github.ui.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStore
@@ -29,7 +30,7 @@ class SearchViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val state = ViewStateStore(searchUseCase.initialState(), dispatcher)
+    val state = ViewStateStore(searchUseCase.initialState(), viewModelScope, dispatcher)
 
     fun setQuery(originalInput: String) = state.dispatchActions { searchUseCase.setQuery(originalInput, it) }
 
@@ -38,6 +39,4 @@ class SearchViewModel @Inject constructor(
     fun refresh() = state.dispatchActions { searchUseCase.refresh(it) }
 
     fun openRepoDetail(id: RepoId) = state.dispatchSignal(searchUseCase.openRepoDetail(id))
-
-    override fun onCleared() = state.cancel()
 }

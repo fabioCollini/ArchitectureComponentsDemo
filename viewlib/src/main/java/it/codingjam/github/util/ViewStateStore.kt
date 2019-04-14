@@ -1,15 +1,15 @@
 package it.codingjam.github.util
 
 
-import android.os.AsyncTask
-import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 interface Action<out T>
 
@@ -27,12 +27,9 @@ data class NavigationSignal<P>(val destination: Any, val params: P) : Signal
 
 class ViewStateStore<T : Any>(
         initialState: T,
-        dispatcher: CoroutineDispatcher
-) : CoroutineScope {
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext = job + dispatcher
+        private val scope: CoroutineScope,
+        private val dispatcher: CoroutineDispatcher
+) {
 
     private val stateLiveData = MutableLiveData<T>().apply {
         value = initialState
@@ -51,9 +48,10 @@ class ViewStateStore<T : Any>(
                 list = ArrayList()
             })
 
-    @MainThread
     fun dispatchState(state: T) {
-        stateLiveData.value = state
+        scope.launch {
+            stateLiveData.value = state
+        }
     }
 
     fun dispatchSignal(action: Signal) {
@@ -71,39 +69,25 @@ class ViewStateStore<T : Any>(
     }
 
     fun dispatchAction(f: suspend () -> Action<T>) {
-        launch {
-            val action = f()
-            withContext(Dispatchers.Main) {
-                dispatch(action)
+        scope.launch {
+            val action = withContext(dispatcher) {
+                f()
             }
+            dispatch(action)
         }
     }
 
-    fun dispatchActions(f: suspend (T) -> Flow<Action<T>>) {
-        launch {
+    fun dispatchActions(f: (T) -> Flow<Action<T>>) {
+        scope.launch {
             f(invoke())
-                    .flowOn(Dispatchers.IO)
+                    .flowOn(dispatcher)
                     .collect { action ->
-                        withContext(Dispatchers.Main) {
-                            dispatch(action)
-                        }
+                        dispatch(action)
                     }
         }
     }
 
     operator fun invoke() = stateLiveData.value!!
-
-    fun cancel() {
-        job.cancel()
-    }
-
-    companion object {
-        val TEST_DISPATCHER = AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher()
-
-        fun <T : Any> test(initialState: T): ViewStateStore<T> {
-            return ViewStateStore(initialState, TEST_DISPATCHER)
-        }
-    }
 }
 
 suspend fun <S> FlowCollector<in Action<S>>.emitAction(action: S.() -> S) = emit(StateAction(action))

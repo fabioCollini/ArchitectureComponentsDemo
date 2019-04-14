@@ -17,6 +17,7 @@
 package it.codingjam.github.ui.repo
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStore
@@ -31,11 +32,9 @@ class RepoViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val state = ViewStateStore<RepoViewState>(Lce.Loading, dispatcher)
+    val state = ViewStateStore<RepoViewState>(Lce.Loading, viewModelScope, dispatcher)
 
     fun reload() = state.dispatchActions { useCase.reload(repoId) }
 
     fun openUserDetail(login: String) = state.dispatchSignal(useCase.openUserDetail(login))
-
-    override fun onCleared() = state.cancel()
 }

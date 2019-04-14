@@ -22,6 +22,7 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
@@ -35,6 +36,8 @@ import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -55,7 +58,7 @@ class RepoFragmentTest {
 
     val viewModel by lazy {
         mock<RepoViewModel> {
-            on(it.state).thenReturn(ViewStateStore.test(Lce.Loading))
+            on(it.state) doReturn ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main))
         }
     }
 

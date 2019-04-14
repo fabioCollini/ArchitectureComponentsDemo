@@ -40,9 +40,9 @@ class SingleFragmentActivity : AppCompatActivity() {
         navController.navigatorProvider.addNavigator(FragmentNavigator(this, supportFragmentManager, 123))
         val navGraph = navController.navInflater.inflate(graphId)
         val node = navGraph[nodeId]
-        val fragmentClass = (node as FragmentNavigator.Destination).fragmentClass
+        val fragmentClass = (node as FragmentNavigator.Destination).className
 
-        val fragment = androidx.fragment.app.Fragment.instantiate(this, fragmentClass.canonicalName).apply {
+        val fragment = androidx.fragment.app.Fragment.instantiate(this, fragmentClass).apply {
             arguments = args
         }
 
