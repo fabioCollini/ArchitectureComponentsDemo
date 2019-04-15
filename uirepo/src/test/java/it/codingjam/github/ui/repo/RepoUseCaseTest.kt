@@ -17,7 +17,6 @@
 package it.codingjam.github.ui.repo
 
 import assertk.assertThat
-import assertk.assertions.containsExactly
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
@@ -25,9 +24,9 @@ import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.testdata.TestData
+import it.codingjam.github.testdata.containsLce
 import it.codingjam.github.util.states
 import it.codingjam.github.vo.Lce
-import it.codingjam.github.vo.debug
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -41,9 +40,11 @@ class RepoUseCaseTest {
     fun fetchData() = runBlocking {
         whenever(interactor.loadRepo("a", "b")) doReturn TestData.REPO_DETAIL
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
+        val states = useCase.reload(RepoId("a", "b"))
+                .states(Lce.Loading)
+                .filterIsInstance<RepoViewState>()
 
-        assertThat(states.map { it.debug }).containsExactly("L", "S")
+        assertThat(states).containsLce("LS")
     }
 
     @Test
@@ -52,7 +53,7 @@ class RepoUseCaseTest {
 
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
-        assertThat(states.map { it.debug }).containsExactly("L", "E")
+        assertThat(states).containsLce("LE")
     }
 
     @Test
@@ -64,6 +65,6 @@ class RepoUseCaseTest {
         val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) } +
                 states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
 
-        assertThat(states.map { it.debug }).containsExactly("L", "E", "L", "S")
+        assertThat(states).containsLce("LELS")
     }
 }

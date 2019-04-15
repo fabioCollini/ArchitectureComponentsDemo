@@ -14,10 +14,10 @@ import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.REPO_3
 import it.codingjam.github.testdata.TestData.REPO_4
+import it.codingjam.github.testdata.containsLce
 import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.signals
 import it.codingjam.github.util.states
-import it.codingjam.github.vo.debug
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -33,7 +33,7 @@ class SearchUseCaseTest {
 
         assertThat(states).hasSize(2)
 
-        assertThat(states.map { it.debug }).containsExactly("L", "S")
+        assertThat(states).containsLce("LS")
 
         assertThat(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, false)
@@ -49,7 +49,7 @@ class SearchUseCaseTest {
 
         val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
 
-        assertThat(states.map { it.debug }).containsExactly("L", "S")
+        assertThat(states).containsLce("LS")
 
         assertThat(states.map { it.data?.emptyStateVisible ?: false })
                 .containsExactly(false, true)
@@ -70,7 +70,7 @@ class SearchUseCaseTest {
 
         val states = states(lastState) { useCase.loadNextPage(it) }
 
-        assertThat(states.map { it.repos.debug }).containsExactly("S", "S")
+        assertThat(states.map { it.repos }).containsLce("SS")
 
         assertThat(states.map { it.repos.data?.loadingMore ?: false })
                 .containsExactly(true, false)
@@ -88,7 +88,7 @@ class SearchUseCaseTest {
 
         val states = states(lastState) { useCase.loadNextPage(it) }
 
-        assertThat(states.map { it.repos.debug }).containsExactly("S", "S")
+        assertThat(states.map { it.repos }).containsLce("SS")
 
         assertThat(states.map { it.repos.data?.loadingMore ?: false })
                 .containsExactly(true, false)

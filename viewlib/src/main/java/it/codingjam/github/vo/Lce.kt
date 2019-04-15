@@ -48,14 +48,6 @@ sealed class Lce<out T> {
     }
 }
 
-val Lce<*>.debug: String
-    get() =
-        when (this) {
-            is Lce.Success -> "S"
-            is Lce.Loading -> "L"
-            is Lce.Error -> "E"
-        }
-
 inline fun <S> lce(crossinline f: suspend () -> S): Flow<Action<Lce<S>>> {
     return flow {
         emitAction { Lce.Loading }
