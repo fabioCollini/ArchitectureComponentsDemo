@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 
 class ViewStateStore<T : Any>(
         initialState: T,
@@ -21,18 +20,13 @@ class ViewStateStore<T : Any>(
         value = initialState
     }
 
-    private val signalsLiveData = MutableLiveData<List<Signal>>()
-
-    private var list: MutableList<Signal> = ArrayList()
+    private val signalsLiveData = EventsLiveData<Signal>()
 
     fun observe(owner: LifecycleOwner, observer: (T) -> Unit) =
             stateLiveData.observe(owner, Observer { observer(it!!) })
 
-    fun observeSignals(owner: LifecycleOwner, executor: (Signal) -> Unit) =
-            signalsLiveData.observe(owner, Observer { _ ->
-                list.forEach { executor(it) }
-                list = ArrayList()
-            })
+    fun observeSignals(owner: LifecycleOwner, observer: (Signal) -> Unit) =
+            signalsLiveData.observe(owner) { observer(it) }
 
     fun dispatchState(state: T) {
         scope.launch {
@@ -41,16 +35,14 @@ class ViewStateStore<T : Any>(
     }
 
     fun dispatchSignal(action: Signal) {
-        list.add(action)
-        signalsLiveData.value = list
+        signalsLiveData.addEvent(action)
     }
 
     private fun dispatch(action: Action<T>) {
         if (action is StateAction<T>) {
             stateLiveData.value = action(invoke())
         } else if (action is Signal) {
-            list.add(action)
-            signalsLiveData.value = list
+            signalsLiveData.addEvent(action)
         }
     }
 
