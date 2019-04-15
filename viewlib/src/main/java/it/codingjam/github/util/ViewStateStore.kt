@@ -69,7 +69,7 @@ class ViewStateStore<T : Any>(
     operator fun invoke() = stateLiveData.value!!
 }
 
-suspend fun <S> FlowCollector<in Action<S>>.emitAction(action: S.() -> S) = emit(StateAction(action))
+suspend fun <S> FlowCollector<Action<S>>.emitAction(action: S.() -> S) = emit(StateAction(action))
 
 suspend inline fun <T : Any> Flow<Action<T>>.states(initialState: T): List<Any> {
     return fold(initialState to emptyList<Any>()) { (prevState, states), action ->
@@ -81,8 +81,8 @@ suspend inline fun <T : Any> Flow<Action<T>>.states(initialState: T): List<Any> 
     }.second
 }
 
-fun <T, R> Flow<Action<T>>.mapActions(copy: R.(StateAction<T>) -> R): Flow<Action<R>> =
-        map { action: Action<T> -> action.map(copy) }
+fun <R, S> Flow<Action<R>>.mapActions(copy: S.(StateAction<R>) -> S): Flow<Action<S>> =
+        map { action: Action<R> -> action.map(copy) }
 
 fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
     return if (this is Signal) {
