@@ -103,22 +103,6 @@ suspend inline fun <T : Any> Flow<Action<T>>.states(initialState: T): List<Any> 
     }.second
 }
 
-suspend inline fun <reified S : Any> states(
-        initialState: S,
-        crossinline f: suspend (S) -> Flow<Action<S>>
-): List<S> =
-        f(initialState)
-                .states(initialState)
-                .filterIsInstance<S>()
-
-suspend inline fun <reified S : Any> signals(
-        initialState: S,
-        crossinline f: suspend (S) -> Flow<Action<S>>
-): List<Signal> =
-        f(initialState)
-                .states(initialState)
-                .filterIsInstance<Signal>()
-
 fun <T, R> Flow<Action<T>>.mapActions(copy: R.(StateAction<T>) -> R): Flow<Action<R>> =
         map { action: Action<T> -> action.map(copy) }
 

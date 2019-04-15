@@ -16,3 +16,6 @@ fun Assert<List<Any>>.containsLce(expected: String) = given { actual ->
     }.joinToString("")
     assertThat(actualString).isEqualTo(expected)
 }
+
+fun <T, P> Assert<List<T>>.map(extract: (T) -> P): Assert<List<P>> =
+        transform { it.map(extract) }

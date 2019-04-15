@@ -42,7 +42,6 @@ class RepoUseCaseTest {
 
         val states = useCase.reload(RepoId("a", "b"))
                 .states(Lce.Loading)
-                .filterIsInstance<RepoViewState>()
 
         assertThat(states).containsLce("LS")
     }
@@ -51,7 +50,8 @@ class RepoUseCaseTest {
     fun errorFetchingData() = runBlocking {
         whenever(interactor.loadRepo("a", "b")) doThrow RuntimeException()
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
+        val states = useCase.reload(RepoId("a", "b"))
+                .states(Lce.Loading)
 
         assertThat(states).containsLce("LE")
     }
@@ -62,8 +62,8 @@ class RepoUseCaseTest {
                 .thenThrow(RuntimeException())
                 .thenReturn(TestData.REPO_DETAIL)
 
-        val states = states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) } +
-                states<RepoViewState>(Lce.Loading) { useCase.reload(RepoId("a", "b")) }
+        val states = useCase.reload(RepoId("a", "b")).states(Lce.Loading) +
+                useCase.reload(RepoId("a", "b")).states(Lce.Loading)
 
         assertThat(states).containsLce("LELS")
     }

@@ -1,6 +1,7 @@
 package it.codingjam.github.ui.search
 
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
@@ -15,8 +16,9 @@ import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.REPO_3
 import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.testdata.containsLce
+import it.codingjam.github.testdata.map
 import it.codingjam.github.util.ErrorSignal
-import it.codingjam.github.util.signals
+import it.codingjam.github.util.Signal
 import it.codingjam.github.util.states
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -29,9 +31,10 @@ class SearchUseCaseTest {
     fun load() = runBlocking {
         whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
-        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
-
-        assertThat(states).hasSize(2)
+        val initialState = SearchViewState()
+        val states = useCase.setQuery(QUERY, initialState)
+                .states(initialState)
+                .filterIsInstance<SearchViewState>().map { it.repos }
 
         assertThat(states).containsLce("LS")
 
@@ -47,14 +50,22 @@ class SearchUseCaseTest {
     fun emptyStateVisible() = runBlocking {
         whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(emptyList(), null)
 
-        val states = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.map { it.repos }
+        val initialState = SearchViewState()
+        val states = useCase.setQuery(QUERY, initialState)
+                .states(initialState)
+                .filterIsInstance<SearchViewState>().map { it.repos }
 
-        assertThat(states).containsLce("LS")
+        assertThat(states).all {
+            containsLce("LS")
 
-        assertThat(states.map { it.data?.emptyStateVisible ?: false })
-                .containsExactly(false, true)
+            map { it.data }.all {
+                map { it?.emptyStateVisible ?: false }
+                        .containsExactly(false, true)
 
-        assertThat(states.last().data?.list).isNotNull().isEmpty()
+                transform { it.last()?.list }
+                        .isNotNull().isEmpty()
+            }
+        }
     }
 
     private fun response(repo1: Repo, repo2: Repo, nextPage: Int): RepoSearchResponse {
@@ -66,17 +77,25 @@ class SearchUseCaseTest {
         whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
         whenever(interactor.searchNextPage(QUERY, 2)) doReturn response(REPO_3, REPO_4, 3)
 
-        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
+        val initialState = SearchViewState()
+        val lastState = useCase.setQuery(QUERY, initialState)
+                .states(initialState)
+                .filterIsInstance<SearchViewState>().last()
 
-        val states = states(lastState) { useCase.loadNextPage(it) }
+        val states = useCase.loadNextPage(lastState)
+                .states(lastState)
+                .filterIsInstance<SearchViewState>()
 
-        assertThat(states.map { it.repos }).containsLce("SS")
+        assertThat(states.map { it.repos }).all {
+            containsLce("SS")
 
-        assertThat(states.map { it.repos.data?.loadingMore ?: false })
-                .containsExactly(true, false)
+            map { it.data?.loadingMore ?: false }
+                    .containsExactly(true, false)
 
-        assertThat(states.last().repos.data!!.list)
-                .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
+            transform { it.last().data!!.list }
+                    .isEqualTo(listOf(REPO_1, REPO_2, REPO_3, REPO_4))
+        }
+
     }
 
     @Test
@@ -84,9 +103,14 @@ class SearchUseCaseTest {
         whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
         whenever(interactor.searchNextPage(QUERY, 2)).thenThrow(RuntimeException(ERROR))
 
-        val lastState = states(SearchViewState()) { useCase.setQuery(QUERY, it) }.last()
+        val initialState = SearchViewState()
+        val lastState = useCase.setQuery(QUERY, initialState)
+                .states(initialState)
+                .filterIsInstance<SearchViewState>().last()
 
-        val states = states(lastState) { useCase.loadNextPage(it) }
+        val states = useCase.loadNextPage(lastState)
+                .states(lastState)
+                .filterIsInstance<SearchViewState>()
 
         assertThat(states.map { it.repos }).containsLce("SS")
 
@@ -95,11 +119,14 @@ class SearchUseCaseTest {
 
         assertThat(states.last().repos.data?.list).isNotNull().containsExactly(REPO_1, REPO_2)
 
-        val signals = signals(lastState) { useCase.loadNextPage(it) }
+        val signals = useCase.loadNextPage(lastState)
+                .states(lastState)
+                .filterIsInstance<Signal>()
 
         assertThat(signals.last())
                 .isInstanceOf(ErrorSignal::class)
-                .prop(ErrorSignal::message).isEqualTo(ERROR)
+                .prop(ErrorSignal::message)
+                .isEqualTo(ERROR)
     }
 
     companion object {
