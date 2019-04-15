@@ -11,20 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-interface Action<out T>
-
-class StateAction<T>(private val f: T.() -> T) : Action<T> {
-    operator fun invoke(t: T) = t.f()
-}
-
-interface Signal : Action<Nothing>
-
-data class ErrorSignal(val error: Throwable?, val message: String) : Signal {
-    constructor(t: Throwable) : this(t, t.message ?: "Error ${t.javaClass.name}")
-}
-
-data class NavigationSignal<P>(val destination: Any, val params: P) : Signal
-
 class ViewStateStore<T : Any>(
         initialState: T,
         private val scope: CoroutineScope,
