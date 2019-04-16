@@ -20,19 +20,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.util.ViewStateStore
+import it.codingjam.github.util.ViewStateStoreFactory
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting
 class RepoViewModel @Inject constructor(
         private val useCase: RepoUseCase,
         private val repoId: RepoId,
-        dispatcher: CoroutineDispatcher
+        factory: ViewStateStoreFactory
 ) : ViewModel() {
 
-    val state = ViewStateStore<RepoViewState>(Lce.Loading, viewModelScope, dispatcher)
+    val state = factory<RepoViewState>(Lce.Loading, viewModelScope)
 
     fun reload() = state.dispatchActions(useCase.reload(repoId))
 

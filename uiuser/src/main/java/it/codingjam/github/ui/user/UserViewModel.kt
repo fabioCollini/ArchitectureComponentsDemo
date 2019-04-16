@@ -21,19 +21,18 @@ import androidx.lifecycle.viewModelScope
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
-import it.codingjam.github.util.ViewStateStore
+import it.codingjam.github.util.ViewStateStoreFactory
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 @OpenForTesting
 class UserViewModel @Inject constructor(
         private val userUseCase: UserUseCase,
         private val login: String,
-        dispatcher: CoroutineDispatcher
+        factory: ViewStateStoreFactory
 ) : ViewModel() {
 
-    val state = ViewStateStore<Lce<UserDetail>>(Lce.Loading, viewModelScope, dispatcher)
+    val state = factory<Lce<UserDetail>>(Lce.Loading, viewModelScope)
 
     fun load() = state.dispatchActions(userUseCase.load(login))
 

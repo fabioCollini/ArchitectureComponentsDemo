@@ -20,12 +20,12 @@ import dagger.Module
 import dagger.Provides
 import it.codingjam.github.AndroidNavigationController
 import it.codingjam.github.NavigationController
-import kotlinx.coroutines.CoroutineDispatcher
+import it.codingjam.github.util.ViewStateStoreFactory
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module class AppModule {
     @Provides @Singleton fun navigationController(androidNavigationController: AndroidNavigationController): NavigationController = androidNavigationController
 
-    @Provides @Singleton fun dispatcher(): CoroutineDispatcher = Dispatchers.IO
+    @Provides @Singleton fun viewStateStoreFactory() = ViewStateStoreFactory(Dispatchers.IO)
 }

@@ -4,12 +4,16 @@ package it.codingjam.github.util
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
+class ViewStateStoreFactory(
+        private val dispatcher: CoroutineDispatcher
+) {
+    operator fun <T : Any> invoke(initialState: T, scope: CoroutineScope) =
+            ViewStateStore(initialState, scope, dispatcher)
+}
 
 class ViewStateStore<T : Any>(
         initialState: T,
@@ -30,7 +34,7 @@ class ViewStateStore<T : Any>(
             signalsLiveData.observe(owner) { observer(it) }
 
     fun dispatchState(state: T) {
-        scope.launch {
+        scope.launch(Dispatchers.Main.immediate) {
             stateLiveData.value = state
         }
     }

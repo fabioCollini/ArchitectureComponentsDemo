@@ -36,7 +36,6 @@ import it.codingjam.github.espresso.FragmentTestRule
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.testdata.TestAppModule
 import it.codingjam.github.testdata.TestData.REPO_1
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -55,11 +54,8 @@ class SearchFragmentViewModelTest {
     val prefs: SharedPreferences = FakeSharedPreferences()
 
     val githubInteractor = mock<GithubInteractor> {
-        runBlocking {
-            on(it.search("abc")) doAnswer {
-                Thread.sleep(1000)
-                RepoSearchResponse(listOf(REPO_1), 1)
-            }
+        onBlocking { it.search("abc") } doAnswer {
+            RepoSearchResponse(listOf(REPO_1), 1)
         }
     }
 

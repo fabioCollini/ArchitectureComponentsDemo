@@ -23,7 +23,7 @@ import dagger.Provides
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.GithubRepository
-import kotlinx.coroutines.CoroutineDispatcher
+import it.codingjam.github.util.ViewStateStoreFactory
 import kotlinx.coroutines.asCoroutineDispatcher
 import javax.inject.Singleton
 
@@ -35,7 +35,7 @@ open class TestAppModule {
 
     @Provides @Singleton open fun githubInteractor() = mock<GithubInteractor>()
 
-    @Provides @Singleton fun dispatcher(): CoroutineDispatcher = TEST_DISPATCHER
+    @Provides @Singleton fun viewStateStoreFactory() = ViewStateStoreFactory(TEST_DISPATCHER)
 }
 
 val TEST_DISPATCHER = AsyncTask.THREAD_POOL_EXECUTOR.asCoroutineDispatcher()

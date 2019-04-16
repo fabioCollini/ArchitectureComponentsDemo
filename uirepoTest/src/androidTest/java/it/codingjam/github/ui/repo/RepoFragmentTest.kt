@@ -29,6 +29,7 @@ import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.espresso.espressoDaggerMockRule
 import it.codingjam.github.espresso.rule
+import it.codingjam.github.testdata.TEST_DISPATCHER
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
@@ -58,7 +59,7 @@ class RepoFragmentTest {
 
     val viewModel by lazy {
         mock<RepoViewModel> {
-            on(it.state) doReturn ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main))
+            on(it.state) doReturn ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
         }
     }
 
