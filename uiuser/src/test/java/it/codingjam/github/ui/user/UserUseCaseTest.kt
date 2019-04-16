@@ -28,7 +28,7 @@ import it.codingjam.github.core.UserDetail
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
-import it.codingjam.github.util.states
+import it.codingjam.github.testdata.states
 import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

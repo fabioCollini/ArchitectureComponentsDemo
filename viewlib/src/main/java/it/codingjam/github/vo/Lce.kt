@@ -16,10 +16,8 @@
 
 package it.codingjam.github.vo
 
-import it.codingjam.github.util.Action
-import it.codingjam.github.util.emitAction
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import it.codingjam.github.util.ActionsFlow
+import it.codingjam.github.util.actionsFlow
 
 sealed class Lce<out T> {
 
@@ -48,14 +46,14 @@ sealed class Lce<out T> {
     }
 }
 
-inline fun <S> lce(crossinline f: suspend () -> S): Flow<Action<Lce<S>>> {
-    return flow {
-        emitAction { Lce.Loading }
+inline fun <S> lce(crossinline f: suspend () -> S): ActionsFlow<Lce<S>> {
+    return actionsFlow {
+        emit { Lce.Loading }
         try {
             val result = f()
-            emitAction { Lce.Success(result) }
+            emit { Lce.Success(result) }
         } catch (e: Exception) {
-            emitAction { Lce.Error(e) }
+            emit { Lce.Error(e) }
         }
     }
 }

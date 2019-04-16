@@ -25,7 +25,7 @@ import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.containsLce
-import it.codingjam.github.util.states
+import it.codingjam.github.testdata.states
 import it.codingjam.github.vo.Lce
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

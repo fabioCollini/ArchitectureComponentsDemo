@@ -6,8 +6,8 @@ import assertk.assertThat
 import assertk.assertions.*
 import com.nalulabs.prefs.fake.FakeSharedPreferences
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.Repo
 import it.codingjam.github.core.RepoSearchResponse
@@ -17,10 +17,10 @@ import it.codingjam.github.testdata.TestData.REPO_3
 import it.codingjam.github.testdata.TestData.REPO_4
 import it.codingjam.github.testdata.containsLce
 import it.codingjam.github.testdata.map
+import it.codingjam.github.testdata.on
+import it.codingjam.github.testdata.states
 import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.Signal
-import it.codingjam.github.util.states
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class SearchUseCaseTest {
@@ -28,8 +28,8 @@ class SearchUseCaseTest {
     private val useCase = SearchUseCase(interactor, FakeSharedPreferences())
 
     @Test
-    fun load() = runBlocking {
-        whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
+    fun load() {
+        on { interactor.search(QUERY) } doReturn RepoSearchResponse(listOf(REPO_1, REPO_2), 2)
 
         val initialState = SearchViewState()
         val states = useCase.setQuery(QUERY, initialState)
@@ -47,8 +47,8 @@ class SearchUseCaseTest {
     }
 
     @Test
-    fun emptyStateVisible() = runBlocking {
-        whenever(interactor.search(QUERY)) doReturn RepoSearchResponse(emptyList(), null)
+    fun emptyStateVisible() {
+        on { interactor.search(QUERY) } doReturn RepoSearchResponse(emptyList(), null)
 
         val initialState = SearchViewState()
         val states = useCase.setQuery(QUERY, initialState)
@@ -73,9 +73,9 @@ class SearchUseCaseTest {
     }
 
     @Test
-    fun loadMore() = runBlocking {
-        whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
-        whenever(interactor.searchNextPage(QUERY, 2)) doReturn response(REPO_3, REPO_4, 3)
+    fun loadMore() {
+        on { interactor.search(QUERY) } doReturn response(REPO_1, REPO_2, 2)
+        on { interactor.searchNextPage(QUERY, 2) } doReturn response(REPO_3, REPO_4, 3)
 
         val initialState = SearchViewState()
         val lastState = useCase.setQuery(QUERY, initialState)
@@ -99,9 +99,9 @@ class SearchUseCaseTest {
     }
 
     @Test
-    fun errorLoadingMore() = runBlocking {
-        whenever(interactor.search(QUERY)) doReturn response(REPO_1, REPO_2, 2)
-        whenever(interactor.searchNextPage(QUERY, 2)).thenThrow(RuntimeException(ERROR))
+    fun errorLoadingMore() {
+        on { interactor.search(QUERY) } doReturn response(REPO_1, REPO_2, 2)
+        on { interactor.searchNextPage(QUERY, 2) } doThrow RuntimeException(ERROR)
 
         val initialState = SearchViewState()
         val lastState = useCase.setQuery(QUERY, initialState)

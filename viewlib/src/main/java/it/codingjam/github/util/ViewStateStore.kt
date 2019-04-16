@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -56,7 +57,7 @@ class ViewStateStore<T : Any>(
         }
     }
 
-    fun dispatchActions(flow: Flow<Action<T>>) {
+    fun dispatchActions(flow: ActionsFlow<T>) {
         scope.launch {
             flow
                     .flowOn(dispatcher)
@@ -67,28 +68,4 @@ class ViewStateStore<T : Any>(
     }
 
     operator fun invoke() = stateLiveData.value!!
-}
-
-suspend fun <S> FlowCollector<Action<S>>.emitAction(action: S.() -> S) = emit(StateAction(action))
-
-suspend inline fun <T : Any> Flow<Action<T>>.states(initialState: T): List<Any> {
-    return fold(initialState to emptyList<Any>()) { (prevState, states), action ->
-        if (action is StateAction) {
-            val curState = action(prevState)
-            curState to states + curState
-        } else
-            prevState to states + action
-    }.second
-}
-
-fun <R, S> Flow<Action<R>>.mapActions(copy: S.(StateAction<R>) -> S): Flow<Action<S>> =
-        map { action: Action<R> -> action.map(copy) }
-
-fun <R, S> Action<R>.map(copy: S.(StateAction<R>) -> S): Action<S> {
-    return if (this is Signal) {
-        this
-    } else {
-        val stateAction = this as StateAction<R>
-        StateAction { copy(stateAction) }
-    }
 }
