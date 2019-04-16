@@ -20,14 +20,13 @@ import assertk.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.testdata.TestData
 import it.codingjam.github.testdata.containsLce
+import it.codingjam.github.testdata.on
 import it.codingjam.github.testdata.states
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class RepoUseCaseTest {
@@ -37,8 +36,8 @@ class RepoUseCaseTest {
     val useCase = RepoUseCase(interactor)
 
     @Test
-    fun fetchData() = runBlocking {
-        whenever(interactor.loadRepo("a", "b")) doReturn TestData.REPO_DETAIL
+    fun fetchData() {
+        on { interactor.loadRepo("a", "b") } doReturn TestData.REPO_DETAIL
 
         val states = useCase.reload(RepoId("a", "b"))
                 .states(Lce.Loading)
@@ -47,8 +46,8 @@ class RepoUseCaseTest {
     }
 
     @Test
-    fun errorFetchingData() = runBlocking {
-        whenever(interactor.loadRepo("a", "b")) doThrow RuntimeException()
+    fun errorFetchingData() {
+        on { interactor.loadRepo("a", "b") } doThrow RuntimeException()
 
         val states = useCase.reload(RepoId("a", "b"))
                 .states(Lce.Loading)
@@ -57,8 +56,8 @@ class RepoUseCaseTest {
     }
 
     @Test
-    fun retry() = runBlocking {
-        whenever(interactor.loadRepo("a", "b"))
+    fun retry() {
+        on { interactor.loadRepo("a", "b") }
                 .thenThrow(RuntimeException())
                 .thenReturn(TestData.REPO_DETAIL)
 

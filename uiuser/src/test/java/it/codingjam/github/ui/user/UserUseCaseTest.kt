@@ -21,16 +21,15 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
+import it.codingjam.github.testdata.on
 import it.codingjam.github.testdata.states
 import it.codingjam.github.vo.Lce
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class UserUseCaseTest {
@@ -39,8 +38,8 @@ class UserUseCaseTest {
     private val userUseCase = UserUseCase(githubInteractor)
 
     @Test
-    fun load() = runBlocking {
-        whenever(githubInteractor.loadUserDetail(LOGIN)) doReturn UserDetail(USER, listOf(REPO_1, REPO_2))
+    fun load() {
+        on { githubInteractor.loadUserDetail(LOGIN) } doReturn UserDetail(USER, listOf(REPO_1, REPO_2))
 
         val states = userUseCase.load(LOGIN).states(Lce.Loading)
 
@@ -52,8 +51,8 @@ class UserUseCaseTest {
     }
 
     @Test
-    fun retry() = runBlocking {
-        whenever(githubInteractor.loadUserDetail(LOGIN))
+    fun retry() {
+        on { githubInteractor.loadUserDetail(LOGIN) }
                 .thenThrow(RuntimeException(ERROR))
                 .thenReturn(UserDetail(USER, listOf(REPO_1, REPO_2)))
 
