@@ -32,7 +32,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner 'it.codingjam.github.espresso.MockTestRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         debug {
@@ -80,7 +80,6 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:$timber_version"
 
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$arch_version"
 

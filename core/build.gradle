@@ -35,7 +35,6 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0"
 
     api "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     api('com.github.nalulabs.prefs-delegates:prefs-delegates:0.1') {

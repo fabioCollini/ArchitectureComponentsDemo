@@ -16,15 +16,15 @@
 
 package it.codingjam.github.ui.repo
 
+import it.codingjam.github.FeatureAppScope
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.vo.lce
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@FeatureAppScope
 @OpenForTesting
 class RepoUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor

@@ -16,9 +16,11 @@
 
 package it.codingjam.github.api
 
+import dagger.Component
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.api.util.RetrofitFactory.createService
+import it.codingjam.github.core.CoreDependencies
 import it.codingjam.github.core.GithubRepository
 import okhttp3.HttpUrl
 import javax.inject.Singleton
@@ -30,3 +32,9 @@ class ApiModule {
 
     @Provides @Singleton fun githubRepository(githubService: GithubService): GithubRepository = GithubRepositoryImpl(githubService)
 }
+
+@Singleton
+@Component(
+        modules = [ApiModule::class]
+)
+interface ApiComponent : CoreDependencies

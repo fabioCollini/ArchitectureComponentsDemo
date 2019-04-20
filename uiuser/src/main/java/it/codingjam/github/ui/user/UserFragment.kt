@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
@@ -69,8 +68,13 @@ class UserFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        requireActivity().application
+                .userComponent
+                .fragmentComponent()
+                .create(param)
+                .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

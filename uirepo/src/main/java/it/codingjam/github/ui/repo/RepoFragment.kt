@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
@@ -31,6 +30,7 @@ import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.LceContainer
 import it.codingjam.github.util.NavigationSignal
 import it.codingjam.github.util.ViewModelFactory
+import it.codingjam.github.viewLibComponent
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -49,8 +49,15 @@ class RepoFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        DaggerRepoFragmentComponent.factory()
+                .create(
+                        param,
+                        requireActivity().application.repoComponent,
+                        requireActivity().application.viewLibComponent
+                )
+                .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

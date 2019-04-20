@@ -16,22 +16,31 @@
 
 package it.codingjam.github
 
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
-import it.codingjam.github.di.DaggerAppComponent
+import android.app.Application
+import it.codingjam.github.api.DaggerApiComponent
+import it.codingjam.github.core.CoreDependencies
+import it.codingjam.github.core.utils.ComponentHolder
+import it.codingjam.github.core.utils.ComponentsMap
+import it.codingjam.github.core.utils.provide
 import timber.log.Timber
 
 
-class GithubApp : DaggerApplication() {
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.builder().application(this).build()
-    }
+class GithubApp : Application(), ComponentHolder by ComponentsMap() {
 
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+        }
+
+        provide<CoreDependencies> {
+            DaggerApiComponent.create()
+        }
+
+        provide<ViewLibDependencies> {
+            object : ViewLibDependencies {
+                override val navigationController = AndroidNavigationController()
+            }
         }
     }
 }

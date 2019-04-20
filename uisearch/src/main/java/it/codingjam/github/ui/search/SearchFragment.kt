@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.AndroidSupportInjection
 import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
@@ -52,8 +51,13 @@ class SearchFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        requireActivity().application
+                .searchComponent
+                .fragmentComponent()
+                .create(this)
+                .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

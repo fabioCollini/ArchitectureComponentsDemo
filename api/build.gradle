@@ -22,7 +22,6 @@ android {
 dependencies {
     implementation project(':core')
 
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

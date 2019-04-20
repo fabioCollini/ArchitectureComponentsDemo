@@ -18,6 +18,7 @@ package it.codingjam.github.ui.repo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import it.codingjam.github.FeatureFragmentScope
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.util.ViewStateStoreFactory
@@ -25,6 +26,7 @@ import it.codingjam.github.vo.Lce
 import javax.inject.Inject
 
 @OpenForTesting
+@FeatureFragmentScope
 class RepoViewModel @Inject constructor(
         private val useCase: RepoUseCase,
         private val repoId: RepoId,

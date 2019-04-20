@@ -37,7 +37,6 @@ dependencies {
     api project(':core')
     api project(':viewlib')
 
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     testImplementation project(':testData')

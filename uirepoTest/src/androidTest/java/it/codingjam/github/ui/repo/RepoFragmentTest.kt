@@ -16,18 +16,18 @@
 
 package it.codingjam.github.ui.repo
 
+import android.app.Application
 import androidx.annotation.StringRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
-import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.espresso.TestApplication
 import it.codingjam.github.espresso.rule
 import it.codingjam.github.testdata.TEST_DISPATCHER
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
@@ -37,6 +37,8 @@ import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import it.cosenonjaviste.daggermock.DaggerMock
+import it.cosenonjaviste.daggermock.override
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
@@ -50,16 +52,20 @@ class RepoFragmentTest {
     val fragmentRule = RepoFragment.rule()
 
     @get:Rule
-    val daggerMockRule = espressoDaggerMockRule<RepoTestComponent>(ViewLibModule())
-
-    @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    val factory = ViewModelFactory { viewModel }
+    val factory: ViewModelFactory = ViewModelFactory { viewModel }
 
     val viewModel by lazy {
         mock<RepoViewModel> {
             on(it.state) doReturn ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
+        }
+    }
+
+    init {
+        val app = ApplicationProvider.getApplicationContext<TestApplication>()
+        app.init { c, componentFactory ->
+            DaggerMock.override(c, componentFactory, this)
         }
     }
 
@@ -86,5 +92,5 @@ class RepoFragmentTest {
         onView(withId(R.id.description)).check(matches(withText(REPO_1.description)))
     }
 
-    private fun getString(@StringRes id: Int, vararg args: Any) = InstrumentationRegistry.getTargetContext().getString(id, *args)
+    private fun getString(@StringRes id: Int, vararg args: Any) = ApplicationProvider.getApplicationContext<Application>().getString(id, *args)
 }

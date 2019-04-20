@@ -19,19 +19,64 @@ package it.codingjam.github
 import android.app.Application
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import dagger.BindsInstance
+import dagger.Component
 import dagger.Module
 import dagger.Provides
 import it.codingjam.github.core.OpenForTesting
+import it.codingjam.github.core.utils.ComponentHolder
+import it.codingjam.github.core.utils.get
+import it.codingjam.github.core.utils.getOrCreate
 import it.codingjam.github.util.ViewModelFactory
+import it.codingjam.github.util.ViewStateStoreFactory
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @OpenForTesting
 @Module
-class ViewLibModule {
+internal class ViewLibModule {
     @Provides
     @Singleton
     fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides
     fun viewModelFactory() = ViewModelFactory()
+
+    @Provides
+    @Singleton
+    fun viewStateStoreFactory() = ViewStateStoreFactory(Dispatchers.IO)
 }
+
+interface ViewLibComponent {
+    val viewModelFactory: ViewModelFactory
+
+    val prefs: SharedPreferences
+
+    val viewStateStoreFactory: ViewStateStoreFactory
+
+    val navigationController: NavigationController
+}
+
+@Component(
+        modules = [ViewLibModule::class],
+        dependencies = [ViewLibDependencies::class]
+)
+@Singleton
+internal interface ViewLibComponentImpl : ViewLibComponent {
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance app: Application, dependencies: ViewLibDependencies): ViewLibComponent
+    }
+}
+
+interface ViewLibDependencies {
+    val navigationController: NavigationController
+}
+
+val Application.viewLibComponent
+    get() = (this as ComponentHolder).getOrCreate {
+        DaggerViewLibComponentImpl.factory().create(
+                this,
+                this.get()
+        )
+    }

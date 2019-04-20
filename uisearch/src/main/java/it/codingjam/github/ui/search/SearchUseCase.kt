@@ -2,6 +2,7 @@ package it.codingjam.github.ui.search
 
 import android.content.SharedPreferences
 import com.nalulabs.prefs.string
+import it.codingjam.github.FeatureAppScope
 import it.codingjam.github.core.GithubInteractor
 import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.RepoId
@@ -9,10 +10,9 @@ import it.codingjam.github.util.*
 import it.codingjam.github.vo.lce
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @OpenForTesting
-@Singleton
+@FeatureAppScope
 class SearchUseCase @Inject constructor(
         private val githubInteractor: GithubInteractor,
         prefs: SharedPreferences
