@@ -20,7 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.NavigationController
+import androidx.fragment.app.Fragment
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
@@ -29,35 +29,19 @@ import it.codingjam.github.ui.repo.databinding.RepoFragmentBinding
 import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.LceContainer
 import it.codingjam.github.util.NavigationSignal
-import it.codingjam.github.util.ViewModelFactory
+import it.codingjam.github.util.viewModel
 import it.codingjam.github.viewLibComponent
-import javax.inject.Inject
-import javax.inject.Provider
 
-class RepoFragment : androidx.fragment.app.Fragment() {
+class RepoFragment : Fragment() {
 
     lateinit var lceContainer: LceContainer<RepoDetail>
 
-    @Inject lateinit var viewModelProvider: Provider<RepoViewModel>
-
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject lateinit var navigationController: NavigationController
-
-    private val viewModel by lazy {
-        viewModelFactory(this, viewModelProvider) { it.reload() }
+    private val navigationController by lazy {
+        requireActivity().application.viewLibComponent.navigationController
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        DaggerRepoFragmentComponent.factory()
-                .create(
-                        param,
-                        requireActivity().application.repoComponent,
-                        requireActivity().application.viewLibComponent
-                )
-                .inject(this)
+    private val viewModel: RepoViewModel by viewModel {
+        repoFragmentComponent.viewModel.apply { reload() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

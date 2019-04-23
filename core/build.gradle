@@ -27,6 +27,10 @@ android {
             minifyEnabled false
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -42,6 +46,7 @@ dependencies {
     }
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compileOnly 'com.github.pengrad:jdk9-deps:1.0'
 
     testImplementation project(':testData')
 }

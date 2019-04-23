@@ -20,26 +20,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.ui.common.DataBoundListAdapter
 import it.codingjam.github.ui.search.databinding.SearchFragmentBinding
 import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.NavigationSignal
-import it.codingjam.github.util.ViewModelFactory
-import javax.inject.Inject
-import javax.inject.Provider
+import it.codingjam.github.util.viewModel
+import it.codingjam.github.viewLibComponent
 
 class SearchFragment : androidx.fragment.app.Fragment() {
 
-    @Inject lateinit var viewModelProvider: Provider<SearchViewModel>
+    private val navigationController by lazy {
+        requireActivity().application.viewLibComponent.navigationController
+    }
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject lateinit var navigationController: NavigationController
-
-    private val viewModel by lazy {
-        viewModelFactory(this, viewModelProvider)
+    private val viewModel by viewModel {
+        searchFragmentComponent.viewModel
     }
 
     private lateinit var binding: SearchFragmentBinding
@@ -48,16 +44,6 @@ class SearchFragment : androidx.fragment.app.Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = SearchFragmentBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requireActivity().application
-                .searchComponent
-                .fragmentComponent()
-                .create(this)
-                .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -1,21 +1,19 @@
 package it.codingjam.github.ui.repo
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Component
-import it.codingjam.github.FeatureAppScope
-import it.codingjam.github.FeatureFragmentScope
-import it.codingjam.github.ViewLibComponent
+import it.codingjam.github.*
 import it.codingjam.github.core.CoreComponent
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.coreComponent
 import it.codingjam.github.core.utils.ComponentHolder
-import it.codingjam.github.core.utils.getOrCreate
-import it.codingjam.github.viewLibComponent
+import it.codingjam.github.ui.repo.RepoFragment.Companion.param
 
 @FeatureAppScope
 @Component(dependencies = [ViewLibComponent::class, CoreComponent::class])
-interface RepoAppComponent {
+interface RepoAppComponent : ViewLibComponent {
     val repoUseCase: RepoUseCase
 
     @Component.Factory
@@ -25,18 +23,24 @@ interface RepoAppComponent {
 }
 
 val Application.repoComponent
-    get() = (this as ComponentHolder).getOrCreate {
+    get() = getOrCreate {
         DaggerRepoAppComponent.factory()
-                .create(coreComponent, viewLibComponent)
+                .create((this as ComponentHolder).coreComponent, viewLibComponent)
     }
 
 @FeatureFragmentScope
-@Component(dependencies = [ViewLibComponent::class, RepoAppComponent::class])
+@Component(dependencies = [RepoAppComponent::class])
 interface RepoFragmentComponent {
-    fun inject(fragment: RepoFragment)
+    val viewModel: RepoViewModel
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance param: RepoId, repoAppComponent: RepoAppComponent, viewLib: ViewLibComponent): RepoFragmentComponent
+        fun create(@BindsInstance param: RepoId, repoAppComponent: RepoAppComponent): RepoFragmentComponent
     }
 }
+
+val Fragment.repoFragmentComponent: RepoFragmentComponent
+    get() = getOrCreateFragmentComponent {
+        DaggerRepoFragmentComponent.factory()
+                .create(param, requireActivity().application.repoComponent)
+    }

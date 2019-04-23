@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import it.codingjam.github.NavigationController
 import it.codingjam.github.core.RepoId
 import it.codingjam.github.core.UserDetail
 import it.codingjam.github.ui.common.DataBoundListAdapter
@@ -29,20 +28,17 @@ import it.codingjam.github.ui.user.databinding.UserFragmentBinding
 import it.codingjam.github.util.ErrorSignal
 import it.codingjam.github.util.LceContainer
 import it.codingjam.github.util.NavigationSignal
-import it.codingjam.github.util.ViewModelFactory
-import javax.inject.Inject
-import javax.inject.Provider
+import it.codingjam.github.util.viewModel
+import it.codingjam.github.viewLibComponent
 
 class UserFragment : androidx.fragment.app.Fragment() {
 
-    @Inject lateinit var viewModelProvider: Provider<UserViewModel>
+    private val navigationController by lazy {
+        requireActivity().application.viewLibComponent.navigationController
+    }
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject lateinit var navigationController: NavigationController
-
-    private val viewModel by lazy {
-        viewModelFactory(this, viewModelProvider) { it.load() }
+    private val viewModel by viewModel {
+        userFragmentComponent.viewModel.apply { load() }
     }
 
     private lateinit var lceContainer: LceContainer<UserDetail>
@@ -65,16 +61,6 @@ class UserFragment : androidx.fragment.app.Fragment() {
         }
 
         return lceContainer
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requireActivity().application
-                .userComponent
-                .fragmentComponent()
-                .create(param)
-                .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

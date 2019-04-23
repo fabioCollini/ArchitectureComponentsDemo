@@ -27,7 +27,6 @@ import it.codingjam.github.core.OpenForTesting
 import it.codingjam.github.core.utils.ComponentHolder
 import it.codingjam.github.core.utils.get
 import it.codingjam.github.core.utils.getOrCreate
-import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStoreFactory
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
@@ -40,16 +39,11 @@ internal class ViewLibModule {
     fun providePrefs(application: Application): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     @Provides
-    fun viewModelFactory() = ViewModelFactory()
-
-    @Provides
     @Singleton
     fun viewStateStoreFactory() = ViewStateStoreFactory(Dispatchers.IO)
 }
 
 interface ViewLibComponent {
-    val viewModelFactory: ViewModelFactory
-
     val prefs: SharedPreferences
 
     val viewStateStoreFactory: ViewStateStoreFactory

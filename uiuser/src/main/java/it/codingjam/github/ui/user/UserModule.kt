@@ -1,21 +1,19 @@
 package it.codingjam.github.ui.user
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Subcomponent
-import it.codingjam.github.FeatureAppScope
-import it.codingjam.github.ViewLibComponent
+import it.codingjam.github.*
 import it.codingjam.github.core.CoreComponent
 import it.codingjam.github.core.coreComponent
 import it.codingjam.github.core.utils.ComponentHolder
 import it.codingjam.github.core.utils.getOrCreate
-import it.codingjam.github.viewLibComponent
 
 @FeatureAppScope
 @Component(dependencies = [ViewLibComponent::class, CoreComponent::class])
-interface UserAppComponent {
-    fun fragmentComponent(): UserFragmentComponent.Factory
+interface UserAppComponent : ViewLibComponent {
+    val userUseCase: UserUseCase
 
     @Component.Factory
     interface Factory {
@@ -29,12 +27,19 @@ val Application.userComponent
                 .create(coreComponent, viewLibComponent)
     }
 
-@Subcomponent
+@FeatureFragmentScope
+@Component(dependencies = [UserAppComponent::class])
 interface UserFragmentComponent {
-    fun inject(fragment: UserFragment)
+    val viewModel: UserViewModel
 
-    @Subcomponent.Factory
+    @Component.Factory
     interface Factory {
-        fun create(@BindsInstance param: String): UserFragmentComponent
+        fun create(@BindsInstance param: String, userAppComponent: UserAppComponent): UserFragmentComponent
     }
 }
+
+val Fragment.userFragmentComponent: UserFragmentComponent
+    get() = getOrCreateFragmentComponent {
+        DaggerUserFragmentComponent.factory()
+                .create(UserFragment.param(this), requireActivity().application.userComponent)
+    }

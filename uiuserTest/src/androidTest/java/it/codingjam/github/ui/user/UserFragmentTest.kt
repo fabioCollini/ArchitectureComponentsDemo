@@ -18,21 +18,27 @@ package it.codingjam.github.ui.user
 
 import android.os.Debug
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
-import it.codingjam.github.ViewLibModule
 import it.codingjam.github.core.UserDetail
-import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.espresso.TestApplication
 import it.codingjam.github.espresso.rule
+import it.codingjam.github.testdata.TEST_DISPATCHER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.testdata.TestData.USER
-import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import it.cosenonjaviste.daggermock.DaggerMock
+import it.cosenonjaviste.daggermock.interceptor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,19 +46,24 @@ class UserFragmentTest {
 
     @get:Rule val fragmentRule = UserFragment.rule()
 
-    @get:Rule val daggerMockRule = espressoDaggerMockRule<UserTestComponent>(ViewLibModule())
-
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    val factory = ViewModelFactory { viewModel }
-
-    val viewModel by lazy {
-        mock<UserViewModel> {
-            on(it.state).thenReturn(ViewStateStore.test(Lce.Loading))
-        }
+    private val viewStateStore by lazy {
+        ViewStateStore<UserViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
     }
 
-    @Test fun testLoading() {
+    private val viewModel = mock<UserViewModel> {
+        on(it.state) doAnswer { viewStateStore }
+    }
+
+    @Before
+    fun setUp() {
+        val app = ApplicationProvider.getApplicationContext<TestApplication>()
+        app.init(DaggerMock.interceptor(this))
+    }
+
+    @Test
+    fun testLoading() {
         Debug.startMethodTracing()
         fragmentRule.launchFragment("user")
 
@@ -63,7 +74,8 @@ class UserFragmentTest {
         Debug.stopMethodTracing()
     }
 
-    @Test fun testValueWhileLoading() {
+    @Test
+    fun testValueWhileLoading() {
         fragmentRule.launchFragment("user")
 
         viewModel.state.dispatchState(Lce.Loading)

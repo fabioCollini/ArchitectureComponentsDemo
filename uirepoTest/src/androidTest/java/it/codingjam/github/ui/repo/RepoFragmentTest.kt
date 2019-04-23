@@ -23,7 +23,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.core.RepoDetail
 import it.codingjam.github.core.RepoId
@@ -34,14 +34,14 @@ import it.codingjam.github.testdata.TestData.CONTRIBUTOR1
 import it.codingjam.github.testdata.TestData.CONTRIBUTOR2
 import it.codingjam.github.testdata.TestData.OWNER
 import it.codingjam.github.testdata.TestData.REPO_1
-import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
 import it.cosenonjaviste.daggermock.DaggerMock
-import it.cosenonjaviste.daggermock.override
+import it.cosenonjaviste.daggermock.interceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,26 +54,25 @@ class RepoFragmentTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    val factory: ViewModelFactory = ViewModelFactory { viewModel }
-
-    val viewModel by lazy {
-        mock<RepoViewModel> {
-            on(it.state) doReturn ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
-        }
+    private val viewStateStore by lazy {
+        ViewStateStore<RepoViewState>(Lce.Loading, CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
     }
 
-    init {
+    private val viewModel = mock<RepoViewModel> {
+        on(it.state) doAnswer { viewStateStore }
+    }
+
+    @Before
+    fun setUp() {
         val app = ApplicationProvider.getApplicationContext<TestApplication>()
-        app.init { c, componentFactory ->
-            DaggerMock.override(c, componentFactory, this)
-        }
+        app.init(DaggerMock.interceptor(this))
     }
 
     @Test
     fun testLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
-        viewModel.state.dispatchState(Lce.Loading)
+        viewStateStore.dispatchState(Lce.Loading)
 
         onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
@@ -83,8 +82,8 @@ class RepoFragmentTest {
     fun testValueWhileLoading() {
         fragmentRule.launchFragment(RepoId("a", "b"))
 
-        viewModel.state.dispatchState(Lce.Loading)
-        viewModel.state.dispatchState(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
+        viewStateStore.dispatchState(Lce.Loading)
+        viewStateStore.dispatchState(Lce.Success(RepoDetail(REPO_1, listOf(CONTRIBUTOR1, CONTRIBUTOR2))))
 
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(matches(

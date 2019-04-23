@@ -18,28 +18,30 @@ package it.codingjam.github.ui.repo
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import it.codingjam.github.R
-import it.codingjam.github.ViewLibModule
 import it.codingjam.github.espresso.FragmentTestRule
-import it.codingjam.github.espresso.espressoDaggerMockRule
+import it.codingjam.github.espresso.TestApplication
 import it.codingjam.github.testdata.TEST_DISPATCHER
 import it.codingjam.github.testdata.TestData.REPO_1
 import it.codingjam.github.testdata.TestData.REPO_2
 import it.codingjam.github.ui.search.ReposViewState
 import it.codingjam.github.ui.search.SearchViewModel
 import it.codingjam.github.ui.search.SearchViewState
-import it.codingjam.github.util.ViewModelFactory
 import it.codingjam.github.util.ViewStateStore
 import it.codingjam.github.vo.Lce
+import it.cosenonjaviste.daggermock.DaggerMock
+import it.cosenonjaviste.daggermock.interceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Matchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,17 +51,20 @@ class SearchFragmentTest {
     val fragmentRule = FragmentTestRule<Unit>(R.navigation.search_nav_graph, R.id.search) { Bundle() }
 
     @get:Rule
-    val daggerMockRule = espressoDaggerMockRule<SearchTestComponent>(ViewLibModule())
-
-    @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    val factory = ViewModelFactory { viewModel }
+    private val viewStateStore by lazy {
+        ViewStateStore(SearchViewState(), CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
+    }
 
-    val viewModel by lazy {
-        mock<SearchViewModel> {
-            on(it.state) doReturn ViewStateStore(SearchViewState(), CoroutineScope(Dispatchers.Main), TEST_DISPATCHER)
-        }
+    private val viewModel = mock<SearchViewModel> {
+        on(it.state) doAnswer { viewStateStore }
+    }
+
+    @Before
+    fun setUp() {
+        val app = ApplicationProvider.getApplicationContext<TestApplication>()
+        app.init(DaggerMock.interceptor(this))
     }
 
     @Test
